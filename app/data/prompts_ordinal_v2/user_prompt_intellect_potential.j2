@@ -1,0 +1,30 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: intellect
+Definition: How effectively the character solves cognitive challenges in their domain — tactical, scientific, creative, social, or any other. Judge by the magnitude of cognitive ability, not the type. A military genius and a scientific genius are measured on the same axis.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person with below-average intelligence who regularly misses obvious things.
+[T2]  A person of average intelligence with no notable cognitive advantage.
+[T3]  A person who is slightly above average — notices what others miss, learns faster.
+[T4]  A smart person who solves complex problems with strong analytical ability.
+[T5]  An exceptional thinker — expert or strategist who outperforms the vast majority.
+[T6]  A genius — among the smartest in their universe within their domain.
+[T7]  A transcendent mind that solves problems incomprehensible to others.
+[T8]  A being that perceives or processes information beyond mortal comprehension.
+[T9]  A being with total omniscience — knows everything, sees all timelines simultaneously.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "intellect", "sorted": ["T1", ..., "T9"], "unknown": [...]}
+
+All 9 markers T1..T9 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

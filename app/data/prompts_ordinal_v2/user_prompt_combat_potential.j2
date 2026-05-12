@@ -1,0 +1,31 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: combat_potential
+Definition: Who wins in a direct 1-vs-1 fight using any combat ability available to them — physical strength, speed, technique, pain tolerance, weapons, powers, transformations. In-fight tactics count. Political scheming, social manipulation, and off-battlefield planning do NOT count.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person who can throw a punch but has no training and no physical advantage.
+[T2]  An average combatant who loses to anyone with formal training.
+[T3]  An above-average fighter who holds their own but loses to career fighters.
+[T4]  A dedicated fighter with martial arts, military training, or equivalent.
+[T5]  A peak human combatant. No unenhanced person defeats them.
+[T6]  A being with superhuman physicals, beyond any human regardless of training.
+[T7]  A being capable of ranged destruction — energy projection, large-scale attacks.
+[T8]  A being that manipulates fundamental forces — gravity, time, space, causality.
+[T9]  A being operating at reality-scale or narrative-immune level.
+[T10] A being that transcends the concept of combat within their fictional framework.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "combat_potential", "sorted": ["T1", ..., "T10"], "unknown": [...]}
+
+All 10 markers T1..T10 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

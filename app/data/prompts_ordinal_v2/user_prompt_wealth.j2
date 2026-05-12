@@ -1,0 +1,26 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: wealth
+Definition: The total financial and material resources the character personally controls or has reliable access to. This includes money, property, equipment, and assets. Institutional budgets count only if the character can freely direct them for personal use. Borrowed power or temporary windfalls do NOT count.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person who can afford basic needs — food, shelter, clothing — but nothing beyond that.
+[T2]  A person who lives comfortably with moderate savings and some disposable income.
+[T3]  A wealthy person who owns significant property, businesses, or capital.
+[T4]  A person whose wealth shapes markets, funds armies, or rivals national budgets.
+[T5]  A being with functionally unlimited resources — wealth is no longer a constraint in any decision.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "wealth", "sorted": ["T1", ..., "T5"], "unknown": [...]}
+
+All 5 markers T1..T5 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

@@ -1,0 +1,28 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: loyalty_command
+Definition: How far the people under or around the character are willing to go for them. This measures real devotion and obedience — not formal rank, not authority scope, not fear-based compliance that collapses under pressure. A king whose subjects would betray him instantly scores low. A nobody whose friends would die for them scores high.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person whose followers abandon them at the first sign of trouble.
+[T2]  A person with reliable allies whose commitment has clear limits.
+[T3]  A person who inspires genuine dedication. Followers endure significant hardship.
+[T4]  A person whose followers sacrifice their lives without hesitation on their word.
+[T5]  A person whose followers act against self-preservation, logic, or morality out of devotion.
+[T6]  A person whose devotion persists across generations, reshapes civilizations, or alters followers' bodies, minds, or souls.
+[T7]  A being whose followers' loyalty transcends death, time, and the boundaries of their fictional universe.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "loyalty_command", "sorted": ["T1", ..., "T7"], "unknown": [...]}
+
+All 7 markers T1..T7 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

@@ -1,0 +1,2 @@
+celery -A app.celery_app:celery worker -l info -P solo
+# to run it on localhost, nut bd is steal working on docker so be careful

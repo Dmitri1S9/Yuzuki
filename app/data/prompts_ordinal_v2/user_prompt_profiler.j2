@@ -1,0 +1,12 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

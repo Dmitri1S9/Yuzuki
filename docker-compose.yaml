@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:14
+    ports:
+      - "5439:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 6713
+      POSTGRES_DB: archangel
+    volumes:
+      - postgres_data_archangel:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend
+
+  analyse_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: analyse_service
+    ports:
+      - "8044:8044"
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CACHE=redis://redis:6379/1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=archangel
+      - DB_USER=postgres
+      - DB_PASSWORD=6713
+      - API_KEY_X=${API_KEY_X}
+      - API_KEY=${API_KEY}
+      - DEBUG=False
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - backend
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CACHE=redis://redis:6379/1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=archangel
+      - DB_USER=postgres
+      - DB_PASSWORD=6713
+      - API_KEY_X=${API_KEY_X}
+      - API_KEY=${API_KEY}
+      - DEBUG=False
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    command: conda run --no-capture-output -n analyse_service watchfiles --filter python "celery -A app.settings.celery_app:celery worker -l INFO --concurrency=3" /app
+    restart: unless-stopped
+    networks:
+      - backend
+
+volumes:
+  postgres_data_archangel:
+  redis_data:
+  static:
+  media:
+
+networks:
+  backend:

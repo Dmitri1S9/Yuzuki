@@ -1,0 +1,29 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: authority_scope
+Definition: The scale of power, resources, and institutional control the character can command or mobilize. This measures positional and structural power — titles, armies, organizations, territories. Personal loyalty, charisma, and informal influence do NOT count.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person with informal control over immediate surroundings — a friend group, a class clique.
+[T2]  A person who controls a club, a school, a small gang, or a single estate.
+[T3]  A person who leads a significant company, military unit, or mid-size faction.
+[T4]  A person who commands a city, province, large corporation, or major army.
+[T5]  A person who rules a country, empire, or organization of equivalent scale.
+[T6]  A person who controls multiple nations, a mega-corporation with sovereign power, or interstellar territory.
+[T7]  A being with authority over reality, dimensions, or fundamental forces.
+[T8]  A being whose authority defines or supersedes the rules of their fictional universe.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "authority_scope", "sorted": ["T1", ..., "T8"], "unknown": [...]}
+
+All 8 markers T1..T8 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

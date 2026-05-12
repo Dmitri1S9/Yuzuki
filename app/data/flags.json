@@ -1,0 +1,220 @@
+{
+  "personality": {
+    "manipulative": {
+      "definition": "Regularly deceives, schemes, or psychologically controls others to achieve goals.",
+      "sort_axis": "never manipulates → constantly manipulates"
+    },
+    "honest": {
+      "definition": "Generally truthful and straightforward in their interactions. Does not habitually lie, deceive, or manipulate others for personal gain. May tell small social lies or withhold information occasionally, but their default stance is honesty. They prefer direct communication over manipulation even when manipulation would benefit them.",
+      "sort_axis": "habitually deceptive and manipulative → genuinely honest by default"
+    },
+    "impulsive": {
+      "definition": "Acts on emotion or instinct without thinking through consequences.",
+      "sort_axis": "always thinks before acting → acts on impulse constantly"
+    },
+    "secretive": {
+      "definition": "Hides important information, plans, or identity from allies and enemies alike.",
+      "sort_axis": "open and transparent → hides everything"
+    },
+    "self_sacrificing": {
+      "definition": "Willing to suffer, lose, or die so others gain — and acts on it, not just talks.",
+      "sort_axis": "purely self-interested → sacrifices everything for others"
+    },
+    "adaptable": {
+      "definition": "Quickly adjusts strategy, behavior, or worldview when circumstances change.",
+      "sort_axis": "rigid and unable to adjust → adapts instantly to anything"
+    },
+    "loyal": {
+      "definition": "Stays committed to a person, group, or cause even under pressure to betray.",
+      "sort_axis": "betrays easily → loyal under any pressure"
+    },
+    "empathetic": {
+      "definition": "Accurately reads and genuinely cares about others' emotions. Acts on that understanding.",
+      "sort_axis": "emotionally blind or indifferent → deeply reads and acts on others' emotions"
+    },
+    "cruel": {
+      "definition": "Deliberately inflicts suffering beyond what the situation requires.",
+      "sort_axis": "never causes unnecessary suffering → inflicts maximum suffering deliberately"
+    },
+    "arrogant": {
+      "definition": "Verbally or behaviorally signals superiority over others — dismisses input, mocks lesser abilities, expects deference. About observable behavior toward others, not internal self-image. Boundary vs competitive: competitive wants to win, arrogant assumes they already have.",
+      "sort_axis": "treats everyone as equal or superior → openly dismisses everyone as beneath them"
+    },
+    "competitive": {
+      "definition": "Driven to win, outperform, or surpass others — not just succeed.",
+      "sort_axis": "indifferent to competition → driven to outperform everyone"
+    },
+    "ruthless": {
+      "definition": "When a person stands between them and their goal, eliminates that obstacle without internal hesitation. About speed of decision, not the cruelty of the method. Boundary vs cruel: ruthless = no pause before acting, cruel = enjoys the suffering. Boundary vs manipulative: ruthless = direct removal, manipulative = indirect control.",
+      "sort_axis": "always hesitates to harm anyone → eliminates obstacles instantly without internal conflict"
+    },
+    "is_strategist": {
+      "definition": "Wins through pre-planned multi-step operations rather than reaction or raw ability. The plan itself is the weapon. Boundary vs intellect: intellect = how smart, strategist = whether they actually deploy that intelligence as advance planning. Boundary vs manipulative: strategist plans the chess board, manipulative plays the people on it.",
+      "sort_axis": "wins through reaction, instinct, or raw ability → wins through pre-planned multi-step operations"
+    },
+    "has_humor": {
+      "definition": "Uses humor, irony, or wit deliberately — jokes, mocks situations, or eases tension through comedic framing. About active use, not just being capable of laughter.",
+      "sort_axis": "never uses humor → uses humor constantly as a defining trait"
+    }
+  },
+  "appearance": {
+    "is_physically_attractive": {
+      "definition": "Other characters in-universe react to their appearance with attraction or admiration. Canonical, not viewer opinion.",
+      "sort_axis": "no in-universe attraction reactions → universally admired appearance"
+    },
+    "is_intimidating": {
+      "definition": "Other named in-universe characters react to their presence with visible fear, hesitation, or submission — flinching, backing down, choosing words carefully. Canonical reaction required, not appearance alone. Boundary vs is_muscular: muscular is build, intimidating is reaction it produces.",
+      "sort_axis": "no character shows fear in their presence → multiple characters consistently fear them"
+    },
+    "is_muscular": {
+      "definition": "Visibly muscular or physically powerful build, commented on in-universe. About visual build, not fighting ability — boundary vs combat_potential: muscular = how they look, combat_potential = how they fight.",
+      "sort_axis": "lean or average build → exceptionally muscular and powerful build"
+    },
+    "has_distinctive_feature": {
+      "definition": "Visible identifying mark noted in-universe — scar, heterochromia, prosthetic, tattoo, unusual hair color, missing limb, or other recognizable physical feature.",
+      "sort_axis": "no distinctive marks → multiple highly recognizable physical features"
+    },
+    "is_well_groomed": {
+      "definition": "Maintains visible care over appearance, style, or hygiene. About effort and presentation — boundary vs is_physically_attractive: well_groomed = the work they put in, attractive = baseline appeal regardless of effort.",
+      "sort_axis": "neglected or careless about appearance → meticulously groomed and styled"
+    }
+  },
+  "motivation": {
+    "goal_power": {
+      "definition": "Primary drive is gaining control, authority, or dominance over others.",
+      "sort_axis": "no interest in power → power is the primary drive"
+    },
+    "goal_love": {
+      "definition": "Romantic or familial love is the central driver of their major decisions.",
+      "sort_axis": "love does not drive decisions → love is the central driver"
+    },
+    "goal_knowledge": {
+      "definition": "Pursues understanding or truth as a top-3 life priority — not as a means to win, succeed, or impress. Visible in: voluntary research beyond requirements, asking questions when no reward exists, choosing knowledge over safer alternatives.",
+      "sort_axis": "knowledge is irrelevant to their decisions → knowledge drives most major decisions"
+    },
+    "goal_revenge": {
+      "definition": "A specific past wrong is the explicit driver behind their current actions — they reference it, plan around it, or restructure their life around repaying it. Not generic grudges or rivalries. Must be a concrete, named injury they intend to repay.",
+      "sort_axis": "no past injury drives current actions → entire life is structured around repaying one specific wrong"
+    },
+    "goal_survival": {
+      "definition": "Risk-averse to the point that staying safe or stable overrides other goals. Visible in: refusing high-reward risks, choosing comfort over growth, avoiding confrontation even when needed. In school settings: prioritizes not getting expelled / losing class points over winning.",
+      "sort_axis": "takes major risks freely → refuses any risk that threatens current safety"
+    },
+    "goal_duty": {
+      "definition": "Acts from obligation to a role, code, or institution rather than personal desire.",
+      "sort_axis": "acts on personal desire only → duty overrides all personal wants"
+    },
+    "goal_freedom": {
+      "definition": "Fights against control, systems, or constraints. Values autonomy above safety.",
+      "sort_axis": "accepts control and structure → fights for autonomy above all"
+    },
+    "goal_recognition": {
+      "definition": "Wants to be seen, acknowledged, or remembered. Status and legacy matter.",
+      "sort_axis": "indifferent to recognition → recognition is a primary motivator"
+    },
+    "goal_protection": {
+      "definition": "Core drive is keeping specific people or groups safe from harm.",
+      "sort_axis": "does not protect others → protection of others is the primary drive"
+    }
+  },
+  "domain": {
+    "military": {
+      "definition": "Serves in or commands an organized military, paramilitary, or enforcement body.",
+      "sort_axis": "no military connection → commands military forces"
+    },
+    "politics": {
+      "definition": "Holds formal political office, title, or institutional authority. Governance is their arena.",
+      "sort_axis": "no political authority → holds major political power"
+    },
+    "science": {
+      "definition": "Works in or contributes to a scientific or technical field — research, engineering, medicine, R&D. Profession or formal role only, not a personality trait. A clever student is NOT a scientist.",
+      "sort_axis": "no scientific role → leads scientific work"
+    },
+    "art": {
+      "definition": "Creator or performer — music, painting, writing, acting. Artistic output is central to their identity.",
+      "sort_axis": "no artistic role → art defines their identity"
+    },
+    "education": {
+      "definition": "Student, teacher, or scholar — academia or structured learning is a defining part of their life.",
+      "sort_axis": "no connection to education → education defines their life"
+    },
+    "crime": {
+      "definition": "Connected to organized crime, underground networks, or illegal operations as participant or leader.",
+      "sort_axis": "no criminal connection → leads criminal operations"
+    },
+    "commerce": {
+      "definition": "Merchant, entrepreneur, or trader — economic activity and deal-making define their social function.",
+      "sort_axis": "no commercial role → commerce defines their social function"
+    }
+  },
+  "state": {
+    "has_magic": {
+      "definition": "Possesses supernatural, magical, or sci-fi abilities beyond normal human capacity in their setting.",
+      "sort_axis": "no supernatural abilities → powerful supernatural abilities"
+    },
+    "has_tragic_past": {
+      "definition": "Carries a specific past event — death, betrayal, loss — that visibly distorts their behavior or decisions.",
+      "sort_axis": "no defining trauma → past trauma dominates their behavior"
+    },
+    "is_strong_willed": {
+      "definition": "Maintains resolve under extreme pressure — torture, manipulation, despair. Does not break or submit.",
+      "sort_axis": "breaks under pressure → unbreakable resolve"
+    },
+    "is_provocative": {
+      "definition": "Deliberately provokes, taunts, or challenges others. Confrontational by choice, not accident.",
+      "sort_axis": "avoids confrontation → deliberately provokes constantly"
+    },
+    "is_loner": {
+      "definition": "Operates alone by preference or circumstance. Avoids groups, resists teams, keeps emotional distance.",
+      "sort_axis": "social and team-oriented → operates alone, avoids all groups"
+    },
+    "is_unstable": {
+      "definition": "Emotionally or mentally volatile. Behavior shifts unpredictably — breakdowns, rages, dissociation, erratic decisions.",
+      "sort_axis": "emotionally stable and predictable → completely volatile and erratic"
+    },
+    "is_fanatical": {
+      "definition": "Absolute devotion to a cause, person, or belief. Will not compromise, cannot be reasoned out of it.",
+      "sort_axis": "open-minded and flexible → absolute uncompromising devotion"
+    }
+  },
+  "worldview": {
+    "is_idealist": {
+      "definition": "Believes the world can and should be better. Acts on principle even when impractical.",
+      "sort_axis": "cynical or indifferent → acts on idealistic principles at any cost"
+    },
+    "is_nihilist": {
+      "definition": "Sees life, morality, or social structures as fundamentally meaningless.",
+      "sort_axis": "finds deep meaning in life → sees everything as meaningless"
+    },
+    "is_pragmatist": {
+      "definition": "Chooses what works over what is right. Efficiency over ideology.",
+      "sort_axis": "principles over results → results over principles always"
+    },
+    "is_hedonist": {
+      "definition": "Pursues pleasure, comfort, or personal enjoyment as a primary life strategy. Avoids pain and sacrifice.",
+      "sort_axis": "ascetic or self-denying → pursues pleasure above all"
+    },
+    "is_machiavellian": {
+      "definition": "Accepts harm, deception, or sacrifice of others as valid tools if the outcome justifies it.",
+      "sort_axis": "never accepts harmful means → any means justified by results"
+    },
+    "is_revolutionary": {
+      "definition": "Actively works to overthrow or radically change existing systems, institutions, or power structures.",
+      "sort_axis": "works within existing systems → actively destroys existing systems"
+    },
+    "is_fatalist": {
+      "definition": "Accepts destiny, inevitability, or predetermined outcomes. Does not fight what they see as certain.",
+      "sort_axis": "fights against fate → accepts fate completely"
+    }
+  },
+  "weakness": {
+    "has_physical_weakness": {
+      "definition": "A specific bodily vulnerability — illness, disability, sealed power, or physical limitation that enemies can exploit.",
+      "sort_axis": "no exploitable physical vulnerability → critical physical vulnerability"
+    },
+    "has_psychological_weakness": {
+      "definition": "A specific mental trigger — person, memory, phobia, or attachment — that enemies can exploit to compromise their judgment.",
+      "sort_axis": "no exploitable psychological trigger → critical psychological vulnerability"
+    }
+  }
+}

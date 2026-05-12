@@ -1,0 +1,22 @@
+name: analyse_service
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - celery>=5.3
+  - pip
+  - fastapi>=0.104.0
+  - uvicorn
+  - python-dotenv>=1.0.0
+  - python-multipart>=0.0.6
+  - typing-extensions>=4.15.0
+  - pydantic-settings==2.3.4
+  - pip:
+      - uvicorn[standard]>=0.24.0
+      - psycopg2-binary
+      - openai
+      - redis>=5.0
+      - xai_sdk
+      - jinja2
+      - watchfiles

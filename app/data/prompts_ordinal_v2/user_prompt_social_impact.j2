@@ -1,0 +1,28 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+{% if arc %}Arc/Period: {{ arc }}{% endif %}
+Parameter: social_impact
+Definition: How strongly the character affects the people around them through sheer presence, personality, or force of character. This measures the magnitude of social effect — not the type. An inspiring leader, a terrifying tyrant, and a cold beauty who silences a room all score high if people around them change their behavior significantly.
+
+Tier calibration (pseudo-characters as lower boundaries):
+[T1]  A person who is occasionally acknowledged but easily forgotten.
+[T2]  A person people are aware of and react to normally.
+[T3]  A person who changes the atmosphere of a room. People adjust their behavior around them.
+[T4]  A person who dominates any social space. Impossible to ignore, people instinctively defer or react strongly.
+[T5]  A person whose presence alone shifts allegiances, breaks wills, or inspires action. Affects people who have never met them through reputation alone.
+[T6]  A person whose personality or presence becomes a cultural force. Legends, religions, or movements form around their image.
+[T7]  A being whose social presence reshapes civilizations or fundamentally alters how beings perceive reality.
+
+Return JSON:
+{"universe": "{{ universe }}", "parameter": "social_impact", "sorted": ["T1", ..., "T7"], "unknown": [...]}
+
+All 7 markers T1..T7 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}
