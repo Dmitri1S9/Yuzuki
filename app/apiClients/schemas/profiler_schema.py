@@ -3,6 +3,7 @@ from typing import Optional, Literal
 
 
 class CharacterProfile(BaseModel):
+    name: str
     body_age: Optional[Literal["child", "adult", "elder"]] = None
     soul_age: Optional[Literal["child", "adult", "elder"]] = None
     gender: Literal["male", "female", "unknown"]
@@ -10,4 +11,4 @@ class CharacterProfile(BaseModel):
 
 
 class ProfileResponse(BaseModel):
-    characters: dict[str, CharacterProfile]
+    characters: list[CharacterProfile]

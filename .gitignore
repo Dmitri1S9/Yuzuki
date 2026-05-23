@@ -99,6 +99,9 @@ Thumbs.db
 .DS_Store
 ._*
 
+# Claude Code
+.claude/
+
 # Database dumps
 *.dump
 

@@ -1,5 +1,5 @@
 from app.settings.celery_app import celery
-from app.apiClients.clientX import XClient
+from app.apiClients.clientGemini import GeminiClient
 from db.service import save_rank_result, save_flag_result, save_profile_result
 import logging
 
@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 def rank_task(self, prompt: str, character_list: list[str], universe_name: str,
               universe_id: int, parameter: str,
               arc: str | None = None, context: str | None = None) -> dict:
-    client = XClient()
+    client = GeminiClient()
     result = client.rank(prompt, character_list, universe_name, arc, context)
     save_rank_result(result, universe_id, parameter)
     log.info("rank %s saved for universe %s", parameter, universe_id)
@@ -23,7 +23,7 @@ def rank_task(self, prompt: str, character_list: list[str], universe_name: str,
 def flag_task(self, flag_name: str, character_list: list[str], universe_name: str,
               universe_id: int,
               arc: str | None = None, context: str | None = None) -> dict:
-    client = XClient()
+    client = GeminiClient()
     result = client.flag(flag_name, character_list, universe_name, arc, context)
     save_flag_result(result, universe_id, flag_name)
     log.info("flag %s saved for universe %s", flag_name, universe_id)
@@ -35,7 +35,7 @@ def flag_task(self, flag_name: str, character_list: list[str], universe_name: st
 def profile_task(self, character_list: list[str], universe_name: str,
                  universe_id: int,
                  arc: str | None = None, context: str | None = None) -> dict:
-    client = XClient()
+    client = GeminiClient()
     result = client.profile(character_list, universe_name, arc, context)
     save_profile_result(result, universe_id)
     log.info("profile saved for universe %s", universe_id)

@@ -78,6 +78,5 @@ if __name__ == "__main__":
         ch3 = COTE_CHARACTERS["Start of Year 3 (Y3V1)"] 
     
 
-    for i, ch in enumerate([ch1, ch2, ch3], start=1):
-        builder = UniverseBuilder(UNIVERSE_NAME, ch, arc=f"Year {i}")
-        builder.collect_universe()
+    builder = UniverseBuilder(UNIVERSE_NAME, ch1, arc="Year 1")
+    builder.collect_universe()

@@ -18,5 +18,7 @@ dependencies:
       - openai
       - redis>=5.0
       - xai_sdk
+      - google-genai
+      - scipy
       - jinja2
       - watchfiles

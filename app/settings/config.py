@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     redis_url_cache: str
 
     api_key_x: str
-    api_key_gemini: str
+    api_key_gimini: str
 
 
 if __name__ == "__main__":

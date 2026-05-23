@@ -20,6 +20,14 @@ def flush_flag_cache() -> int:
 
 class XClient(BaseAIClient):
 
+    model_rank    = "grok-4-1-fast-reasoning"
+    model_flag    = "grok-4-1-fast-reasoning"
+    model_profile = "grok-4-1-fast-reasoning"
+
+    thinking_rank    = 0
+    thinking_flag    = 0
+    thinking_profile = 0
+
     def __init__(self) -> None:
         self._client = Client(_settings.api_key_x)
 
@@ -29,13 +37,15 @@ class XClient(BaseAIClient):
         system_prompt: str,
         user_prompt: str,
         cache_key: str,
+        model: str,
+        thinking_budget: int = 0,
     ) -> T:
         cached = redis_cache.get(cache_key)
         if cached:
             return response_model.model_validate_json(cached)
 
         chat = self._client.chat.create(
-            model="grok-4-1-fast-reasoning",
+            model=model,
             response_format=response_model,
             max_tokens=32768,
         )

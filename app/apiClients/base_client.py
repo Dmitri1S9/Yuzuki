@@ -48,6 +48,8 @@ class BaseAIClient(ABC):
         system_prompt: str,
         user_prompt: str,
         cache_key: str,
+        model: str,
+        thinking_budget: int = 0,
     ) -> T:
         ...
 
@@ -64,6 +66,8 @@ class BaseAIClient(ABC):
             system_prompt=get_prompt("system_prompt_ranker"),
             user_prompt=get_prompt(prompt, universe=universe, characters=characters, arc=arc, context=context),
             cache_key=f"rank:{hash_args(prompt, characters, universe, arc, context)}",
+            model=self.model_rank,
+            thinking_budget=self.thinking_rank,
         )
         return result.model_dump()
 
@@ -90,6 +94,8 @@ class BaseAIClient(ABC):
                 context=context,
             ),
             cache_key=f"flag:{hash_args(flag_name, characters, universe, arc, context)}",
+            model=self.model_flag,
+            thinking_budget=self.thinking_flag,
         )
         return result.model_dump()
 
@@ -105,5 +111,7 @@ class BaseAIClient(ABC):
             system_prompt=get_prompt("system_prompt_profiler"),
             user_prompt=get_prompt("user_prompt_profiler", universe=universe, characters=characters, arc=arc, context=context),
             cache_key=f"profile:{hash_args('profiler', characters, universe, arc, context)}",
+            model=self.model_profile,
+            thinking_budget=self.thinking_profile,
         )
-        return result.model_dump()
+        return {"characters": {c.name: c.model_dump(exclude={"name"}) for c in result.characters}}
