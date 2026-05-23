@@ -1,149 +1,149 @@
 {
   "personality": {
     "manipulative": {
-      "definition": "Regularly deceives, schemes, or psychologically controls others to achieve goals.",
+      "definition": "Regularly uses deception, scheming, or psychological pressure to control others. Operates indirectly through people, not direct force. BOUNDARY vs is_strategist: manipulative targets specific people, strategist designs multi-step plans. BOUNDARY vs ruthless: manipulative bends people, ruthless removes them.",
       "sort_axis": "never manipulates → constantly manipulates"
     },
     "honest": {
-      "definition": "Generally truthful and straightforward in their interactions. Does not habitually lie, deceive, or manipulate others for personal gain. May tell small social lies or withhold information occasionally, but their default stance is honesty. They prefer direct communication over manipulation even when manipulation would benefit them.",
+      "definition": "Default mode is truthful, direct communication. Does not habitually lie or invent falsehoods to gain advantage. Small social politeness and choosing not to volunteer information do NOT break honest. BOUNDARY vs manipulative: honest may withhold, manipulative invents and deceives. A character who tells the truth even when lying would help them is strongly honest.",
       "sort_axis": "habitually deceptive and manipulative → genuinely honest by default"
     },
     "impulsive": {
-      "definition": "Acts on emotion or instinct without thinking through consequences.",
+      "definition": "Acts on emotion or first instinct without weighing consequences. ANTI: fast confident decisions from pre-planned actors are NOT impulsive. A character who reacts quickly but with prior calculation does not qualify.",
       "sort_axis": "always thinks before acting → acts on impulse constantly"
     },
     "secretive": {
-      "definition": "Hides important information, plans, or identity from allies and enemies alike.",
+      "definition": "Hides important information, plans, or true identity from allies and enemies. About concealment of facts. BOUNDARY vs is_loner: secretive hides what they know, loner avoids the people themselves. A character can be socially engaged yet secretive.",
       "sort_axis": "open and transparent → hides everything"
     },
     "self_sacrificing": {
-      "definition": "Willing to suffer, lose, or die so others gain — and acts on it, not just talks.",
+      "definition": "Willing to suffer, lose, or die so others gain — and ACTS on it, not just talks. ANTI: heroic rhetoric, dramatic vows, or hypothetical sacrifice without demonstrated action do NOT qualify. Must show concrete sacrifice under real cost.",
       "sort_axis": "purely self-interested → sacrifices everything for others"
     },
     "adaptable": {
-      "definition": "Quickly adjusts strategy, behavior, or worldview when circumstances change.",
+      "definition": "Quickly adjusts strategy or behavior when circumstances change. About flexibility of approach. BOUNDARY vs is_pragmatist: adaptable changes the how, pragmatist chooses the what to optimize for.",
       "sort_axis": "rigid and unable to adjust → adapts instantly to anything"
     },
     "loyal": {
-      "definition": "Stays committed to a person, group, or cause even under pressure to betray.",
+      "definition": "Stays committed to a person, group, or cause under genuine pressure to betray. Loyalty must be tested. ANTI: convenience loyalty (when there's no cost to stay) does NOT qualify. Must hold under temptation, threat, or self-interest.",
       "sort_axis": "betrays easily → loyal under any pressure"
     },
     "empathetic": {
-      "definition": "Accurately reads and genuinely cares about others' emotions. Acts on that understanding.",
+      "definition": "Accurately reads others' emotions AND genuinely cares about them AND acts to support them. Requires all three. BOUNDARY vs manipulative: manipulative reads emotions to control, empathetic reads to support. Skill at reading people alone is NOT empathy.",
       "sort_axis": "emotionally blind or indifferent → deeply reads and acts on others' emotions"
     },
     "cruel": {
-      "definition": "Deliberately inflicts suffering beyond what the situation requires.",
+      "definition": "Deliberately inflicts suffering beyond what the situation requires. Often enjoys the harm or chooses pain when efficient alternatives exist. BOUNDARY vs ruthless: cruel savors the harm, ruthless removes obstacles fast without lingering.",
       "sort_axis": "never causes unnecessary suffering → inflicts maximum suffering deliberately"
     },
     "arrogant": {
-      "definition": "Verbally or behaviorally signals superiority over others — dismisses input, mocks lesser abilities, expects deference. About observable behavior toward others, not internal self-image. Boundary vs competitive: competitive wants to win, arrogant assumes they already have.",
+      "definition": "Verbally or behaviorally signals superiority over others — dismisses input, mocks lesser abilities, expects deference, or treats others as beneath them. About observable behavior toward others, not internal self-image. A character can be arrogant through tone, choice of words, or how they react to being challenged. BOUNDARY vs competitive: competitive wants to win, arrogant assumes they already have.",
       "sort_axis": "treats everyone as equal or superior → openly dismisses everyone as beneath them"
     },
     "competitive": {
-      "definition": "Driven to win, outperform, or surpass others — not just succeed.",
+      "definition": "Driven to win, outperform, or surpass others — not just succeed. BOUNDARY vs goal_recognition: competitive wants to actually beat others (even quietly), recognition wants visibility for achievements.",
       "sort_axis": "indifferent to competition → driven to outperform everyone"
     },
     "ruthless": {
-      "definition": "When a person stands between them and their goal, eliminates that obstacle without internal hesitation. About speed of decision, not the cruelty of the method. Boundary vs cruel: ruthless = no pause before acting, cruel = enjoys the suffering. Boundary vs manipulative: ruthless = direct removal, manipulative = indirect control.",
+      "definition": "When a person stands between them and their goal, eliminates that obstacle without internal hesitation. About speed of decision, not the cruelty of method. BOUNDARY vs cruel: ruthless = no pause before acting, cruel = enjoys the suffering. BOUNDARY vs manipulative: ruthless = direct removal, manipulative = indirect control.",
       "sort_axis": "always hesitates to harm anyone → eliminates obstacles instantly without internal conflict"
     },
     "is_strategist": {
-      "definition": "Wins through pre-planned multi-step operations rather than reaction or raw ability. The plan itself is the weapon. Boundary vs intellect: intellect = how smart, strategist = whether they actually deploy that intelligence as advance planning. Boundary vs manipulative: strategist plans the chess board, manipulative plays the people on it.",
+      "definition": "Wins through pre-planned multi-step operations rather than reaction or raw ability. The plan itself is the weapon. BOUNDARY vs intellect: intellect = how smart, strategist = whether they actually deploy that intelligence as advance planning. BOUNDARY vs manipulative: strategist plans the chess board, manipulative plays the people on it.",
       "sort_axis": "wins through reaction, instinct, or raw ability → wins through pre-planned multi-step operations"
     },
     "has_humor": {
-      "definition": "Uses humor, irony, or wit deliberately — jokes, mocks situations, or eases tension through comedic framing. About active use, not just being capable of laughter.",
+      "definition": "Deliberately uses humor, irony, or wit as a defining mode of interaction. ANTI: occasional jokes or one-time funny moments do NOT qualify. Must be a habitual mode of engagement, not mere capability for laughter.",
       "sort_axis": "never uses humor → uses humor constantly as a defining trait"
     }
   },
   "appearance": {
     "is_physically_attractive": {
-      "definition": "Other characters in-universe react to their appearance with attraction or admiration. Canonical, not viewer opinion.",
+      "definition": "Other named characters in-universe react to their appearance with attraction or admiration. Canonical, not viewer opinion.",
       "sort_axis": "no in-universe attraction reactions → universally admired appearance"
     },
     "is_intimidating": {
-      "definition": "Other named in-universe characters react to their presence with visible fear, hesitation, or submission — flinching, backing down, choosing words carefully. Canonical reaction required, not appearance alone. Boundary vs is_muscular: muscular is build, intimidating is reaction it produces.",
+      "definition": "Other named in-universe characters react to their presence with visible fear, hesitation, or submission — flinching, backing down, choosing words carefully. Canonical reaction required, not appearance alone. BOUNDARY vs is_muscular: muscular is build, intimidating is the reaction it produces.",
       "sort_axis": "no character shows fear in their presence → multiple characters consistently fear them"
     },
     "is_muscular": {
-      "definition": "Visibly muscular or physically powerful build, commented on in-universe. About visual build, not fighting ability — boundary vs combat_potential: muscular = how they look, combat_potential = how they fight.",
+      "definition": "Visibly muscular or physically powerful build, commented on in-universe. About visual build, not fighting ability. BOUNDARY vs combat_potential: muscular = how they look, combat_potential = how they fight.",
       "sort_axis": "lean or average build → exceptionally muscular and powerful build"
     },
     "has_distinctive_feature": {
-      "definition": "Visible identifying mark noted in-universe — scar, heterochromia, prosthetic, tattoo, unusual hair color, missing limb, or other recognizable physical feature.",
+      "definition": "Visible identifying mark explicitly noted by other characters in-universe — scar, heterochromia, prosthetic, tattoo, missing limb, or comment-worthy physical feature. ANTI: anime-stylized hair color or eye color alone, without in-universe commentary, does NOT qualify.",
       "sort_axis": "no distinctive marks → multiple highly recognizable physical features"
     },
     "is_well_groomed": {
-      "definition": "Maintains visible care over appearance, style, or hygiene. About effort and presentation — boundary vs is_physically_attractive: well_groomed = the work they put in, attractive = baseline appeal regardless of effort.",
+      "definition": "Maintains visible care over appearance, style, or hygiene. About effort and presentation. BOUNDARY vs is_physically_attractive: well_groomed = the work they put in, attractive = baseline appeal regardless of effort.",
       "sort_axis": "neglected or careless about appearance → meticulously groomed and styled"
     }
   },
   "motivation": {
     "goal_power": {
-      "definition": "Primary drive is gaining control, authority, or dominance over others.",
+      "definition": "Primary drive is gaining control, authority, or dominance over others. Must be a top-tier motivator, not a side effect of pursuing other goals.",
       "sort_axis": "no interest in power → power is the primary drive"
     },
     "goal_love": {
-      "definition": "Romantic or familial love is the central driver of their major decisions.",
+      "definition": "Romantic or familial love is the central driver of their major decisions. ANTI: enjoying close relationships does NOT qualify — love must visibly override other priorities when in conflict.",
       "sort_axis": "love does not drive decisions → love is the central driver"
     },
     "goal_knowledge": {
-      "definition": "Pursues understanding or truth as a top-3 life priority — not as a means to win, succeed, or impress. Visible in: voluntary research beyond requirements, asking questions when no reward exists, choosing knowledge over safer alternatives.",
+      "definition": "Pursues understanding or truth as a top-tier life priority — not as a means to win, succeed, or impress. Visible in: voluntary research beyond requirements, asking questions when no reward exists, choosing knowledge over safer alternatives. ANTI: academic excellence pursued for grades, status, or instrumental reasons does NOT qualify.",
       "sort_axis": "knowledge is irrelevant to their decisions → knowledge drives most major decisions"
     },
     "goal_revenge": {
-      "definition": "A specific past wrong is the explicit driver behind their current actions — they reference it, plan around it, or restructure their life around repaying it. Not generic grudges or rivalries. Must be a concrete, named injury they intend to repay.",
+      "definition": "A specific past wrong is the explicit driver behind current actions — they reference it, plan around it, or structure life around repaying it. Must be a concrete, named injury they intend to repay. ANTI: generic grudges, ongoing rivalries, or vague resentment do NOT qualify.",
       "sort_axis": "no past injury drives current actions → entire life is structured around repaying one specific wrong"
     },
     "goal_survival": {
-      "definition": "Risk-averse to the point that staying safe or stable overrides other goals. Visible in: refusing high-reward risks, choosing comfort over growth, avoiding confrontation even when needed. In school settings: prioritizes not getting expelled / losing class points over winning.",
+      "definition": "Risk-averse to the point that staying safe or stable overrides other goals. Visible in: refusing high-reward risks, choosing comfort over growth, avoiding confrontation even when needed. In school settings: prioritizes not getting expelled or losing class points over winning.",
       "sort_axis": "takes major risks freely → refuses any risk that threatens current safety"
     },
     "goal_duty": {
-      "definition": "Acts from obligation to a role, code, or institution rather than personal desire.",
+      "definition": "Acts from obligation to a role, code, or institution that overrides personal desire. Must show visible conflict between duty and self-interest where duty wins. ANTI: doing one's assigned work without obligation framing does NOT qualify.",
       "sort_axis": "acts on personal desire only → duty overrides all personal wants"
     },
     "goal_freedom": {
-      "definition": "Fights against control, systems, or constraints. Values autonomy above safety.",
+      "definition": "Personal autonomy above safety, comfort, or relationships. Resists control over self. BOUNDARY vs is_revolutionary: freedom = own life, revolutionary = the whole system.",
       "sort_axis": "accepts control and structure → fights for autonomy above all"
     },
     "goal_recognition": {
-      "definition": "Wants to be seen, acknowledged, or remembered. Status and legacy matter.",
+      "definition": "Wants to be seen, acknowledged, or remembered. Status, fame, or legacy is a primary motivator. BOUNDARY vs competitive: recognition wants visibility, competitive wants the victory itself regardless of audience.",
       "sort_axis": "indifferent to recognition → recognition is a primary motivator"
     },
     "goal_protection": {
-      "definition": "Core drive is keeping specific people or groups safe from harm.",
+      "definition": "Core drive is keeping specific people or groups safe from harm. Must structure decisions around their safety over time. ANTI: occasional protective acts in passing do NOT qualify — must be a sustained primary motivator.",
       "sort_axis": "does not protect others → protection of others is the primary drive"
     }
   },
   "domain": {
     "military": {
-      "definition": "Serves in or commands an organized military, paramilitary, or enforcement body.",
+      "definition": "Serves in or commands an organized military, paramilitary, or armed enforcement body. ANTI: school disciplinary committees, club leadership, or fictional school 'classes' do NOT qualify. Must be actual armed or uniformed service structure.",
       "sort_axis": "no military connection → commands military forces"
     },
     "politics": {
-      "definition": "Holds formal political office, title, or institutional authority. Governance is their arena.",
+      "definition": "Holds formal political office, title, or governmental authority. Governance is their arena. ANTI: school student council presidency or club leadership typically does NOT qualify unless the setting explicitly frames it as real political power.",
       "sort_axis": "no political authority → holds major political power"
     },
     "science": {
-      "definition": "Works in or contributes to a scientific or technical field — research, engineering, medicine, R&D. Profession or formal role only, not a personality trait. A clever student is NOT a scientist.",
+      "definition": "Works in or contributes professionally to a scientific or technical field — research, engineering, medicine, R&D. REQUIRES formal role or output. ANTI: a clever student, an academic high achiever, or someone who studies hard does NOT qualify. Must be science as a profession or vocation.",
       "sort_axis": "no scientific role → leads scientific work"
     },
     "art": {
-      "definition": "Creator or performer — music, painting, writing, acting. Artistic output is central to their identity.",
+      "definition": "Creator or performer whose artistic output defines part of their identity — music, painting, writing, acting. ANTI: school club participation, hobby-level drawing, or art appreciation do NOT qualify. Output must be a defining identity element.",
       "sort_axis": "no artistic role → art defines their identity"
     },
     "education": {
-      "definition": "Student, teacher, or scholar — academia or structured learning is a defining part of their life.",
+      "definition": "Academic life is a defining identity element — scholars, prodigies, dedicated educators, or learners whose academic identity drives them. ANTI: simply being enrolled in school does NOT qualify in school-setting universes. Must show learning or teaching as central, not just attendance.",
       "sort_axis": "no connection to education → education defines their life"
     },
     "crime": {
-      "definition": "Connected to organized crime, underground networks, or illegal operations as participant or leader.",
+      "definition": "Connected to organized crime, underground networks, or illegal operations as participant or leader. ANTI: minor school rule-breaking, schoolyard fights, or one-off illegal acts do NOT qualify. Must be sustained involvement with criminal structures.",
       "sort_axis": "no criminal connection → leads criminal operations"
     },
     "commerce": {
-      "definition": "Merchant, entrepreneur, or trader — economic activity and deal-making define their social function.",
+      "definition": "Merchant, entrepreneur, or trader whose economic activity defines their social function. ANTI: school club fundraising, in-school point trading systems, or part-time student jobs do NOT qualify. Must be commerce as a real social role.",
       "sort_axis": "no commercial role → commerce defines their social function"
     }
   },
@@ -153,67 +153,67 @@
       "sort_axis": "no supernatural abilities → powerful supernatural abilities"
     },
     "has_tragic_past": {
-      "definition": "Carries a specific past event — death, betrayal, loss — that visibly distorts their behavior or decisions.",
+      "definition": "A specific past event — death, betrayal, abuse, loss — that visibly distorts current behavior or decisions. Must be referenced in-universe and shape ongoing choices. ANTI: ordinary disappointments, normal family conflict, or vague unhappy childhood references do NOT qualify.",
       "sort_axis": "no defining trauma → past trauma dominates their behavior"
     },
     "is_strong_willed": {
-      "definition": "Maintains resolve under extreme pressure — torture, manipulation, despair. Does not break or submit.",
+      "definition": "Maintains resolve under extreme pressure — torture, manipulation, despair, sustained adversity. Does not break or submit. ANTI: confidence in low-stakes situations, baseline composure, or simply being assertive do NOT qualify. Must be tested under genuine breaking-point pressure.",
       "sort_axis": "breaks under pressure → unbreakable resolve"
     },
     "is_provocative": {
-      "definition": "Deliberately provokes, taunts, or challenges others. Confrontational by choice, not accident.",
+      "definition": "Deliberately provokes, taunts, or challenges others as a recurring behavior. Confrontational by choice rather than accident. Does not need to provoke in every scene, but provocation appears as a recognizable habit when interacting with rivals, authority, or strangers. BOUNDARY vs arrogant: provocative actively pushes buttons, arrogant signals superiority without necessarily engaging.",
       "sort_axis": "avoids confrontation → deliberately provokes constantly"
     },
     "is_loner": {
-      "definition": "Operates alone by preference or circumstance. Avoids groups, resists teams, keeps emotional distance.",
+      "definition": "Operates alone by preference. Avoids groups, resists teams, keeps emotional distance from others. BOUNDARY vs secretive: loner avoids the people themselves, secretive hides info while remaining socially engaged.",
       "sort_axis": "social and team-oriented → operates alone, avoids all groups"
     },
     "is_unstable": {
-      "definition": "Emotionally or mentally volatile. Behavior shifts unpredictably — breakdowns, rages, dissociation, erratic decisions.",
+      "definition": "Emotionally or mentally volatile. Behavior shifts unpredictably — breakdowns, rages, dissociation, erratic decisions. ANTI: occasional emotional outbursts do NOT qualify. Must be a sustained pattern of volatility.",
       "sort_axis": "emotionally stable and predictable → completely volatile and erratic"
     },
     "is_fanatical": {
-      "definition": "Absolute devotion to a cause, person, or belief. Will not compromise, cannot be reasoned out of it.",
+      "definition": "Absolute uncompromising devotion to a cause, person, or belief. Cannot be reasoned out, will not compromise. ANTI: strong passion, deep commitment, or principled stance do NOT qualify — must be unreasoning absolutism.",
       "sort_axis": "open-minded and flexible → absolute uncompromising devotion"
     }
   },
   "worldview": {
     "is_idealist": {
-      "definition": "Believes the world can and should be better. Acts on principle even when impractical.",
+      "definition": "Believes the world can and should be better. Acts on principle even when impractical. BOUNDARY vs is_revolutionary: idealist works toward an ideal, revolutionary tears down what exists. The two can coexist but are distinct dispositions.",
       "sort_axis": "cynical or indifferent → acts on idealistic principles at any cost"
     },
     "is_nihilist": {
-      "definition": "Sees life, morality, or social structures as fundamentally meaningless.",
+      "definition": "Sees life, morality, or social structures as fundamentally meaningless. ANTI: temporary despair or situational pessimism do NOT qualify. Must be a settled worldview.",
       "sort_axis": "finds deep meaning in life → sees everything as meaningless"
     },
     "is_pragmatist": {
-      "definition": "Chooses what works over what is right. Efficiency over ideology.",
+      "definition": "Optimizes for what works over what is principled. Efficiency over ideology. BOUNDARY vs adaptable: pragmatist chooses outcome focus, adaptable changes methods. BOUNDARY vs is_machiavellian: pragmatist may avoid harm, machiavellian embraces it as a tool.",
       "sort_axis": "principles over results → results over principles always"
     },
     "is_hedonist": {
-      "definition": "Pursues pleasure, comfort, or personal enjoyment as a primary life strategy. Avoids pain and sacrifice.",
+      "definition": "Prioritizes personal pleasure, comfort, or enjoyment over duty, goals, or relationships. The test: when there is conflict between pleasure and obligation, they choose pleasure. ANTI: social activity, extroversion, expressiveness, or talkativeness do NOT qualify. Characters driven primarily by fear, manipulation, revenge, coercion, or duty are NOT hedonists regardless of observable behavior.",
       "sort_axis": "ascetic or self-denying → pursues pleasure above all"
     },
     "is_machiavellian": {
-      "definition": "Accepts harm, deception, or sacrifice of others as valid tools if the outcome justifies it.",
+      "definition": "Accepts harm, deception, or sacrifice of others as legitimate tools when outcome justifies. BOUNDARY vs ruthless: ruthless removes obstacles fast without contemplation, machiavellian consciously chooses harmful means with cold calculation. BOUNDARY vs pragmatist: pragmatist may avoid harm, machiavellian embraces it.",
       "sort_axis": "never accepts harmful means → any means justified by results"
     },
     "is_revolutionary": {
-      "definition": "Actively works to overthrow or radically change existing systems, institutions, or power structures.",
+      "definition": "Actively works to overthrow or radically restructure existing systems, institutions, or power structures. ANTI: criticism of the system, complaining, or wishing for change do NOT qualify. Must be active subversion or destruction.",
       "sort_axis": "works within existing systems → actively destroys existing systems"
     },
     "is_fatalist": {
-      "definition": "Accepts destiny, inevitability, or predetermined outcomes. Does not fight what they see as certain.",
+      "definition": "Accepts destiny, inevitability, or predetermined outcomes. Does not fight what they see as certain. ANTI: occasional resignation or situational acceptance do NOT qualify. Must be a settled worldview.",
       "sort_axis": "fights against fate → accepts fate completely"
     }
   },
   "weakness": {
     "has_physical_weakness": {
-      "definition": "A specific bodily vulnerability — illness, disability, sealed power, or physical limitation that enemies can exploit.",
+      "definition": "A specific persistent bodily vulnerability — illness, disability, sealed power, or physical limitation that enemies can exploit. ANTI: temporary wounds, recoverable injuries, or general human fragility do NOT qualify. Must be a fixed exploitable feature.",
       "sort_axis": "no exploitable physical vulnerability → critical physical vulnerability"
     },
     "has_psychological_weakness": {
-      "definition": "A specific mental trigger — person, memory, phobia, or attachment — that enemies can exploit to compromise their judgment.",
+      "definition": "A specific mental trigger — named person, traumatic memory, phobia, or attachment — that enemies can exploit to compromise judgment. ANTI: general emotional volatility, mood swings, or being easily upset do NOT qualify. Must be a specific exploitable trigger.",
       "sort_axis": "no exploitable psychological trigger → critical psychological vulnerability"
     }
   }

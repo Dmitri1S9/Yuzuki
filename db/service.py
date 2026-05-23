@@ -130,42 +130,50 @@ def create_universe(name: str, characters: list[str], arc: str | None = None) ->
 # Universe: [count_T1, count_T2, count_T3, ...]
 # ---------------------------------------------------------------------------
 
-def save_rank_result(rank_output: dict, universe_id: int, parameter: str) -> dict:
+def save_rank_result(rank_output: dict, universe_id: int, parameter: str,
+                     pass_number: int | None = None) -> dict:
     _validate_col(parameter, ORDINAL_PARAMS)
+    col = f"{parameter}_{pass_number}" if pass_number else parameter
 
     sorted_list = rank_output["sorted"]
     unknown = set(n.strip() for n in rank_output.get("unknown", []) if n.strip())
 
     char_positions: dict[str, int] = {}
     segment_counts: list[int] = []
+    current_segment_count = 0
     position = 0
 
     for item in sorted_list:
-        m = TIER_RE.match(item)
-        if not m:
+        item = item.strip()
+        if not item:
             continue
-        names = [n.strip() for n in m.group(2).split(",") if n.strip()]
-        segment_counts.append(len(names))
-        for name in names:
-            char_positions[name] = position
+        if re.match(r"^T\d+$", item):
+            segment_counts.append(current_segment_count)
+            current_segment_count = 0
+        else:
+            char_positions[item] = position
             position += 1
+            current_segment_count += 1
+
+    if current_segment_count > 0:
+        segment_counts.append(current_segment_count)
 
     conn = _connect()
     try:
         with conn.cursor() as cur:
             for name, pos in char_positions.items():
                 cur.execute(
-                    f"UPDATE characters SET {parameter} = %s "
+                    f"UPDATE characters SET {col} = %s "
                     "WHERE universe_id = %s AND name = %s",
                     (pos, universe_id, name),
                 )
 
             cur.execute(
-                f"UPDATE universes SET {parameter} = %s WHERE id = %s",
+                f"UPDATE universes SET {col} = %s WHERE id = %s",
                 (Json(segment_counts), universe_id),
             )
         conn.commit()
-        log.info("Saved rank %s for universe %s (%d chars)", parameter, universe_id, len(char_positions))
+        log.info("Saved rank %s (pass=%s) for universe %s (%d chars)", parameter, pass_number, universe_id, len(char_positions))
         return {"universe_id": universe_id, "parameter": parameter, "status": "saved"}
     except Exception:
         conn.rollback()
@@ -181,8 +189,10 @@ def save_rank_result(rank_output: dict, universe_id: int, parameter: str) -> dic
 # Universe: [count_before_T0, count_between_T0_T1, count_after_T1, count_unknown]
 # ---------------------------------------------------------------------------
 
-def save_flag_result(flag_output: dict, universe_id: int, flag_name: str) -> dict:
+def save_flag_result(flag_output: dict, universe_id: int, flag_name: str,
+                     pass_number: int | None = None) -> dict:
     _validate_col(flag_name, FLAG_PARAMS)
+    col = f"{flag_name}_{pass_number}" if pass_number else flag_name
 
     sorted_list = flag_output["sorted"]
     unknown = [u for u in flag_output.get("unknown", []) if u.strip()]
@@ -210,18 +220,18 @@ def save_flag_result(flag_output: dict, universe_id: int, flag_name: str) -> dic
         with conn.cursor() as cur:
             for name, pos in char_positions.items():
                 cur.execute(
-                    f"UPDATE characters SET {flag_name} = %s "
+                    f"UPDATE characters SET {col} = %s "
                     "WHERE universe_id = %s AND name = %s",
                     (pos, universe_id, name),
                 )
 
             cur.execute(
-                f"UPDATE universes SET {flag_name} = %s WHERE id = %s",
+                f"UPDATE universes SET {col} = %s WHERE id = %s",
                 (Json(segment_counts + [len(unknown)]), universe_id),
             )
 
         conn.commit()
-        log.info("Saved flag %s for universe %s (%d chars)", flag_name, universe_id, len(char_positions))
+        log.info("Saved flag %s (pass=%s) for universe %s (%d chars)", flag_name, pass_number, universe_id, len(char_positions))
         return {"universe_id": universe_id, "flag": flag_name, "status": "saved"}
     except Exception:
         conn.rollback()
