@@ -1,6 +1,10 @@
+from app.serviceExceptions import falseGroupTypeException
 from app.settings.celery_app import celery
 from app.apiClients.clientGemini import GeminiClient
-from db.service import save_rank_result, save_flag_result, save_profile_result
+from db.service import (
+    save_rank_result, save_flag_result, save_profile_result,
+    save_group_result, build_relationship_graph,
+)
 import logging
 
 log = logging.getLogger(__name__)
@@ -39,4 +43,25 @@ def profile_task(self, character_list: list[str], universe_name: str,
     result = client.profile(character_list, universe_name, arc, context)
     save_profile_result(result, universe_id)
     log.info("profile saved for universe %s", universe_id)
+    return result
+
+
+@celery.task(bind=True, autoretry_for=(Exception, falseGroupTypeException),
+             retry_backoff=True, retry_jitter=True, retry_kwargs={"max_retries": 3})
+def group_task(self, group_type: str,
+                 universe_name: str,
+                 universe_id: int,
+                 arc: str | None = None, context: str | None = None) -> dict:
+    client = GeminiClient()
+    result = client.group(group_type, universe_name, arc, context)
+    save_group_result(result, universe_id, group_type)
+    log.info("group %s saved for universe %s", group_type, universe_id)
+    return result
+
+
+@celery.task(bind=True, autoretry_for=(Exception,),
+             retry_backoff=True, retry_jitter=True, retry_kwargs={"max_retries": 3})
+def relationship_task(self, universe_id: int) -> dict:
+    result = build_relationship_graph(universe_id)
+    log.info("relationship graph built for universe %s", universe_id)
     return result

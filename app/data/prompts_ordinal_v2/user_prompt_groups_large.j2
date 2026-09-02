@@ -1,0 +1,20 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+{% if location %}Location: {{ location }}{% endif %}
+
+Group type: large
+Definition: institution or population scale. Membership is an attribute of a character, not a relationship between characters.
+Test: take any two members at random. If they would not recognize each other on sight, the group is large.
+Include: nations and states, war-scale factions, militaries and orders, corporations, dynasties and bloodlines, species, faiths, societal castes, and any single institution whose membership exceeds mutual recognition.
+Exclude: any group whose members all recognize one another. A single unit, class, crew or council is not large.
+Non-overlap: large groups must not overlap. Each character belongs to at most one. Where two candidates cover the same people, return the one that better divides the cast. If both cover everyone, return the more specific and operative one rather than the broader category. Never return both a category and a subset of it.
+Coverage: account for the entire cast. Every character in scope who holds such an affiliation must appear in exactly one returned group. Work through the universe systematically rather than listing only the most prominent members. Include adult, background and antagonist characters, not only the main cast.
+Do not invent membership. A character who genuinely belongs to no such group is omitted rather than forced into one.
+A universe may contain several large groups, only one, or none. Returning an empty list is valid.
+List only members who appear within this universe scope.

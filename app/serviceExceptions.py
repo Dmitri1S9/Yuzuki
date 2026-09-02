@@ -15,3 +15,9 @@ class EmptyUniverseException(Exception):
         self.message = "💢💢💢💢💢 No characters was found in this universe"
     def __str__(self):
         return repr(self.message)
+    
+class falseGroupTypeException(Exception):
+    def __init__(self):
+        self.message = "💢💢💢💢💢 Group type is not defined"
+    def __str__(self):
+        return repr(self.message)

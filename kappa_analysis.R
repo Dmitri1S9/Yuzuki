@@ -1,5 +1,3 @@
-setwd("C:/Users/dmitr/Desktop/Yuzuki")
-
 pass1 <- read.csv("pass1.csv", stringsAsFactors=FALSE, na.strings="None")
 pass2 <- read.csv("pass2.csv", stringsAsFactors=FALSE, na.strings="None")
 

@@ -27,6 +27,7 @@ services:
       - .:/app
     environment:
       - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CELERY=redis://redis:6379/0
       - REDIS_URL_CACHE=redis://redis:6379/1
       - DB_HOST=db
       - DB_PORT=5432
@@ -35,6 +36,7 @@ services:
       - DB_PASSWORD=6713
       - API_KEY_X=${API_KEY_X}
       - API_KEY=${API_KEY}
+      - API_KEY_GIMINI=${API_KEY_GIMINI}
       - DEBUG=False
     networks:
       - backend
@@ -56,6 +58,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CELERY=redis://redis:6379/0
       - REDIS_URL_CACHE=redis://redis:6379/1
       - DB_HOST=db
       - DB_PORT=5432
@@ -64,6 +67,7 @@ services:
       - DB_PASSWORD=6713
       - API_KEY_X=${API_KEY_X}
       - API_KEY=${API_KEY}
+      - API_KEY_GIMINI=${API_KEY_GIMINI}
       - DEBUG=False
     depends_on:
       - redis

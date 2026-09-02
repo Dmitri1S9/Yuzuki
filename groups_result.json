@@ -1,0 +1,183 @@
+{
+  "small": {
+    "groups": [
+      {
+        "name": "Ayanokoji Group",
+        "group_type": "small",
+        "members": [
+          "Kiyotaka Ayanokoji",
+          "Keisei Yukimura",
+          "Haruka Hasebe",
+          "Akito Miyake",
+          "Airi Sakura"
+        ],
+        "leader": null
+      },
+      {
+        "name": "Class 1-D Three Idiots",
+        "group_type": "small",
+        "members": [
+          "Ken Sudo",
+          "Kanji Ike",
+          "Haruki Yamauchi"
+        ],
+        "leader": null
+      },
+      {
+        "name": "Karuizawa's Friend Group",
+        "group_type": "small",
+        "members": [
+          "Kei Karuizawa",
+          "Maya Sato",
+          "Satsuki Shinohara",
+          "Chiaki Matsushita"
+        ],
+        "leader": "Kei Karuizawa"
+      }
+    ],
+    "isolates": []
+  },
+  "medium": {
+    "groups": [
+      {
+        "name": "Class 1-D",
+        "group_type": "medium",
+        "members": [
+          "Kiyotaka Ayanokoji",
+          "Suzune Horikita",
+          "Yousuke Hirata",
+          "Kei Karuizawa",
+          "Kikyo Kushida",
+          "Ken Sudo",
+          "Kanji Ike",
+          "Haruki Yamauchi",
+          "Airi Sakura",
+          "Teruhiko Yukimura",
+          "Haruka Hasebe",
+          "Akito Miyake",
+          "Rokusuke Koenji",
+          "Maya Sato",
+          "Chiaki Matsushita",
+          "Mei-Yu Wang",
+          "Hideo Sotomura"
+        ],
+        "leader": "Suzune Horikita"
+      },
+      {
+        "name": "Class 1-C",
+        "group_type": "medium",
+        "members": [
+          "Kakeru Ryuen",
+          "Mio Ibuki",
+          "Albert Yamada",
+          "Daichi Ishizaki",
+          "Satoru Kaneda",
+          "Hiyori Shiina",
+          "Kyogo Komiya",
+          "Reo Kondo"
+        ],
+        "leader": "Kakeru Ryuen"
+      },
+      {
+        "name": "Class 1-B",
+        "group_type": "medium",
+        "members": [
+          "Honami Ichinose",
+          "Ryuji Kanzaki",
+          "Chihiro Shiranami",
+          "Mako Amikura",
+          "Yuki Himeno"
+        ],
+        "leader": "Honami Ichinose"
+      },
+      {
+        "name": "Class 1-A",
+        "group_type": "medium",
+        "members": [
+          "Arisu Sakayanagi",
+          "Kohei Katsuragi",
+          "Yahiko Totsuka",
+          "Masayoshi Hashimoto",
+          "Masumi Kamuro",
+          "Hayato Kito"
+        ],
+        "leader": "Arisu Sakayanagi"
+      },
+      {
+        "name": "Student Council",
+        "group_type": "medium",
+        "members": [
+          "Manabu Horikita",
+          "Miyabi Nagumo",
+          "Akane Tachibana",
+          "Honami Ichinose"
+        ],
+        "leader": "Manabu Horikita"
+      },
+      {
+        "name": "Advanced Nurturing High School Faculty",
+        "group_type": "medium",
+        "members": [
+          "Chairman Sakayanagi",
+          "Sae Chabashira",
+          "Chie Hoshinomiya",
+          "Tomonari Mashima",
+          "Kazuma Sakagami"
+        ],
+        "leader": "Chairman Sakayanagi"
+      }
+    ],
+    "isolates": []
+  },
+  "large": {
+    "groups": [
+      {
+        "name": "Tokyo Metropolitan Advanced Nurturing High School",
+        "group_type": "large",
+        "members": [
+          "Kiyotaka Ayanokoji",
+          "Suzune Horikita",
+          "Kikyo Kushida",
+          "Ken Sudo",
+          "Kanji Ike",
+          "Haruki Yamauchi",
+          "Airi Sakura",
+          "Kei Karuizawa",
+          "Yousuke Hirata",
+          "Rokusuke Koenji",
+          "Teruhiko Yukimura",
+          "Akito Miyake",
+          "Haruka Hasebe",
+          "Maya Sato",
+          "Chiaki Matsushita",
+          "Honami Ichinose",
+          "Ryuji Kanzaki",
+          "Chihiro Shiranami",
+          "Kakeru Ryuen",
+          "Mio Ibuki",
+          "Albert Yamada",
+          "Daichi Ishizaki",
+          "Hiyori Shiina",
+          "Arisu Sakayanagi",
+          "Kohei Katsuragi",
+          "Yahiko Totsuka",
+          "Masayoshi Hashimoto",
+          "Masumi Kamuro",
+          "Miyabi Nagumo",
+          "Nazuna Asahina",
+          "Manabu Horikita",
+          "Akane Tachibana",
+          "Sae Chabashira",
+          "Chie Hoshinomiya",
+          "Tomonari Mashima"
+        ],
+        "leader": "Chairman Sakayanagi"
+      }
+    ],
+    "isolates": []
+  },
+  "isolates": {
+    "groups": [],
+    "isolates": []
+  }
+}

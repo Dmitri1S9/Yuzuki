@@ -1,8 +1,11 @@
 import re
+import json
 import logging
 
 import psycopg2
 from psycopg2.extras import RealDictCursor, Json
+
+from app.serviceExceptions import falseGroupTypeException
 
 log = logging.getLogger(__name__)
 
@@ -67,6 +70,8 @@ FLAG_PARAMS: set[str] = {
 TIER_RE = re.compile(r"^T(\d+):\s*(.*)")
 T0_MARKER = "T0"
 T1_MARKER = "T1"
+
+GROUP_CALL_TYPES: set[str] = {"small", "medium", "large", "isolates"}
 
 
 # ---------------------------------------------------------------------------
@@ -285,6 +290,89 @@ def save_profile_result(profile_output: dict, universe_id: int) -> dict:
         conn.commit()
         log.info("Saved profile for universe %s (%d chars)", universe_id, len(characters))
         return {"universe_id": universe_id, "status": "saved"}
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Save group result
+# Input: {"groups": [{"name", "group_type", "members", "leader"}, ...], "isolates": [...], "t0": N}
+# Each group -> one row in `groups`. Each isolate -> its own single-member
+# row with group_type='isolated'. t0 is not persisted (v1).
+# ---------------------------------------------------------------------------
+
+def save_group_result(group_output: dict, universe_id: int, group_type: str) -> dict:
+    if group_type not in GROUP_CALL_TYPES:
+        raise falseGroupTypeException()
+
+    groups = group_output.get("groups", [])
+    isolates = group_output.get("isolates", [])
+
+    conn = _connect()
+    try:
+        with conn.cursor() as cur:
+            for group in groups:
+                cur.execute(
+                    """INSERT INTO groups (universe_id, name, group_type, leader, members)
+                       VALUES (%s, %s, %s, %s, %s)""",
+                    (universe_id, group["name"], group["group_type"],
+                     group.get("leader"), Json(group["members"])),
+                )
+
+            for name in isolates:
+                cur.execute(
+                    """INSERT INTO groups (universe_id, name, group_type, leader, members)
+                       VALUES (%s, %s, 'isolated', NULL, %s)""",
+                    (universe_id, name, Json([name])),
+                )
+
+        conn.commit()
+        log.info("Saved %d groups + %d isolates (call=%s) for universe %s",
+                  len(groups), len(isolates), group_type, universe_id)
+        return {"universe_id": universe_id, "group_type": group_type, "status": "saved"}
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# Build relationship graph
+# Stub: collects every character that appears in any saved group for this
+# universe, and writes an empty (all-zero) adjacency matrix. No relationship
+# logic yet — this only sets up the storage shape for later population.
+# ---------------------------------------------------------------------------
+
+def build_relationship_graph(universe_id: int) -> dict:
+    conn = _connect()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT members FROM groups WHERE universe_id = %s", (universe_id,))
+            rows = cur.fetchall()
+
+            characters: set[str] = set()
+            for (members,) in rows:
+                members = members if isinstance(members, list) else json.loads(members)
+                characters.update(members)
+            characters_list = sorted(characters)
+            matrix = [[0] * len(characters_list) for _ in range(len(characters_list))]
+
+            cur.execute(
+                """INSERT INTO relationship_graphs (universe_id, characters, matrix)
+                   VALUES (%s, %s, %s)
+                   ON CONFLICT (universe_id) DO UPDATE
+                   SET characters = EXCLUDED.characters, matrix = EXCLUDED.matrix""",
+                (universe_id, Json(characters_list), Json(matrix)),
+            )
+
+        conn.commit()
+        log.info("Built relationship graph for universe %s (%d characters)",
+                  universe_id, len(characters_list))
+        return {"universe_id": universe_id, "characters": len(characters_list), "status": "saved"}
     except Exception:
         conn.rollback()
         raise

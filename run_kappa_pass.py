@@ -10,8 +10,8 @@ using col_1 / col_2 columns. Different pass numbers produce different Redis
 cache keys so the two passes are always independent AI calls.
 """
 import os, sys, csv, json, logging
-os.environ["REDIS_URL_CACHE"] = "redis://localhost:6379/1"
-os.environ["REDIS_URL_CELERY"] = "redis://localhost:6379/0"
+os.environ.setdefault("REDIS_URL_CACHE", "redis://localhost:6379/1")
+os.environ.setdefault("REDIS_URL_CELERY", "redis://localhost:6379/0")
 
 import psycopg2
 from scipy.stats import norm
@@ -86,22 +86,20 @@ def main():
     universe_id = create_universe(UNIVERSE_NAME, characters, ARC)
     log.info("Universe id=%d", universe_id)
 
-    # Use pass_number as part of a salt so cache keys differ between passes
-    arc_salt = f"{ARC} [K{pass_number}]"
     client = GeminiClient()
 
     for param, prompt_key in RANK_PROMPTS.items():
         log.info("  rank  %s ...", param)
-        key = f"rank:{hash_args(prompt_key, characters, UNIVERSE_NAME, arc_salt, None)}"
+        key = f"rank:{hash_args(prompt_key, characters, UNIVERSE_NAME, ARC, None)}"
         redis_cache.delete(key)
-        result = client.rank(prompt_key, characters, UNIVERSE_NAME, arc_salt)
+        result = client.rank(prompt_key, characters, UNIVERSE_NAME, ARC)
         save_rank_result(result, universe_id, param, pass_number=pass_number)
 
     for flag in FLAG_COLS:
         log.info("  flag  %s ...", flag)
-        key = f"flag:{hash_args(flag, characters, UNIVERSE_NAME, arc_salt, None)}"
+        key = f"flag:{hash_args(flag, characters, UNIVERSE_NAME, ARC, None)}"
         redis_cache.delete(key)
-        result = client.flag(flag, characters, UNIVERSE_NAME, arc_salt)
+        result = client.flag(flag, characters, UNIVERSE_NAME, ARC)
         save_flag_result(result, universe_id, flag, pass_number=pass_number)
 
     log.info("All tasks done. Exporting CSV...")

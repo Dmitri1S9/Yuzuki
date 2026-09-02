@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from app.data.data import get_prompt
 from app.apiClients.schemas.ranker_schema import RankingResponse
 from app.apiClients.schemas.profiler_schema import ProfileResponse
+from app.apiClients.schemas.groups_schema import GroupsResponse
+from app.serviceExceptions import falseGroupTypeException
 import json
 import hashlib
 from pathlib import Path
@@ -12,6 +14,7 @@ T = TypeVar("T", bound=BaseModel)
 
 CACHE_TTL = 60 * 60 * 24
 FLAGS_PATH = Path("app/data/flags.json")
+GROUP_TYPES = {"small", "medium", "large", "isolates"}
 
 _flags_cache: dict | None = None
 
@@ -71,14 +74,8 @@ class BaseAIClient(ABC):
         )
         return result.model_dump()
 
-    def flag(
-        self,
-        flag_name: str,
-        characters: list[str],
-        universe: str,
-        arc: str | None = None,
-        context: str | None = None,
-    ) -> dict:
+    def flag(self, flag_name: str, characters: list[str],
+                universe: str, arc: str | None = None, context: str | None = None, ) -> dict:
         flag_def = get_flag_def(flag_name)
         result = self._request(
             response_model=RankingResponse,
@@ -99,13 +96,7 @@ class BaseAIClient(ABC):
         )
         return result.model_dump()
 
-    def profile(
-        self,
-        characters: list[str],
-        universe: str,
-        arc: str | None = None,
-        context: str | None = None,
-    ) -> dict:
+    def profile(self, characters: list[str], universe: str, arc: str | None = None, context: str | None = None, ) -> dict:
         result = self._request(
             response_model=ProfileResponse,
             system_prompt=get_prompt("system_prompt_profiler"),
@@ -115,3 +106,22 @@ class BaseAIClient(ABC):
             thinking_budget=self.thinking_profile,
         )
         return {"characters": {c.name: c.model_dump(exclude={"name"}) for c in result.characters}}
+
+    def group(self, group_type: str, universe: str, arc: str | None = None, context: str | None = None) -> dict:
+        if group_type not in GROUP_TYPES:
+            raise falseGroupTypeException()
+
+        result = self._request(
+            response_model=GroupsResponse,
+            system_prompt=get_prompt("system_prompt_groups"),
+            user_prompt=get_prompt(
+                f"user_prompt_groups_{group_type}",
+                universe=universe,
+                time_period=arc or "entire series",
+                context=context,
+            ),
+            cache_key=f"group:{hash_args(group_type, universe, arc, context)}",
+            model=self.model_group,
+            thinking_budget=self.thinking_group,
+        )
+        return result.model_dump()

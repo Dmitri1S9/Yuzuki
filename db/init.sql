@@ -173,3 +173,29 @@ CREATE TABLE characters (
 );
 
 CREATE INDEX idx_characters_universe ON characters(universe_id);
+
+-- ---------- groups ----------
+-- One row per group (small/medium/large) or per isolated character.
+-- members is a JSONB array of character names, matched by name against
+-- `characters` the same way flag/rank results are — no FK, no join table.
+CREATE TABLE groups (
+    id          BIGSERIAL PRIMARY KEY,
+    universe_id BIGINT NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
+    name        TEXT NOT NULL,
+    group_type  VARCHAR(10) NOT NULL,  -- small / medium / large / isolated
+    leader      TEXT,
+    members     JSONB NOT NULL         -- ["name1", "name2", ...]
+);
+
+CREATE INDEX idx_groups_universe ON groups(universe_id);
+
+-- ---------- relationship_graphs ----------
+-- One row per universe. `characters` fixes the row/column order for
+-- `matrix` (NxN, currently all-zero — a placeholder for future
+-- relationship data, not derived from anything yet).
+CREATE TABLE relationship_graphs (
+    id          BIGSERIAL PRIMARY KEY,
+    universe_id BIGINT NOT NULL UNIQUE REFERENCES universes(id) ON DELETE CASCADE,
+    characters  JSONB NOT NULL,
+    matrix      JSONB NOT NULL
+);

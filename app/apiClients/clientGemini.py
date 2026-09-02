@@ -16,11 +16,13 @@ class GeminiClient(BaseAIClient):
     model_rank    = "gemini-3.5-flash"
     model_flag    = "gemini-3.1-flash-lite"
     model_profile = "gemini-3.1-flash-lite"
+    model_group   = "gemini-3.5-flash"
 
     # thinking budget per task type: 0 = off
     thinking_rank    = 1024
     thinking_flag    = 0
     thinking_profile = 0
+    thinking_group   = 1024
 
     def __init__(self) -> None:
         self._client = genai.Client(api_key=_settings.api_key_gimini)
