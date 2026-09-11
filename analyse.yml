@@ -22,3 +22,5 @@ dependencies:
       - scipy
       - jinja2
       - watchfiles
+      - pyvis
+      - httpx

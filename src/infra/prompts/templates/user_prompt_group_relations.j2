@@ -1,0 +1,7 @@
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Groups:
+{% for g in groups %}
+{{ g.name }}: {{ g.members | join(", ") }}
+{% endfor %}

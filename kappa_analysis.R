@@ -1,26 +1,16 @@
-pass1 <- read.csv("pass1.csv", stringsAsFactors=FALSE, na.strings="None")
-pass2 <- read.csv("pass2.csv", stringsAsFactors=FALSE, na.strings="None")
+args <- commandArgs(trailingOnly=TRUE)
+slug <- if (length(args) >= 1) args[1] else "classroom_of_the_elite_year_1"
 
-FLAG_COLS <- c(
-  "manipulative","honest","impulsive","secretive","self_sacrificing",
-  "adaptable","loyal","empathetic","cruel","arrogant","competitive",
-  "ruthless","is_strategist","has_humor",
-  "is_physically_attractive","is_intimidating","is_muscular",
-  "has_distinctive_feature","is_well_groomed",
-  "goal_power","goal_love","goal_knowledge","goal_revenge",
-  "goal_survival","goal_duty","goal_freedom","goal_recognition","goal_protection",
-  "military","politics","science","art","education","crime","commerce",
-  "has_magic","has_tragic_past","is_strong_willed","is_provocative",
-  "is_loner","is_unstable","is_fanatical",
-  "is_idealist","is_nihilist","is_pragmatist","is_hedonist",
-  "is_machiavellian","is_revolutionary","is_fatalist",
-  "has_physical_weakness","has_psychological_weakness"
-)
+pass1 <- read.csv(sprintf("run/pass1_%s.csv", slug), stringsAsFactors=FALSE, na.strings="None", check.names=FALSE)
+pass2 <- read.csv(sprintf("run/pass2_%s.csv", slug), stringsAsFactors=FALSE, na.strings="None", check.names=FALSE)
+pass3 <- read.csv(sprintf("run/pass3_%s.csv", slug), stringsAsFactors=FALSE, na.strings="None", check.names=FALSE)
+
 RANK_COLS <- c(
   "combat_potential","intellect","authority_scope",
   "loyalty_command","social_impact","wealth"
 )
-ALL_COLS <- c(FLAG_COLS, RANK_COLS)
+ALL_COLS  <- setdiff(names(pass1), "entity")
+FLAG_COLS <- setdiff(ALL_COLS, RANK_COLS)
 
 # ── Cohen's Kappa ─────────────────────────────────────────────────────────────
 cohen_kappa <- function(r1, r2) {
@@ -35,12 +25,8 @@ cohen_kappa <- function(r1, r2) {
 }
 
 # ── Category derivations from score = tier*10 + within ────────────────────────
-
-# 1. TIER: integer tier the character is in
 cat_tier <- function(score) as.integer(floor(score / 10))
 
-# 2. BUCKET: tier * 3 + position within tier (low/mid/high)
-#    using normal CDF thresholds: pnorm(-1)≈0.159, pnorm(1)≈0.841
 cat_bucket <- function(score) {
   tier   <- floor(score / 10)
   within <- score - tier * 10
@@ -48,80 +34,77 @@ cat_bucket <- function(score) {
   as.integer(tier * 3 + bucket)
 }
 
-# 3. ORDER: global rank position → quartile (1-4)
-cat_order <- function(scores) {
-  r <- rank(scores, ties.method="average")
-  as.integer(ceiling(r / length(r) * 4))
+# ── Kappa for one column over one pair of passes ──────────────────────────────
+pair_kappa <- function(col, dfa, dfb, cat_fn) {
+  sa <- as.numeric(dfa[[col]]); sb <- as.numeric(dfb[[col]])
+  mask <- !is.na(sa) & !is.na(sb)
+  if (sum(mask) < 2) return(NA_real_)
+  cohen_kappa(cat_fn(sa[mask]), cat_fn(sb[mask]))
 }
 
-# ── Per-column kappa table ────────────────────────────────────────────────────
-run_kappa <- function(cols, df1, df2) {
-  results <- data.frame(
-    col=character(), kappa_tier=numeric(), kappa_bucket=numeric(),
-    kappa_order=numeric(), n_rated=integer(), n_unknown=integer(),
-    stringsAsFactors=FALSE
-  )
+# ── kappa_12 and kappa_min over 1x2, 1x3, 2x3 ─────────────────────────────────
+# kappa_min = worst of the three pairwise passes, not the median: a parameter
+# only counts as reliable if EVERY pair of independent passes agrees, not just
+# most of them. This is the harsher, start-here bar.
+safe_min <- function(x) {
+  x <- x[!is.na(x)]
+  if (length(x) == 0) return(NA_real_)
+  min(x)
+}
+run_kappa <- function(cols) {
+  out <- data.frame()
   for (col in cols) {
-    s1 <- as.numeric(df1[[col]])
-    s2 <- as.numeric(df2[[col]])
-    mask <- !is.na(s1) & !is.na(s2)
-    n_rated   <- sum(mask)
-    n_unknown <- sum(!mask)
-    if (n_rated < 2) {
-      results <- rbind(results, data.frame(
-        col=col, kappa_tier=NA, kappa_bucket=NA, kappa_order=NA,
-        n_rated=n_rated, n_unknown=n_unknown, stringsAsFactors=FALSE))
-      next
+    k <- list()
+    for (nm in c("tier","bucket")) {
+      fn <- if (nm == "tier") cat_tier else cat_bucket
+      k12 <- pair_kappa(col, pass1, pass2, fn)
+      k13 <- pair_kappa(col, pass1, pass3, fn)
+      k23 <- pair_kappa(col, pass2, pass3, fn)
+      k[[nm]] <- list(k12=k12, min=safe_min(c(k12,k13,k23)))
     }
-    k_tier   <- cohen_kappa(cat_tier(s1[mask]),   cat_tier(s2[mask]))
-    k_bucket <- cohen_kappa(cat_bucket(s1[mask]), cat_bucket(s2[mask]))
-    # order kappa: compute rank within each pass separately
-    k_order  <- cohen_kappa(cat_order(s1[mask]),  cat_order(s2[mask]))
-    results <- rbind(results, data.frame(
-      col=col,
-      kappa_tier=round(k_tier,3), kappa_bucket=round(k_bucket,3),
-      kappa_order=round(k_order,3),
-      n_rated=n_rated, n_unknown=n_unknown, stringsAsFactors=FALSE))
+    sa <- as.numeric(pass1[[col]])
+    out <- rbind(out, data.frame(
+      col          = col,
+      tier_12      = round(k$tier$k12, 3),
+      tier_min     = round(k$tier$min, 3),
+      bucket_min   = round(k$bucket$min, 3),
+      n_unknown    = sum(is.na(sa)),
+      stringsAsFactors = FALSE
+    ))
   }
-  results[order(results$kappa_tier, na.last=TRUE), ]
+  out
 }
 
-flag_res <- run_kappa(FLAG_COLS, pass1, pass2)
-rank_res <- run_kappa(RANK_COLS, pass1, pass2)
+# ── Filter by kappa_min: tier (model's own tiers, real pass vs real pass)
+# gates, bucket (finer within-tier position) splits the verdict. The old
+# order gate (quartile-of-roster-position, ignoring the model's own tiers)
+# was removed — same tie-breaks it was meant to catch already show up as
+# tier disagreement, without the artifact of forcing exactly 4 equal-size
+# groups regardless of how many tiers a pass actually used.
+verdict <- function(tier_min, bucket_min) {
+  if (is.na(tier_min) || tier_min < 0.5) return("DROP")
+  if (!is.na(bucket_min) && bucket_min >= 0.5) return("continuous-valid (z-score)")
+  "categorical-valid (tier only)"
+}
 
-# ── Output ────────────────────────────────────────────────────────────────────
-print_section <- function(title, res) {
+report <- function(title, res) {
+  res$verdict <- mapply(verdict, res$tier_min, res$bucket_min)
+  res <- res[order(res$tier_min, na.last=TRUE), ]
   cat(sprintf("\n══ %s ══\n", title))
   print(res, row.names=FALSE)
-  cat(sprintf(
-    "\nMean kappa — tier: %.3f  |  bucket: %.3f  |  order: %.3f\n",
-    mean(res$kappa_tier,   na.rm=TRUE),
-    mean(res$kappa_bucket, na.rm=TRUE),
-    mean(res$kappa_order,  na.rm=TRUE)
-  ))
+  cat(sprintf("\nmean kappa_min — tier: %.3f  bucket: %.3f\n",
+              mean(res$tier_min, na.rm=TRUE),
+              mean(res$bucket_min, na.rm=TRUE)))
+  cat(sprintf("verdicts: DROP=%d  continuous=%d  categorical=%d\n",
+              sum(res$verdict == "DROP"),
+              sum(res$verdict == "continuous-valid (z-score)"),
+              sum(res$verdict == "categorical-valid (tier only)")))
+  res
 }
 
-print_section("FLAGS", flag_res)
-print_section("RANKS", rank_res)
+rank_res <- report("RANKS", run_kappa(RANK_COLS))
+flag_res <- report("FLAGS", run_kappa(FLAG_COLS))
 
-# ── Pooled kappas ─────────────────────────────────────────────────────────────
-pool <- function(cols, cat_fn, df1, df2) {
-  all1 <- integer(0); all2 <- integer(0)
-  for (col in cols) {
-    s1 <- as.numeric(df1[[col]]); s2 <- as.numeric(df2[[col]])
-    mask <- !is.na(s1) & !is.na(s2)
-    all1 <- c(all1, cat_fn(s1[mask])); all2 <- c(all2, cat_fn(s2[mask]))
-  }
-  cohen_kappa(all1, all2)
-}
-
-cat("\n══ POOLED ══\n")
-for (label in c("tier","bucket","order")) {
-  fn <- get(paste0("cat_", label))
-  kf <- pool(FLAG_COLS, fn, pass1, pass2)
-  kr <- pool(RANK_COLS, fn, pass1, pass2)
-  cat(sprintf("%-8s  flags: %.3f %-22s  ranks: %.3f %s\n",
-    label,
-    kf, ifelse(is.na(kf),"(NA)", ifelse(kf>0.6,"[STABLE]","[UNSTABLE]")),
-    kr, ifelse(is.na(kr),"(NA)", ifelse(kr>0.6,"[STABLE]","[UNSTABLE]"))))
-}
+out_file <- sprintf("run/kappa_verdicts_%s.csv", slug)
+write.csv(rbind(rank_res, flag_res), out_file, row.names=FALSE)
+cat(sprintf("\nwrote %s\n", out_file))

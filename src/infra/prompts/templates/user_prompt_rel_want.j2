@@ -1,0 +1,21 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Relation: want
+Definition: the first character is drawn to the second romantically or physically. There is a pull between them, whether or not the story ever confirms it.
+Test: report every direction where this is present, even when it is not the main or defining feature of their relationship. Does the first character behave around the second in a way that friendship, duty or rivalry does not explain?
+Include: established couples, one-sided attraction, tension the narrative keeps charging and never resolves, pairs whose dynamic reads as romantic to readers, characters whose interest in each other exceeds what their other bonds account for.
+ANTI: do not count playful teasing or fan-favorite chemistry with nothing behind it in the text, closeness that is plainly familial or mentoring, or a single joke about pairing them that the story never builds on.
+BOUNDARY: chosen company on its own is not want — want needs a romantic or physical pull specifically, but the two commonly co-occur: report want in addition to with when that pull is there, not instead of it.
+Do not add a pair without a concrete basis in the text; absence from this list is a legal answer.
+Directed: list source and target. The pull runs in each direction independently. If one is drawn and the other is not, return one entry. If both, return two.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

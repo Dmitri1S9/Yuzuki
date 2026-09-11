@@ -15,5 +15,9 @@ COPY . /app
 
 EXPOSE 8044
 
-CMD ["conda","run","--no-capture-output","-n","analyse_service","uvicorn","app.main:app","--host","0.0.0.0","--port","8044", "--no-access-log"]
+
+# No persistent server: analyse_service is only ever started via
+# `docker compose run analyse_service conda run ... python -m src.services...`,
+# which replaces this CMD outright — this is just a harmless default.
+CMD ["bash"]
 

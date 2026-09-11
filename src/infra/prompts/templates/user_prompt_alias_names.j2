@@ -1,0 +1,11 @@
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Task: alternate names
+For each name below, give the character's other name if they have one: a real name if the entry is a hero name, codename, title or nickname, or a hero name if the entry is a real name.
+Return null for characters who are known by one name only. Most characters have only one name.
+Do not invent a second name. Do not return a variant spelling of the same name.
+
+Names:
+{% for n in names %}- {{ n }}
+{% endfor %}

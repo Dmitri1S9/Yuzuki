@@ -1,82 +1,52 @@
 # Yuzuki
 
-Сервис для автоматической аналитики персонажей из аниме/манги/фантастических вселенных. Использует Grok (xAI) для ранжирования и профилирования персонажей, хранит результаты в PostgreSQL через Celery-воркеры.
+Сервис для автоматической аналитики персонажей из аниме/манги/фантастических
+вселенных: ростер, группы, ординальные ранги, бинарные флаги и попарные
+отношения — через Gemini, с сохранением в PostgreSQL.
 
 ---
 
-## Что сделано
+## Пайплайн
 
-### Ядро
+Четыре независимых этапа, каждый — отдельный процесс (`docker compose run`),
+без общей памяти между ними. Подробная логика каждого этапа — в
+[PIPELINE.md](PIPELINE.md); архитектура кода (слои, конвенции) — в
+[ARCHITECTURE.md](ARCHITECTURE.md).
 
-- **`UniverseBuilder`** — оркестратор, который принимает вселенную + список персонажей + арку и запускает все задачи параллельно через Celery:
-  - 1 задача `profile_task` — базовые данные персонажей
-  - 7 задач `rank_task` — ординальные параметры
-  - ~52 задачи `flag_task` — бинарные флаги
+1. **Cast** (`src/services/collection/cast`) — собирает ростер и
+   средние/большие группы (медиум/лардж/изоляты, по 3 прохода), разрешает
+   написания и алиасы имён.
+2. **Relations** (`src/services/collection/relations`) — попарные отношения
+   (`for`/`against`/`want`/`with`) на уровне средних групп и общего пула, плюс
+   союзники/соперники между группами. Запускается **до** этапа features —
+   его результат (`low_info_characters`) решает, кого пропустить на этапе 2.
+3. **Features** (`src/services/collection/features`) — ординальные ранги (6
+   параметров) и бинарные флаги (51), 3 прохода каждый, сведение через
+   maximin-Cohen's-kappa консенсус (`src/services/consensus`).
+4. **Graph** (`src/services/graph`) — интерактивный граф отношений (pyvis),
+   запускается вручную, не входит в `run_pipeline.sh`.
 
-- **`XClient`** — клиент к xAI API (`grok-4-1-fast-reasoning`), с Redis-кешированием ответов (TTL 24ч). Три метода: `rank`, `flag`, `profile`.
-
-- **Prompts** (`prompts_ordinal_v2/`) — Jinja2-шаблоны для системных и пользовательских промптов ранкера, флаггера и профайлера.
-
-### Параметры
-
-**Ординальные (7)** — каждый персонаж получает позицию в отсортированном списке:
-- `combat_potential`, `intellect`, `authority_scope`, `loyalty_command`, `social_impact`, `lawfulness`, `wealth`
-
-**Флаги (52)** — позиция в списке относительно маркеров T0/T1 (до / между / после):
-
-| Категория | Флаги |
-|-----------|-------|
-| Личность | manipulative, honest, impulsive, secretive, self_sacrificing, adaptable, loyal, empathetic, cruel, arrogant, competitive, ruthless |
-| Роль | is_leader, is_strategist, is_mentor, is_villain, is_antihero |
-| Внешность | is_physically_attractive, is_intimidating |
-| Мотивация | goal_power, goal_love, goal_knowledge, goal_revenge, goal_survival, goal_duty, goal_freedom, goal_recognition, goal_protection |
-| Домен | military, politics, science, art, education, crime, commerce |
-| Состояние | has_magic, has_tragic_past, is_strong_willed, is_provocative, is_loner, is_unstable, is_fanatical |
-| Мировоззрение | is_idealist, is_nihilist, is_pragmatist, is_duty_driven, is_hedonist, is_machiavellian, is_revolutionary, is_fatalist |
-| Слабости | has_physical_weakness, has_psychological_weakness |
-
-**Профиль** — `body_age`, `soul_age`, `gender`, `species`
-
-### База данных (плоская схема, 2 таблицы)
-
-- **`universes`** — одна строка на вселенную+арку. Каждый параметр — JSONB-массив с количеством персонажей по сегментам (тирам).
-- **`characters`** — одна строка на персонажа. Каждый параметр — INT (позиция в отсортированном списке, NULL = неизвестно).
-
-### Инфраструктура
-
-- **FastAPI** — запущен на порту 8000/8044
-- **Celery** — брокер и бэкенд на Redis (`redis://...6379/0`), воркеры с concurrency=3, авторестарт через `watchfiles`
-- **Redis** — отдельная БД для кеша ответов xAI (`6379/1`)
-- **PostgreSQL 14** — порт 5439 (хост) → 5432 (контейнер), БД `archangel`
-- **Docker Compose** — 4 сервиса: `db`, `redis`, `analyse_service`, `celery_worker`
+Персистентный источник истины — PostgreSQL (ростер/алиасы/группы/отношения
+пишутся туда этапами 1 и 3 через `src/repository`). Ординалы/флаги (этап 2)
+в БД пока не пишутся — известный, отдельно запланированный пробел, см.
+ARCHITECTURE.md. JSON/CSV/HTML-файлы одного прогона (`run/*`) — только
+передача данных между этапами внутри одного запуска, не источник истины.
 
 ---
 
-## Первый запуск
-
-### Через Docker
+## Запуск
 
 ```bash
-docker-compose up --build
+docker compose up -d db redis
+./run_pipeline.sh "Classroom of the Elite" "Year 1"
 ```
 
-БД инициализируется автоматически из `db/init.sql`.
-
-### Локально (Celery-воркер)
+БД инициализируется из `src/repository/schema/init.sql` при первом старте
+контейнера `db`. Граф — отдельно:
 
 ```bash
-celery -A app.settings.celery_app:celery worker -l INFO
-```
-
-БД при этом всё равно поднимается в Docker.
-
-### Запуск сбора вселенной
-
-```python
-from app.universe_builder import UniverseBuilder
-
-builder = UniverseBuilder("Classroom of the Elite", COTE_CHARACTERS, arc="Year 1")
-builder.collect_universe()
+docker compose run --rm analyse_service \
+    conda run --no-capture-output -n analyse_service python -m src.services.graph.main "Classroom of the Elite" "Year 1"
 ```
 
 ---
@@ -85,45 +55,19 @@ builder.collect_universe()
 
 | Переменная | Описание |
 |------------|----------|
-| `API_KEY_X` | Ключ xAI API |
-| `API_KEY` | Ключ OpenAI (не используется активно) |
+| `API_KEY_GIMINI` | Ключ Gemini API (основной клиент) |
+| `API_KEY_X` | Ключ xAI API (`XClient`, запасной/неактивный) |
 | `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` | PostgreSQL |
-| `REDIS_URL_CELERY` | Redis для Celery-брокера |
-| `REDIS_URL_CACHE` | Redis для кеша xAI-ответов |
-| `DEBUG` | Режим отладки |
+| `REDIS_URL_CELERY` | зарезервировано, не используется активно |
+| `REDIS_URL_CACHE` | Redis для кеша ответов модели (TTL 14 дней) |
+| `DEBUG` | режим отладки |
 
 ---
 
-## Структура проекта
+## Инфраструктура
 
-```
-app/
-  apiClients/
-    clientX.py          # xAI клиент (rank / flag / profile)
-    schemas/
-      ranker_schema.py  # RankingResponse
-      profiler_schema.py# ProfileResponse / CharacterProfile
-  data/
-    data.py             # get_prompt() — рендеринг Jinja2
-    flags.json          # определения флагов (definition + sort_axis)
-    prompts_ordinal_v2/ # шаблоны промптов
-  settings/
-    config.py           # Settings (pydantic-settings)
-    celery_app.py       # инициализация Celery
-    redis.py            # redis_cache
-    logger_setup.py
-  tasks.py              # rank_task / flag_task / profile_task
-  universe_builder.py   # UniverseBuilder + список персонажей COTE
-  main.py               # FastAPI app
-  tests/
-    test_db.py
-
-db/
-  init.sql              # DDL — создание таблиц
-  service.py            # CRUD: create_universe, save_rank/flag/profile_result, getters
-  schema_reference.md   # устаревший референс (предыдущая схема)
-
-docker-compose.yaml
-Dockerfile
-analyse.yml             # Conda environment
-```
+- **PostgreSQL 14** — порт 5439 (хост) → 5432 (контейнер), БД `archangel`
+- **Redis** — кеш ответов модели (`redis://...6379/1`)
+- **Docker Compose** — сервисы `db`, `redis`, `analyse_service` (Python/conda,
+  запускается только через `docker compose run ... python -m ...`, не как
+  постоянный сервер), `r_analysis` (R, kappa-валидация)

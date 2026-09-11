@@ -1,0 +1,21 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Relation: with
+Definition: the characters keep each other's company by choice. Among everyone available to them, they pick each other: sit together, walk together, talk when nothing requires it, form a circle of their own.
+Test: report every pair where this is present, even when it is not the main or defining feature of their relationship. Put them in a room with thirty other people they know — do they end up next to each other?
+Include: friends, companions, close family who keep company by choice, partners who are also companions, a clique inside a class or a unit. Include pairs who also quarrel, compete or distrust each other: conflict does not cancel chosen company, and many close pairs have both.
+ANTI: do not count a pair whose only contact is a seat plan, class roster, work shift or order placing them together, with no sign either one prefers the other's company.
+BOUNDARY: a rivalry inside a shared team or friend group does not cancel with — if they also choose each other's company beyond what the conflict requires, report with too, in addition to against.
+Do not add a pair without a concrete basis in the text; absence from this list is a legal answer.
+Symmetric: list each pair once. A group whose every member chooses every other may be returned as one entry with all members.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

@@ -1,0 +1,21 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Relation: for
+Definition: the first character acts for the second at a cost to themselves. They take risks, give up something that matters, protect, or stand by the second when it would be easier not to.
+Test: report every direction where this is present, even when it is not the main or defining feature of their relationship. Has the first character ever paid a real price for the second, or clearly would if it came to that?
+Include: protection at personal risk, sacrifice of goals or resources, loyalty that holds under pressure, a parent or mentor who invests in the second, a follower who stays with a leader when leaving would be safer.
+ANTI: do not count help that costs the giver nothing, teamwork that serves the first character's own interest just as much as the second's, or obedience to a role or order that would end the moment the role or order does.
+BOUNDARY: paying a real cost for someone you are also working against is still for — an against between the same pair does not cancel it, report both.
+Do not add a pair without a concrete basis in the text; absence from this list is a legal answer.
+Directed: list source and target. The relation runs in both directions independently. A leader may act for a follower, a follower may act for a leader, or both. Check each direction on its own and return every direction that qualifies.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

@@ -113,6 +113,10 @@ Thumbs.db
 *~
 .#*
 
+# Per-run pipeline handoff files (JSON/CSV/HTML) — regenerated every run,
+# never the source of truth (the database is) — see ARCHITECTURE.md.
+/run/
+
 # IDE specific
 .vscode/settings.json
 .vscode/launch.json

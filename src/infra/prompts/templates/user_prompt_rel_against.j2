@@ -1,0 +1,21 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Relation: against
+Definition: the characters actively work against each other. They compete, obstruct, humiliate, attack, sabotage or try to defeat each other.
+Test: report every pair where this is present, even when it is not the main or defining feature of their relationship. Does either character take actions whose purpose is to make the other lose, suffer or fail?
+Include: enemies, rivals, bullies and their targets, factional opponents who clash personally, competitors who go beyond fair play.
+ANTI: do not count a one-off quarrel, disagreement over ideas with no action behind it, or ordinary professional competition (for a rank, a grade, a job) that carries no personal edge.
+BOUNDARY: rivalry inside a shared team or side is against AND with at once, not a choice between them — report it here regardless of the bond elsewhere.
+Do not add a pair without a concrete basis in the text; absence from this list is a legal answer.
+Symmetric: list each pair once, even if only one side acts against the other.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

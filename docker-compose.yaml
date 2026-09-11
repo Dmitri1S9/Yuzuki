@@ -18,8 +18,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: analyse_service
-    ports:
-      - "8044:8044"
     depends_on:
       - redis
       - db
@@ -52,32 +50,12 @@ services:
     networks:
       - backend
 
-  celery_worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - REDIS_URL_CELERY=redis://redis:6379/0
-      - REDIS_URL_CACHE=redis://redis:6379/1
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=archangel
-      - DB_USER=postgres
-      - DB_PASSWORD=6713
-      - API_KEY_X=${API_KEY_X}
-      - API_KEY=${API_KEY}
-      - API_KEY_GIMINI=${API_KEY_GIMINI}
-      - DEBUG=False
-    depends_on:
-      - redis
-      - db
+  r_analysis:
+    image: r-base:latest
+    working_dir: /app
     volumes:
       - .:/app
-    command: conda run --no-capture-output -n analyse_service watchfiles --filter python "celery -A app.settings.celery_app:celery worker -l INFO --concurrency=3" /app
-    restart: unless-stopped
-    networks:
-      - backend
+    command: Rscript kappa_analysis.R
 
 volumes:
   postgres_data_archangel:
