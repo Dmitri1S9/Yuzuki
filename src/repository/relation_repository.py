@@ -77,11 +77,17 @@ class RelationRepository:
         return [GroupRelation(group_a=a, group_b=b, kind=kind) for a, b, kind in rows]
 
     @transactional
-    def save_group_relations(self, conn, group_relations: dict, universe_id: int) -> None:
+    def save_group_relations(self, conn, group_relations: dict, universe_id: int,
+                              replace: bool = False) -> None:
         # Separate table, never merged into character-level `relations`.
         # Input: {"allied": [[group_a, group_b], ...], "rival": [...]}.
+        # replace=True: this universe's existing rows are deleted first —
+        # same rationale as save_relations/save_groups's replace=, for a
+        # re-run against improved group_relations prompts.
         total = 0
         with conn.cursor() as cur:
+            if replace:
+                cur.execute("DELETE FROM group_relations WHERE universe_id = %s", (universe_id,))
             for kind, pairs in group_relations.items():
                 for group_a, group_b in pairs:
                     cur.execute(
@@ -90,4 +96,4 @@ class RelationRepository:
                         (universe_id, group_a, group_b, kind),
                     )
                     total += 1
-        log.info("saved %d group_relations for universe %d", total, universe_id)
+        log.info("saved %d group_relations for universe %d (replace=%s)", total, universe_id, replace)

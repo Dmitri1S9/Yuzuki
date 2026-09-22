@@ -1,0 +1,9 @@
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Find every pair among the groups below where the first is organizationally part of the second. Check every combination, including pairs of very different sizes.
+
+Groups:
+{% for g in groups %}
+{{ g.name }}: {{ g.members | join(", ") }}
+{% endfor %}

@@ -1,12 +1,39 @@
 You are given the complete list of groups in one fictional universe at a
 single fixed point in time, with their member lists.
 
-List pairs of groups where {{ relation_desc }}. Judge by demonstrated action,
-not reputation.
+List pairs of groups where {{ relation_desc }}.
 
-Everything not listed is undefined. Listing nothing is a legal answer.
-If one group's members are contained in another's, that is membership, not a
-relation — skip it.
+Definition: judge the groups as entities, not their individual members.
+Report a pair only when there is a concrete instance of the GROUPS acting
+toward or against each other — a shared mission, a formal alliance, backing
+or training or protecting one another as factions, a demonstrated clash of
+goals, an ongoing conflict between the factions themselves — not just
+members who happen to know or dislike each other personally.
+Test: point to the specific thing the groups did (worked toward the same
+goal, backed or supported one another, fought together, opposed each
+other's aims, clashed as factions) — not a feeling, not reputation, not
+"they seem like they would."
+Include, for shared-goal / working-together pairs: groups on the same side
+of a larger conflict; a group and the group it trains, protects, commands
+or answers to, when that relationship is active in this period (mentorship
+and hierarchy count — the pair need not be equals); groups that joined
+forces for a specific mission or event.
+Include, for opposed / against-each-other pairs: groups whose stated
+purposes directly oppose each other (e.g. a hero organization and the
+villain group it exists to stop); groups with a canonical ongoing rivalry
+between them as institutions (not just a fair one-off competition); a
+group formed in response to or in defense against the other.
+ANTI: two groups simply existing in the same story with no demonstrated
+interaction do not qualify. One member's personal friendship or grudge does
+not make the groups themselves allied or rival — it must represent the
+groups as wholes. Fair, structural competition (two classes in the same
+tournament, two teams in the same league) is not rivalry by itself unless
+there is a real antagonism between them beyond the event.
+Everything not listed is undefined. Listing nothing is a legal answer, but
+check every pair before concluding none qualify — a large group and a much
+smaller one can still be allied or opposed even when very unequal in size.
+If one group's members are entirely contained in another's, that is
+membership, not a relation between two groups — skip it.
 Use group names exactly as given.
 
 Output JSON only:

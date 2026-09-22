@@ -137,15 +137,20 @@ class BaseAIClient(ABC):
 
     def group(self, group_type: str, universe: str, arc: str | None = None,
               context: str | None = None, pass_number: int | None = None,
-              location: str | None = None) -> dict:
+              location: str | None = None, characters: list[str] | None = None) -> dict:
         if group_type not in GROUP_TYPES:
             raise falseGroupTypeException()
 
-        # Stage 1 produces the roster, so no group call receives one: medium and
-        # large must be free to name whoever they find, and isolates must be able
-        # to name characters medium/large never mentioned. Spelling drift between
-        # passes is resolved afterwards by name canonicalization, not by
-        # constraining the prompt.
+        # characters: an external ground-truth cast list (AniList, see
+        # services/collection/cast/anime_db.py), not derived from this
+        # pipeline's own prior output — the old "no list, groups produce
+        # the roster" design was a real chicken-and-egg constraint before
+        # an independent source existed. Given as a reference to check
+        # recall and prefer exact spelling against, not a hard cap: the
+        # prompt still allows naming someone not on it (the list may be
+        # incomplete for minor characters), same as before. Optional and
+        # defaulted to None so a universe with no AniList match still
+        # collects blind, same as always.
         response_model = IsolatesResponse if group_type == "isolates" else GroupsResponse
 
         system_prompt = get_prompt("system_prompt_groups", universe=universe, time_period=arc or "entire series")
@@ -155,6 +160,7 @@ class BaseAIClient(ABC):
             time_period=arc or "entire series",
             location=location,
             context=context,
+            characters=characters,
         )
         result = self._request(
             response_model=response_model,
@@ -224,6 +230,7 @@ class BaseAIClient(ABC):
             "user_prompt_group_relations",
             universe=universe,
             time_period=arc or "entire series",
+            relation_desc=GROUP_RELATION_DESC[kind],
             groups=groups,
         )
         result = self._request(
@@ -231,6 +238,29 @@ class BaseAIClient(ABC):
             system_prompt=system_prompt,
             user_prompt=user_prompt,
             cache_key=prompt_cache_key("group_relations", system_prompt, user_prompt),
+            model=self.model_group_relations,
+            thinking=self.thinking_group_relations,
+            temperature=self.temperature_group_relations,
+        )
+        return result.model_dump()
+
+    def group_hierarchy(self, groups: list[dict], universe: str, arc: str | None = None) -> dict:
+        # Directional (child, parent) — a separate call from group_relations
+        # (allied/rival), which is symmetric and explicitly skips
+        # containment. Same schema (GroupPairsResponse), same one-call-per-
+        # universe shape as group_relations.
+        system_prompt = get_prompt("system_prompt_group_hierarchy")
+        user_prompt = get_prompt(
+            "user_prompt_group_hierarchy",
+            universe=universe,
+            time_period=arc or "entire series",
+            groups=groups,
+        )
+        result = self._request(
+            response_model=GroupPairsResponse,
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            cache_key=prompt_cache_key("group_hierarchy", system_prompt, user_prompt),
             model=self.model_group_relations,
             thinking=self.thinking_group_relations,
             temperature=self.temperature_group_relations,

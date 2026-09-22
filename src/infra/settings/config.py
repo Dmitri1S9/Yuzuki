@@ -40,6 +40,11 @@ class Settings(BaseSettings):
     # DCS (Droid Command Station) — the external review/approval app.
     dcs_url: str = "http://localhost:8100"
 
+    # Cerebras — free-tier model-quality comparison only (src/experiments/),
+    # not part of the real pipeline. Optional: empty default so Settings
+    # still loads fine for everyone who doesn't have this key.
+    cerebras_api_key: str = ""
+
 
 if __name__ == "__main__":
     ...

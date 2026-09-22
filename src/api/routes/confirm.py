@@ -22,17 +22,39 @@ _relation_repo = RelationRepository()
 
 
 def _require_universe(universe_id: int):
-    if _universe_repo.get_universe_by_id(universe_id) is None:
+    universe = _universe_repo.get_universe_by_id(universe_id)
+    if universe is None:
         raise HTTPException(status_code=404, detail=f"universe {universe_id} not found")
+    return universe
 
 
 @router.post("/universes/{universe_id}/roster/confirm")
 def confirm_roster(universe_id: int, body: RosterConfirmRequest):
-    _require_universe(universe_id)
+    universe = _require_universe(universe_id)
+
+    # A DCS edit can rename, add, or remove a character — there's no stable
+    # id a rename survives (name is the natural key), so a "rename" and a
+    # "remove old + add new" look identical here: re-upsert every confirmed
+    # name first (create_universe's idempotent INSERT ... ON CONFLICT DO
+    # NOTHING) so aliases/isolation/image writes below never silently touch
+    # zero rows, then sync_roster deletes anyone no longer in the confirmed
+    # list — roster confirmation is authoritative, not additive.
+    _universe_repo.create_universe(universe.get_name(), [c.name for c in body.roster], universe.get_arc())
+    _character_repo.sync_roster(universe_id, [c.name for c in body.roster])
 
     for character in body.roster:
         if character.aliases:
             _character_repo.save_character_aliases(universe_id, character.name, character.aliases)
+        _character_repo.save_character_isolation(universe_id, character.name, character.is_isolated)
+        if character.image_url is not None:
+            # Carries image_url/existence_hits through even when this name
+            # wasn't in the DB before this confirm — e.g. a DCS rename
+            # (Miniskirt Santa -> Nene Iwamizawa, live-confirmed) looks like
+            # "delete the old name, add a new one" from sync_roster's plain
+            # name-list diff, which would otherwise lose the image stage 1
+            # already found for that row.
+            _character_repo.save_character_image(
+                universe_id, character.name, character.image_url, character.existence_hits)
 
     for group_type, groups in body.groups.items():
         _group_repo.save_groups(

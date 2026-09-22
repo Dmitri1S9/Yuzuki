@@ -9,16 +9,15 @@ Time period: {{ time_period }}
 {% if location %}Location: {{ location }}{% endif %}
 
 Group type: medium
-Definition: a medium group is a stable structural position a character holds — not something chosen by personal preference. Membership is defined by role, rank, assignment, birth or place, not by who a character personally likes.
-Test: could you place this character in the unit from their position alone, independent of who they personally like or dislike?
-Include: professional or service units — squads, crews, guilds, orders, departments, agencies, ministries, covens, chapters, or whatever term the universe itself uses for a working unit. Also educational cohorts: classes, years, cohorts, training programmes.
-Also include a house or faction inside a larger organization, distinct from the organization as a whole: Hogwarts houses, Gotei 13 squads, a faction within a court. Members of one house share position; the houses may compete with each other, but that rivalry belongs in group_relations, not here.
-Also include master-subordinate lineages held by position, not choice: a retinue, vassals, or the line of students under one mentor — a teaching lineage (a mentor, their student, that student's own student) is a structural chain, not a company of equals.
-Also include territorial communities where the place itself defines the social bond: a village, a district, a ship's crew, a settlement.
-Also include the people who run or serve the institutions the cast belongs to: teaching staff, officers, administrators, guards, servants, crew, retainers. They form a group of their own even when the narrative never names it.
-Also include a family or dynasty when position within it matters — an heir, a head of house, a line of succession. Return one only when the family itself functions as a structural anchor in the story, not for every set of relatives mentioned in passing.
-Exclude: informal friend groups or cliques with no structural position behind them, and institutions too large for mutual recognition.
-Coverage: return every character you can actually name for each group. Do not pad a group to a plausible size: a class of twenty may yield only the eight students the story has actually shown. Listing fewer real members is correct; inventing members to complete a roster is not. Include adult, background and antagonist characters, not only the main cast.
-Do not invent membership. A character who genuinely belongs to no organized group is omitted rather than forced into one.
-Do not create a residual group to absorb the remainder. Every returned group is a real structure with a name of its own.
+Definition: everyone in the group has a real, more-than-superficial relationship with everyone else in it — not just a shared label. Examples: a class, a team, a crew, a family, a shared-interest group.
+Test: does every member actually know every other member, beyond just belonging to the same larger organization?
+Exclude: large organizations/factions/institutions where most members are strangers or only superficially aware of each other — that is a large group, not this one.
+Coverage: return every character you can actually name for each group. Listing fewer real members is correct; inventing members to complete a roster is not. Include adult, background and antagonist characters, not only the main cast.
+Do not invent membership. A character who genuinely belongs to no such group is omitted rather than forced into one.
+{% if characters %}
+Known cast (whole franchise, not scoped to this time period, may be incomplete): match spelling against it when you include a name. Being on this list is not evidence of membership now — you still need real knowledge. Leave a name off entirely if you don't have enough information, rather than guess.
+{% for c in characters %}- {{ c }}
+{% endfor %}
+{% else %}
 No character list is provided for this task.
+{% endif %}

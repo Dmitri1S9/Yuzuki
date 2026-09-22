@@ -11,14 +11,16 @@ log = logging.getLogger(__name__)
 class UniverseRepository:
 
     @transactional
-    def create_universe(self, conn, name: str, characters: list[str], arc: str | None = None) -> int:
+    def create_universe(self, conn, name: str, characters: list[str], arc: str | None = None,
+                         anilist_title: str | None = None) -> int:
         with conn.cursor() as cur:
             cur.execute(
-                """INSERT INTO universes (name, arc, character_count)
-                   VALUES (%s, %s, %s)
-                   ON CONFLICT (name, arc) DO UPDATE SET character_count = EXCLUDED.character_count
+                """INSERT INTO universes (name, arc, character_count, anilist_title)
+                   VALUES (%s, %s, %s, %s)
+                   ON CONFLICT (name, arc) DO UPDATE SET character_count = EXCLUDED.character_count,
+                       anilist_title = COALESCE(EXCLUDED.anilist_title, universes.anilist_title)
                    RETURNING id""",
-                (name, arc or "", len(characters)),
+                (name, arc or "", len(characters), anilist_title),
             )
             uid = cur.fetchone()[0]
             for char_name in characters:
@@ -34,30 +36,32 @@ class UniverseRepository:
     @read_only
     def get_universe(self, conn, name: str, arc: str | None = None) -> Universe | None:
         with conn.cursor() as cur:
-            cur.execute("SELECT id FROM universes WHERE name = %s AND arc = %s", (name, arc or ""))
+            cur.execute("SELECT id, anilist_title FROM universes WHERE name = %s AND arc = %s", (name, arc or ""))
             row = cur.fetchone()
         if row is None:
             return None
-        universe_id = row[0]
+        universe_id, anilist_title = row
         roster = _load_roster(conn, universe_id)
         groups = _load_groups(conn, universe_id)
-        return Universe(universe_id, name, arc, roster=roster, groups=groups)
+        return Universe(universe_id, name, arc, roster=roster, groups=groups, anilist_title=anilist_title)
 
     @read_only
     def get_universe_by_id(self, conn, universe_id: int) -> Universe | None:
         with conn.cursor() as cur:
-            cur.execute("SELECT name, arc FROM universes WHERE id = %s", (universe_id,))
+            cur.execute("SELECT name, arc, anilist_title FROM universes WHERE id = %s", (universe_id,))
             row = cur.fetchone()
         if row is None:
             return None
-        name, arc = row
+        name, arc, anilist_title = row
         roster = _load_roster(conn, universe_id)
         groups = _load_groups(conn, universe_id)
-        return Universe(universe_id, name, arc or None, roster=roster, groups=groups)
+        return Universe(universe_id, name, arc or None, roster=roster, groups=groups,
+                         anilist_title=anilist_title)
 
     @read_only
     def list_universes(self, conn) -> list[Universe]:
         with conn.cursor() as cur:
-            cur.execute("SELECT id, name, arc FROM universes ORDER BY name, arc")
+            cur.execute("SELECT id, name, arc, anilist_title FROM universes ORDER BY name, arc")
             rows = cur.fetchall()
-        return [Universe(uid, name, arc or None) for uid, name, arc in rows]
+        return [Universe(uid, name, arc or None, anilist_title=anilist_title)
+                for uid, name, arc, anilist_title in rows]

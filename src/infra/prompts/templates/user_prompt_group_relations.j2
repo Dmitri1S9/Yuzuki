@@ -1,6 +1,8 @@
 Universe: {{ universe }}
 Time period: {{ time_period }}
 
+Find every pair among the groups below where {{ relation_desc }}. Check every combination, including pairs of very different sizes.
+
 Groups:
 {% for g in groups %}
 {{ g.name }}: {{ g.members | join(", ") }}

@@ -3,32 +3,38 @@
     "combat_potential": {
       "definition": "Who wins in a direct 1-vs-1 fight using any combat ability available to them — physical strength, speed, technique, pain tolerance, weapons, powers, transformations. In-fight tactics count. Political scheming, social manipulation, and off-battlefield planning do NOT count.",
       "prompt_template": "user_prompt_combat_potential",
-      "tier_count": 10
+      "tier_count": 10,
+      "normal_tier_index": 1
     },
     "intellect": {
       "definition": "How effectively the character solves cognitive challenges in their domain — tactical, scientific, creative, social, or any other. Judge by the magnitude of cognitive ability, not the type. A military genius and a scientific genius are measured on the same axis.",
       "prompt_template": "user_prompt_intellect_potential",
-      "tier_count": 9
+      "tier_count": 9,
+      "normal_tier_index": 1
     },
     "authority_scope": {
       "definition": "The scale of power, resources, and institutional control the character can command or mobilize. This measures positional and structural power — titles, armies, organizations, territories. Personal loyalty, charisma, and informal influence do NOT count.",
       "prompt_template": "user_prompt_authority_scope",
-      "tier_count": 8
+      "tier_count": 8,
+      "normal_tier_index": 0
     },
     "loyalty_command": {
       "definition": "How far the people under or around the character are willing to go for them. This measures real devotion and obedience — not formal rank, not authority scope, not fear-based compliance that collapses under pressure. A king whose subjects would betray him instantly scores low. A nobody whose friends would die for them scores high.",
       "prompt_template": "user_prompt_loyalty_command",
-      "tier_count": 7
+      "tier_count": 7,
+      "normal_tier_index": 1
     },
     "social_impact": {
       "definition": "How strongly the character affects the people around them through sheer presence, personality, or force of character. This measures the magnitude of social effect — not the type. An inspiring leader, a terrifying tyrant, and a cold beauty who silences a room all score high if people around them change their behavior significantly.",
       "prompt_template": "user_prompt_social_impact",
-      "tier_count": 7
+      "tier_count": 7,
+      "normal_tier_index": 1
     },
     "wealth": {
       "definition": "The total financial and material resources the character personally controls or has reliable access to. This includes money, property, equipment, and assets. Institutional budgets count only if the character can freely direct them for personal use. Borrowed power or temporary windfalls do NOT count.",
       "prompt_template": "user_prompt_wealth",
-      "tier_count": 5
+      "tier_count": 5,
+      "normal_tier_index": 1
     }
   },
   "profile": {

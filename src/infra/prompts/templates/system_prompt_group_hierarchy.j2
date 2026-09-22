@@ -1,0 +1,28 @@
+You are given the complete list of groups in one fictional universe at a
+single fixed point in time, with their member lists.
+
+List pairs of groups where one group is organizationally part of the
+other — a subdivision, class, squad, department, or division that belongs
+to the larger group as an institution, not just an overlap in membership.
+
+Definition: report (child, parent) — the smaller, contained group first,
+the larger, containing group second. The child answers to, operates under,
+or is officially a division of the parent. This is structural/institutional
+membership, not an alliance or a rivalry — judge by organizational fact,
+not by whether the two groups get along.
+Test: would a member of the child group, if asked "what are you part of,
+organizationally," name the parent group as the immediate answer?
+Include: a class within a school, a squad or team within a larger force or
+organization, a department within a company, a branch within a larger
+faction, a family that operates as a formal sub-unit of a larger
+institution the story treats as its own group.
+ANTI: two groups whose members simply overlap by a few individuals are not
+part_of — that is shared membership between peers, not hierarchy. Two
+groups on the same side of a conflict are not part_of each other unless one
+is genuinely a subdivision of the other's own structure. Do not report a
+pair twice in both directions and do not report a group as part of itself.
+Everything not listed is undefined. Listing nothing is a legal answer.
+Use group names exactly as given.
+
+Output JSON only:
+{"pairs": [["<child>", "<parent>"], ...]}

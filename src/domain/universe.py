@@ -6,12 +6,14 @@ from src.domain.group import Group
 
 class Universe:
     def __init__(self, universe_id: int, name: str, arc: str | None,
-                 roster: list[Character] | None = None, groups: list[Group] | None = None):
+                 roster: list[Character] | None = None, groups: list[Group] | None = None,
+                 anilist_title: str | None = None):
         self._id = universe_id
         self._name = name
         self._arc = arc
         self._roster = list(roster or [])
         self._groups = list(groups or [])
+        self._anilist_title = anilist_title
 
     def get_id(self) -> int:
         return self._id
@@ -21,6 +23,13 @@ class Universe:
 
     def get_arc(self) -> str | None:
         return self._arc
+
+    def get_anilist_title(self) -> str:
+        """The AniList media title to search for this universe — its own
+        override if a stage-1 run was given one (an arc's title can be
+        unrelated-looking to the franchise's main name), else its display
+        name."""
+        return self._anilist_title or self._name
 
     def get_roster(self) -> list[Character]:
         return list(self._roster)

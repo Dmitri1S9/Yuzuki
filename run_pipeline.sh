@@ -16,6 +16,8 @@ echo "############################################################"
 
 echo
 echo "=== stage 1: cast (python) ==="
+echo "=== roster+groups are pushed to DCS for review, NOT written to Postgres"
+echo "=== directly anymore — open DCS and approve before the confirmed data lands ==="
 docker compose run --rm analyse_service \
     conda run --no-capture-output -n analyse_service python -m src.services.collection.cast.main "$NAME" "$ARC"
 docker compose run --rm --entrypoint "" analyse_service \
@@ -23,7 +25,9 @@ docker compose run --rm --entrypoint "" analyse_service \
 
 echo
 echo "=== stage 3: relations (python) — runs before stage 2 now, so stage 2 ==="
-echo "=== can skip flag/ordinal collection for 0-relation, non-isolate chars ==="
+echo "=== can skip flag/ordinal collection for 0-relation, non-isolate chars. ==="
+echo "=== The relation graph is pushed to DCS for review the same way stage 1's ==="
+echo "=== roster+groups are — Postgres only gets it once approved there. ==="
 docker compose run --rm analyse_service \
     conda run --no-capture-output -n analyse_service python -m src.services.collection.relations.main "$NAME" "$ARC"
 docker compose run --rm --entrypoint "" analyse_service \

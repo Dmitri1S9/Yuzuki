@@ -14,6 +14,7 @@ CREATE TABLE universes (
     name            TEXT NOT NULL,
     arc             TEXT NOT NULL DEFAULT '',
     character_count INT  DEFAULT 0,
+    anilist_title   TEXT,  -- AniList search override when it differs from `name`; NULL = search with `name`
     UNIQUE (name, arc),
 
     -- ordinal
@@ -103,6 +104,14 @@ CREATE TABLE characters (
     soul_age    VARCHAR(10),
     gender      VARCHAR(10),
     species     VARCHAR(50),
+
+    -- stage 1 web-search result: candidate portrait + existence signal
+    image_url       TEXT,
+    existence_hits  INT,
+
+    -- stage 1's "confirmed loner" signal — exempts a character from stage 2's
+    -- low_info exclusion regardless of relation degree (see low_info.py)
+    is_isolated     BOOLEAN NOT NULL DEFAULT FALSE,
 
     -- ordinal (position in sorted list)
     combat_potential    INT,
@@ -210,6 +219,20 @@ CREATE TABLE relations (
 );
 
 CREATE INDEX idx_relations_universe ON relations(universe_id);
+
+-- ---------- raw_passes ----------
+-- Cache of features stage's raw per-character/per-param Gemini scores (2
+-- passes), keyed by universe — lets a debug rerun skip re-paying for a
+-- collection pass instead of always re-calling the model. Replaces the old
+-- pass{N}_{SLUG}.csv files.
+CREATE TABLE raw_passes (
+    universe_id BIGINT NOT NULL REFERENCES universes(id) ON DELETE CASCADE,
+    pass_number INT NOT NULL,
+    param       TEXT NOT NULL,
+    name        TEXT NOT NULL,
+    score       DOUBLE PRECISION,
+    PRIMARY KEY (universe_id, pass_number, param, name)
+);
 
 -- ---------- relationship_graphs ----------
 -- One row per universe. `characters` fixes the row/column order for

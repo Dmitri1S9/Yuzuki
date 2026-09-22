@@ -29,10 +29,14 @@ def push_roster_draft(universe_id: int, universe_name: str, arc: str | None,
 
 
 def push_graph_draft(universe_id: int, universe_name: str, arc: str | None,
-                      nodes: list[dict], edges: list[dict]) -> dict:
+                      nodes: list[dict], edges: list[dict],
+                      group_graph: dict | None = None) -> dict:
+    payload = {"nodes": nodes, "edges": edges}
+    if group_graph is not None:
+        payload["group_graph"] = group_graph
     return _post("/api/queue/graph", {
         "universe_id": universe_id, "universe_name": universe_name, "arc": arc,
-        "payload": {"nodes": nodes, "edges": edges},
+        "payload": payload,
     })
 
 

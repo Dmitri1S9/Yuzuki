@@ -25,9 +25,11 @@ src/
                                           manually, not part of run_pipeline.sh
   infra/        external systems: ai_clients (Gemini/X + schemas), prompts
                 (Jinja loader + templates), settings (config/logging/redis),
-                exceptions.
+                dcs_client.py (pushes drafts to DCS — see below), exceptions.
   shared/       cross-cutting utilities used across layers: naming.py
                 (slugify/arg parsing), decorators.py (@announce/@report).
+  api/          FastAPI app — the ONLY place cast/relations output actually
+                lands in Postgres now. See "DCS" below.
 ```
 
 ## The "one `main.py` per level" rule
@@ -98,6 +100,55 @@ Every domain class also has:
   registries (only on `Character`, since it's the one class with a large,
   JSON-driven parameter set — `Group`/`Relation`/`Universe`'s few fields are
   structural, not a swappable list, so plain getters already cover them).
+
+## DCS — human review before anything is final
+
+[DCS (Droid Command Station)](../DCS) is a separate sibling project (own
+repo, own `docker-compose.yaml`) that puts a human review/approval gate in
+front of stage 1 (roster+groups) and stage 3 (relations, as an editable
+graph). It talks to Yuzuki only over HTTP — never touches Postgres
+directly.
+
+**The flow changed because of this:** `cast/persistence.py` and
+`relations/persistence.py` no longer write groups/relations to Postgres
+themselves. Instead they register the universe (idempotent, just enough to
+have a real `universe_id`) and push a draft to DCS via
+`src/infra/dcs_client.py`. A human reviews/edits it in DCS's UI and clicks
+Approve, which calls back into `src/api/routes/confirm.py` — that's the
+only place `GroupRepository`/`RelationRepository` actually get written for
+that data now. `src/api/main.py` needs to be running as a persistent server
+(`docker compose up -d analyse_service`, not just the one-off `docker
+compose run` pipeline-stage invocations) for this callback to reach it.
+
+`features/persistence.py` pushes stage 2's per-parameter kappa quality to
+DCS too, but push-only — no edit loop, no confirm callback. The numbers
+(`min_kappa`, `kappa_raw_min`, ...) are already computed by
+`consensus_rank()`; DCS just renders them color-coded.
+
+**Invariant: a low-reliability (DROP) verdict is never a reason to remove a
+parameter for the whole universe.** It's diagnostic only. Unreliable
+agreement is always handled per character — `consensus_rank()` nulls that
+one character's value when its passes disagree (see its own docstring) —
+never by dropping the parameter for everyone. `KappaReview.tsx` in DCS has
+no "drop parameter" action for exactly this reason; if this view ever grows
+editing, this invariant still applies.
+
+`run_pipeline.sh` still runs stage 1 → 3 → 2 straight through without
+waiting — the JSON handoff files between stages are unaffected by any of
+this (stage 2 still reads stage 1's roster from
+`run/stage1_cast_{slug}.json`, same as always). What's decoupled is
+specifically *when confirmed data lands in Postgres* — that now happens
+whenever the human gets to DCS, independent of the pipeline script's own
+pace.
+
+`GroupRepository.save_groups`/`RelationRepository.save_relations` gained a
+`replace=True` path for this (delete-then-insert instead of a bare
+`INSERT`) — a re-approval replaces the previously confirmed set instead of
+piling duplicate rows on top of it, which also incidentally fixes the
+row-duplication a plain pipeline rerun caused before (`GroupRepository`/
+`RelationRepository` are still called without `replace=True` from
+`group_relations`' direct-write path, since that one isn't part of the DCS
+review flow — see Known gaps).
 
 ## Known gaps (not fixed by the reorg, not silently pretended away)
 

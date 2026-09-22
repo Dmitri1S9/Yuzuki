@@ -117,6 +117,10 @@ Thumbs.db
 # never the source of truth (the database is) — see ARCHITECTURE.md.
 /run/
 
+# Locally re-hosted, face-cropped character portraits (cast/steps/images.py)
+# — derived, redownloadable data, not source.
+/media/
+
 # IDE specific
 .vscode/settings.json
 .vscode/launch.json

@@ -14,7 +14,7 @@ from pathlib import Path
 _PARAMETERS_PATH = Path(__file__).parent / "parameters.json"
 
 
-def _load_parameters() -> tuple[dict[str, dict], dict[str, str], dict[str, dict]]:
+def _load_parameters() -> tuple[dict[str, dict], dict[str, str], dict[str, dict], dict[str, dict]]:
     with open(_PARAMETERS_PATH, encoding="utf-8") as f:
         categories = json.load(f)
 
@@ -22,12 +22,20 @@ def _load_parameters() -> tuple[dict[str, dict], dict[str, str], dict[str, dict]
 
     ordinals_raw = categories.pop("ordinals")
     ordinal_params = {name: meta["prompt_template"] for name, meta in ordinals_raw.items()}
+    ordinal_meta = {
+        name: {
+            "definition": meta["definition"],
+            "tier_count": meta["tier_count"],
+            "normal_tier_index": meta["normal_tier_index"],
+        }
+        for name, meta in ordinals_raw.items()
+    }
 
     flag_params: dict[str, dict] = {}
     for category in categories.values():
         flag_params.update(category)
 
-    return profile_params, ordinal_params, flag_params
+    return profile_params, ordinal_params, flag_params, ordinal_meta
 
 
 # profile field name -> {"definition": ..., "values": [...] | None} — collected
@@ -40,7 +48,14 @@ PROFILE_PARAMS: dict[str, dict]
 ORDINAL_PARAMS: dict[str, str]
 # flag name -> {"definition": ..., "sort_axis": ...}
 FLAG_PARAMS: dict[str, dict]
-PROFILE_PARAMS, ORDINAL_PARAMS, FLAG_PARAMS = _load_parameters()
+# ordinal name -> {"definition": ..., "tier_count": ..., "normal_tier_index":
+# ...} — the fixed tier scale's size and where its "ordinary person" anchor
+# tier sits (0-indexed). Kept separate from ORDINAL_PARAMS since that one's
+# value type (the prompt template name) is already relied on as a plain
+# string by every existing caller (features/collection.py's
+# client.rank(prompt, ...)).
+ORDINAL_META: dict[str, dict]
+PROFILE_PARAMS, ORDINAL_PARAMS, FLAG_PARAMS, ORDINAL_META = _load_parameters()
 
 
 def all_param_names() -> list[str]:

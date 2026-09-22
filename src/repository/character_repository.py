@@ -3,12 +3,10 @@
 Profile fields (body_age/soul_age/gender/species) are read from the real
 `characters` columns, but nothing in the live pipeline writes them yet —
 profile collection was only ever wired through the deleted Celery path.
-Ordinal/flag values are wired up (Character.get_flag/get_ordinal, the
-parameter registry) but always come back empty too: stage2 (ordinal/flag
-consensus) results aren't persisted to the database yet. Both are known
-gaps, unchanged by this reorg (see ARCHITECTURE.md). find_characters()
-already filters correctly against all three once the data exists; it just
-has nothing to match against right now.
+Ordinal/flag columns (one INT per parameter, position in the consensus
+sort order, NULL = unknown/unconfirmed) are now loaded here too and
+written via save_feature_position — the "Observe Beauty" ranking view is
+the first real writer, see src/api/routes/confirm.py.
 """
 import logging
 
@@ -16,57 +14,67 @@ from psycopg2.extras import Json
 
 from src.domain.character import Character
 from src.domain.parameters import FLAG_PARAMS, ORDINAL_PARAMS, PROFILE_PARAMS
-from src.repository.connection import read_only, transactional
+from src.repository.connection import read_only, transactional, validate_column
 
 log = logging.getLogger(__name__)
 
-_PROFILE_COLUMNS = tuple(PROFILE_PARAMS)  # ("body_age", "soul_age", "gender", "species")
+_PROFILE_COLUMNS = tuple(PROFILE_PARAMS)               # ("body_age", "soul_age", "gender", "species")
+_FEATURE_COLUMNS = tuple(ORDINAL_PARAMS) + tuple(FLAG_PARAMS)  # one INT column per ordinal/flag
+_ALL_COLUMNS = _PROFILE_COLUMNS + _FEATURE_COLUMNS
 
 
-def _character_from_row(universe_id: int, name: str, aliases, *profile_values) -> Character:
-    profile = dict(zip(_PROFILE_COLUMNS, profile_values))
-    return Character(name=name, universe_id=universe_id, aliases=aliases or [], profile=profile)
+def _character_from_row(universe_id: int, name: str, aliases, image_url, existence_hits,
+                         is_isolated, *values) -> Character:
+    profile = dict(zip(_PROFILE_COLUMNS, values))
+    features = dict(zip(_FEATURE_COLUMNS, values[len(_PROFILE_COLUMNS):]))
+    ordinals = {k: v for k, v in features.items() if k in ORDINAL_PARAMS}
+    flags = {k: v for k, v in features.items() if k in FLAG_PARAMS}
+    return Character(name=name, universe_id=universe_id, aliases=aliases or [],
+                      profile=profile, ordinals=ordinals, flags=flags,
+                      image_url=image_url, existence_hits=existence_hits,
+                      is_isolated=is_isolated)
 
 
 def _load_roster(conn, universe_id: int) -> list[Character]:
-    cols = ", ".join(_PROFILE_COLUMNS)
+    cols = ", ".join(_ALL_COLUMNS)
     with conn.cursor() as cur:
         cur.execute(
-            f"SELECT name, aliases, {cols} FROM characters WHERE universe_id = %s ORDER BY name",
+            f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+            f"FROM characters WHERE universe_id = %s ORDER BY name",
             (universe_id,),
         )
         rows = cur.fetchall()
-    return [_character_from_row(universe_id, name, aliases, *profile_values)
-            for name, aliases, *profile_values in rows]
+    return [_character_from_row(universe_id, *row) for row in rows]
 
 
 class CharacterRepository:
 
     @read_only
     def get_character(self, conn, universe_id: int, name: str) -> Character | None:
-        cols = ", ".join(_PROFILE_COLUMNS)
+        cols = ", ".join(_ALL_COLUMNS)
         with conn.cursor() as cur:
             cur.execute(
-                f"SELECT name, aliases, {cols} FROM characters WHERE universe_id = %s AND name = %s",
+                f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+                f"FROM characters WHERE universe_id = %s AND name = %s",
                 (universe_id, name),
             )
             row = cur.fetchone()
-        return None if row is None else _character_from_row(universe_id, row[0], row[1], *row[2:])
+        return None if row is None else _character_from_row(universe_id, *row)
 
     @read_only
     def get_characters(self, conn, universe_id: int, names: list[str]) -> list[Character]:
         """Search by one or several names at once."""
         if not names:
             return []
-        cols = ", ".join(_PROFILE_COLUMNS)
+        cols = ", ".join(_ALL_COLUMNS)
         with conn.cursor() as cur:
             cur.execute(
-                f"SELECT name, aliases, {cols} FROM characters WHERE universe_id = %s AND name = ANY(%s)",
+                f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+                f"FROM characters WHERE universe_id = %s AND name = ANY(%s)",
                 (universe_id, names),
             )
             rows = cur.fetchall()
-        return [_character_from_row(universe_id, name, aliases, *profile_values)
-                for name, aliases, *profile_values in rows]
+        return [_character_from_row(universe_id, *row) for row in rows]
 
     @read_only
     def find_characters(self, conn, universe_id: int, **filters) -> list[Character]:
@@ -88,3 +96,145 @@ class CharacterRepository:
                 (Json(aliases) if aliases else None, universe_id, name),
             )
         log.info("saved %d alias(es) for %r (universe %d)", len(aliases), name, universe_id)
+
+    @transactional
+    def save_character_isolation(self, conn, universe_id: int, name: str, is_isolated: bool) -> None:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE characters SET is_isolated = %s WHERE universe_id = %s AND name = %s",
+                (is_isolated, universe_id, name),
+            )
+
+    @transactional
+    def sync_roster(self, conn, universe_id: int, names: list[str]) -> None:
+        """Roster confirmation is authoritative, not additive: deletes any
+        character row for this universe that isn't in the confirmed list.
+        create_universe's own upsert only ever adds rows (INSERT ... ON
+        CONFLICT DO NOTHING) — without this, a human removing a fabricated
+        name in DCS before approving would see it silently reappear, sourced
+        from an earlier placeholder registration (stage 1's own draft push)
+        that create_universe never cleans up after."""
+        with conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM characters WHERE universe_id = %s AND NOT (name = ANY(%s)) RETURNING name",
+                (universe_id, names),
+            )
+            removed = [row[0] for row in cur.fetchall()]
+        if removed:
+            log.info("removed %d character(s) no longer in the confirmed roster for universe %d: %s",
+                      len(removed), universe_id, removed)
+
+    @transactional
+    def save_character_image(self, conn, universe_id: int, name: str,
+                              image_url: str | None, existence_hits: int | None) -> None:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE characters SET image_url = %s, existence_hits = %s "
+                "WHERE universe_id = %s AND name = %s",
+                (image_url, existence_hits, universe_id, name),
+            )
+        log.info("saved image (%s hit(s)) for %r (universe %d)", existence_hits, name, universe_id)
+
+    @transactional
+    def rename_character(self, conn, universe_id: int, old_name: str, new_name: str) -> None:
+        """Renames a confirmed character — post-approval, so it's not the
+        DCS roster-review edit path (that edits a pending draft before
+        anything is in Postgres). `name` is used as the join key in
+        `groups.members`/`leader` and `relations.source`/`target`/`members`
+        (all plain text/JSONB, not a foreign key), so a rename has to
+        cascade into those too or they'd silently point at a name that no
+        longer exists. Done in Python, not raw JSONB SQL — clearer to read
+        and this is a rare, low-frequency admin action, not a hot path."""
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE characters SET name = %s WHERE universe_id = %s AND name = %s",
+                (new_name, universe_id, old_name),
+            )
+            if cur.rowcount == 0:
+                raise ValueError(f"character {old_name!r} not found in universe {universe_id}")
+
+            cur.execute(
+                "SELECT id, members, leader FROM groups WHERE universe_id = %s "
+                "AND (members @> %s::jsonb OR leader = %s)",
+                (universe_id, Json([old_name]), old_name),
+            )
+            for gid, members, leader in cur.fetchall():
+                new_members = [new_name if m == old_name else m for m in (members or [])]
+                new_leader = new_name if leader == old_name else leader
+                cur.execute(
+                    "UPDATE groups SET members = %s, leader = %s WHERE id = %s",
+                    (Json(new_members), new_leader, gid),
+                )
+
+            cur.execute(
+                "SELECT id, source, target, members FROM relations WHERE universe_id = %s "
+                "AND (source = %s OR target = %s OR members @> %s::jsonb)",
+                (universe_id, old_name, old_name, Json([old_name])),
+            )
+            for rid, source, target, members in cur.fetchall():
+                new_source = new_name if source == old_name else source
+                new_target = new_name if target == old_name else target
+                new_members = ([new_name if m == old_name else m for m in members]
+                               if members is not None else None)
+                cur.execute(
+                    "UPDATE relations SET source = %s, target = %s, members = %s WHERE id = %s",
+                    (new_source, new_target, Json(new_members) if new_members is not None else None, rid),
+                )
+        log.info("renamed %r -> %r in universe %d (cascaded to groups/relations)",
+                  old_name, new_name, universe_id)
+
+    @transactional
+    def update_character_profile(self, conn, universe_id: int, name: str, fields: dict) -> None:
+        """Partial update of aliases + the 4 profile columns — only keys
+        present in `fields` change, same "sparse diff is fine" convention
+        as save_feature_positions. Ordinal/flag positions have their own
+        dedicated writer (save_feature_positions, the Observe Beauty
+        path) and aren't touched here."""
+        allowed = {"aliases", *_PROFILE_COLUMNS}
+        unknown = set(fields) - allowed
+        if unknown:
+            raise ValueError(f"unknown profile field(s): {sorted(unknown)}")
+        if not fields:
+            return
+        assignments = []
+        values = []
+        for key, value in fields.items():
+            assignments.append(f"{key} = %s")
+            values.append(Json(value) if key == "aliases" else value)
+        values += [universe_id, name]
+        with conn.cursor() as cur:
+            cur.execute(
+                f"UPDATE characters SET {', '.join(assignments)} WHERE universe_id = %s AND name = %s",
+                values,
+            )
+        log.info("updated profile field(s) %s for %r (universe %d)", sorted(fields), name, universe_id)
+
+    @read_only
+    def get_feature_positions(self, conn, universe_id: int, param_name: str) -> dict[str, int | None]:
+        """param_name: any ordinal or flag column — one INT per character,
+        NULL = unconfirmed. Read side of the "Observe Beauty" ranking view."""
+        validate_column(param_name, set(_FEATURE_COLUMNS))
+        with conn.cursor() as cur:
+            cur.execute(
+                f"SELECT name, {param_name} FROM characters WHERE universe_id = %s",
+                (universe_id,),
+            )
+            rows = cur.fetchall()
+        return dict(rows)
+
+    @transactional
+    def save_feature_positions(self, conn, universe_id: int, param_name: str,
+                                positions: dict[str, int | None]) -> None:
+        """Overwrites this parameter's position for every named character —
+        a manual re-rank/delete in the "Observe Beauty" view confirming into
+        Postgres. A name not in `positions` is left untouched (not nulled) —
+        callers pass the full edited set, not a sparse diff."""
+        validate_column(param_name, set(_FEATURE_COLUMNS))
+        with conn.cursor() as cur:
+            for name, position in positions.items():
+                cur.execute(
+                    f"UPDATE characters SET {param_name} = %s WHERE universe_id = %s AND name = %s",
+                    (position, universe_id, name),
+                )
+        log.info("saved %s positions for %d character(s) (universe %d)",
+                  param_name, len(positions), universe_id)

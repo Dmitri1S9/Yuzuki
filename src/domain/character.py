@@ -13,7 +13,9 @@ from src.domain.parameters import FLAG_PARAMS, ORDINAL_PARAMS, PROFILE_PARAMS
 class Character:
     def __init__(self, name: str, universe_id: int, aliases: list[str] | None = None,
                  low_info: bool = False, profile: dict | None = None,
-                 ordinals: dict | None = None, flags: dict | None = None):
+                 ordinals: dict | None = None, flags: dict | None = None,
+                 image_url: str | None = None, existence_hits: int | None = None,
+                 is_isolated: bool = False):
         self._name = name
         self._universe_id = universe_id
         self._aliases = list(aliases or [])
@@ -21,6 +23,9 @@ class Character:
         self._profile = dict(profile or {})
         self._ordinals = dict(ordinals or {})
         self._flags = dict(flags or {})
+        self._image_url = image_url
+        self._existence_hits = existence_hits
+        self._is_isolated = is_isolated
 
     def get_name(self) -> str:
         return self._name
@@ -31,8 +36,17 @@ class Character:
     def get_aliases(self) -> list[str]:
         return list(self._aliases)
 
+    def get_image_url(self) -> str | None:
+        return self._image_url
+
+    def get_existence_hits(self) -> int | None:
+        return self._existence_hits
+
     def is_low_info(self) -> bool:
         return self._low_info
+
+    def is_isolated(self) -> bool:
+        return self._is_isolated
 
     def get_profile_field(self, name: str):
         if name not in PROFILE_PARAMS:
@@ -54,7 +68,7 @@ class Character:
         """List every parameter available via get_<name>() / obj['<name>'],
         sourced live from parameters.json — never goes stale by hand."""
         names = list(PROFILE_PARAMS) + list(ORDINAL_PARAMS) + list(FLAG_PARAMS)
-        print(f"{cls.__name__} — identity: name, universe_id, aliases, low_info")
+        print(f"{cls.__name__} — identity: name, universe_id, aliases, low_info, is_isolated")
         print(f"{cls.__name__} — {len(PROFILE_PARAMS)} profile field(s): {', '.join(PROFILE_PARAMS)}")
         print(f"{cls.__name__} — {len(ORDINAL_PARAMS)} ordinal(s): {', '.join(ORDINAL_PARAMS)}")
         print(f"{cls.__name__} — {len(FLAG_PARAMS)} flag(s): {', '.join(FLAG_PARAMS)}")

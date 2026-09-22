@@ -24,3 +24,6 @@ dependencies:
       - watchfiles
       - pyvis
       - httpx
+      - ddgs
+      - opencv-python-headless==4.10.0.84
+      - pillow

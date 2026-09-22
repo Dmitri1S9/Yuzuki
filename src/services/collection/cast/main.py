@@ -1,7 +1,7 @@
-"""main.py — the instruction list for stage 1 (cast + groups). Read main()
-top to bottom, nothing else; every step's own logic lives in its own file
-under this package (constants.py, roster.py, groups.py, output.py,
-persistence.py) — see ARCHITECTURE.md.
+"""main.py — stage 1 (cast + groups), read top to bottom and nowhere else.
+4 named chapters, no logic of its own — pipeline.py says what each chapter
+consists of, and steps/ (constants.py, roster.py, groups.py, images.py,
+output.py, persistence.py) says how. See ARCHITECTURE.md.
 """
 import os
 
@@ -12,48 +12,22 @@ import os
 os.environ.setdefault("REDIS_URL_CACHE", "redis://localhost:6379/1")
 os.environ.setdefault("REDIS_URL_CELERY", "redis://localhost:6379/0")
 
-from src.services.collection.cast.groups import (
-    collect_raw_groups, consolidate_groups, create_client, format_groups_for_output,
+from src.services.collection.cast.pipeline import (
+    assemble_and_publish, build_roster_and_groups, collect_candidates, reconcile_names,
 )
-from src.services.collection.cast.output import (
-    assemble_output, configure_logging, log_final_summary, write_output_file,
-)
-from src.services.collection.cast.persistence import persist_to_database, push_draft_to_dcs
-from src.services.collection.cast.roster import (
-    build_name_resolver, build_roster, extract_candidate_names, flag_ambiguous_matches,
-    list_dropped_names, merge_spelling_variants, resolve_aliases,
-)
+from src.services.collection.cast.steps.groups import create_client
+from src.services.collection.cast.steps.output import configure_logging
 
 
 def main():
     configure_logging()
-
     client = create_client()
-    raw_groups = collect_raw_groups(client)
 
-    canon, presence, mentions = extract_candidate_names(raw_groups)
-    raw_cluster_count = len(canon)
+    collection = collect_candidates(client)
+    collection = reconcile_names(client, collection)
+    collection = build_roster_and_groups(collection)
+    output = assemble_and_publish(collection)
 
-    canon, presence, mentions, spelling_key_map, spelling_merge_count = merge_spelling_variants(
-        canon, presence, mentions)
-    ambiguous_matches = flag_ambiguous_matches(canon)
-    canon, presence, mentions, alias_key_map, aliases_of, alias_pairs = resolve_aliases(
-        client, canon, presence, mentions)
-
-    resolve = build_name_resolver(spelling_key_map, alias_key_map)
-    merged_groups = consolidate_groups(raw_groups, resolve)
-
-    roster = build_roster(canon, presence, mentions, aliases_of, merged_groups)
-    dropped = list_dropped_names(canon, presence, mentions, aliases_of, roster, resolve)
-    groups_out = format_groups_for_output(merged_groups, canon)
-
-    output = assemble_output(roster, groups_out, raw_cluster_count, spelling_merge_count,
-                              alias_pairs, canon, dropped, ambiguous_matches, presence)
-
-    universe_id = persist_to_database(output)
-    push_draft_to_dcs(output, universe_id)
-    write_output_file(output)
-    log_final_summary(output)
     return output
 
 

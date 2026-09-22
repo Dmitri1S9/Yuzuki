@@ -34,13 +34,17 @@ class GeminiClient(BaseAIClient):
     thinking_alias           = "low"
     thinking_group_relations = "low"
 
-    # temperature per task type
+    # temperature per task type. group/alias were 0.4 to diversify across
+    # multiple passes (a later pass needed a chance at a different answer to
+    # corroborate against) — now single-pass (see cast/constants.py), so
+    # there is no second pass to diversify against and 0 is the better bet,
+    # same reasoning as group_relations below.
     temperature_rank            = _settings.temperature
     temperature_flag            = _settings.temperature
     temperature_profile         = _settings.temperature
-    temperature_group           = 0.4
+    temperature_group           = 0.0
     temperature_relation        = 0.4
-    temperature_alias           = 0.4
+    temperature_alias           = 0.0
     temperature_group_relations = 0.0
 
     def __init__(self) -> None:

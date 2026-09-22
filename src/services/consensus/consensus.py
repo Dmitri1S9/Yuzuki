@@ -1,8 +1,13 @@
-"""Consensus weak-order ranker for a single ordinal parameter.
+"""Consensus weak-order ranker for a single ordinal parameter — the top
+level. The metric (metric.py), the majority-tier floor (tiers.py), and the
+block-structure search (search.py) each live in their own file; this file
+is just consensus_rank() itself, positions_from_consensus() (used by the
+live pipeline), and the self-test.
 
 Takes 3 independent passes (sorted list + tier markers, already reduced to
-per-character scores by stage2_features.scores_from_result) and produces one
-weak order: characters grouped into ordered blocks, equal within a block.
+per-character scores by features/collection.py's scores_from_result) and
+produces one weak order: characters grouped into ordered blocks, equal
+within a block.
 
 Metric: each pass i is reduced to pairwise labels L_i(a,b) in {>, <, =},
 "=" iff a and b share a TIER in pass i (tier level, not raw position).
@@ -26,210 +31,25 @@ passes with no R involved — a genuinely different number, kept alongside
 min_kappa, not instead of it. (kappa_analysis.R's order_min is a third,
 separate signal again — quartile-position categorization rather than tier
 level — also unaffected and still computed on every run.)
+
+NOTE: no longer called by the live pipeline (see features/pipeline.py's
+own docstring) — both ordinals and flags now go through
+consensus.flag_consensus's 2-pass algorithm instead. Left in place, still
+tested, since positions_from_consensus (below) is shape-compatible with
+flag_consensus's output and stays in real use.
 """
 import math
 import random
-from collections import Counter
 
 import numpy as np
 
+from src.services.consensus.metric import cohen_kappa_masked, evaluate, maximin_key, sign_matrix
+from src.services.consensus.search import borda_init, hill_climb
+from src.services.consensus.tiers import majority_tier
+
 PASSES = (1, 2, 3)
-CATS = (-1, 0, 1)
 RESTARTS = 5
-WINDOW = 5
-NEG_INF = float("-inf")
 
-
-# ── metric ──────────────────────────────────────────────────────────────────
-
-def sign_matrix(vec: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """vec: float array, NaN = missing. Returns (codes in {-1,0,1}, valid mask)."""
-    diff = vec[:, None] - vec[None, :]
-    valid = ~np.isnan(diff)
-    np.fill_diagonal(valid, False)
-    codes = np.sign(np.nan_to_num(diff, nan=0.0)).astype(np.int8)
-    return codes, valid
-
-
-def cohen_kappa_masked(codes_a: np.ndarray, codes_b: np.ndarray, valid: np.ndarray) -> float:
-    a, b = codes_a[valid], codes_b[valid]
-    n = a.size
-    if n == 0:
-        return float("nan")
-    conf = np.zeros((3, 3), dtype=np.float64)
-    for i, cv in enumerate(CATS):
-        am = a == cv
-        if not am.any():
-            continue
-        for j, dv in enumerate(CATS):
-            conf[i, j] = np.sum(am & (b == dv))
-    po = np.trace(conf) / n
-    row, col = conf.sum(axis=1), conf.sum(axis=0)
-    pe = np.sum(row * col) / (n * n)
-    if abs(1.0 - pe) < 1e-10:
-        return float("nan")
-    return float((po - pe) / (1.0 - pe))
-
-
-def block_vector(blocks: list[list[int]], m: int) -> np.ndarray:
-    vec = np.empty(m, dtype=np.int32)
-    for b_idx, block in enumerate(blocks):
-        for i in block:
-            vec[i] = b_idx
-    return vec
-
-
-def evaluate(blocks: list[list[int]], pass_codes: dict, pass_valid: dict, m: int) -> tuple[float, float, float]:
-    bvec = block_vector(blocks, m)
-    codes_r, _ = sign_matrix(bvec.astype(np.float64))
-    return tuple(cohen_kappa_masked(pass_codes[p], codes_r, pass_valid[p]) for p in PASSES)
-
-
-def maximin_key(kappas: tuple[float, float, float]) -> tuple[float, float, float]:
-    vals = [NEG_INF if math.isnan(k) else k for k in kappas]
-    return tuple(sorted(vals))
-
-
-# ── majority tier — hard floor under the block search ───────────────────────
-# The kappa objective alone will happily fuse characters from genuinely
-# different tiers into one block if that raises pairwise agreement (observed
-# on authority_scope: one 27-member block spanning raw tiers 0, 1 and 2).
-# Blocks may freely split a shared tier into finer sub-blocks (that can only
-# help or be neutral to kappa, per the tier-level metric), but must never
-# merge two characters whose majority tier (>=2-of-3-passes vote, same rule
-# merge_cell used) is defined and differs. A character with no majority tier
-# (1/1/1 disagreement, or <2 passes) is unconstrained — it carries no vote to
-# conflict with.
-
-def majority_tier(idx: int, tiers_by_idx: dict) -> int | None:
-    values = [tiers_by_idx[p][idx] for p in PASSES if idx in tiers_by_idx[p]]
-    if len(values) < 2:
-        return None
-    for tier, count in Counter(values).items():
-        if count >= 2:
-            return tier
-    return None
-
-
-def block_tier(block: list[int], maj_tier: dict) -> int | None:
-    tiers_present = {maj_tier[e] for e in block if maj_tier[e] is not None}
-    assert len(tiers_present) <= 1, f"tier-consistency invariant broken: {tiers_present}"
-    return next(iter(tiers_present), None)
-
-
-def tiers_compatible(tier_a: int | None, tier_b: int | None) -> bool:
-    return tier_a is None or tier_b is None or tier_a == tier_b
-
-
-# ── init ────────────────────────────────────────────────────────────────────
-
-def borda_init(names: list[int], borda_score: dict, tiers: dict, maj_tier: dict,
-                rng: random.Random | None = None) -> list[list[int]]:
-    if rng is not None:
-        noisy = {n: borda_score[n] + rng.gauss(0, 0.5) for n in names}
-        order = sorted(names, key=lambda n: noisy[n])
-    else:
-        order = sorted(names, key=lambda n: borda_score[n])
-
-    blocks: list[list[int]] = [[order[0]]]
-    current_tier = maj_tier[order[0]]
-    for a, b in zip(order, order[1:]):
-        distinct_votes = sum(
-            1 for p in PASSES
-            if tiers[p].get(a) is not None and tiers[p].get(b) is not None and tiers[p][a] != tiers[p][b]
-        )
-        b_tier = maj_tier[b]
-        if distinct_votes >= 2 or not tiers_compatible(current_tier, b_tier):
-            blocks.append([b])
-            current_tier = b_tier
-        else:
-            blocks[-1].append(b)
-            if current_tier is None:
-                current_tier = b_tier
-    return blocks
-
-
-# ── moves ───────────────────────────────────────────────────────────────────
-
-def gen_moves(blocks: list[list[int]], positions: dict):
-    k = len(blocks)
-    for i in range(k - 1):
-        yield ("merge", i)
-    for i, block in enumerate(blocks):
-        for split_at in range(1, len(block)):
-            yield ("split", i, split_at)
-    for i, block in enumerate(blocks):
-        for elem in block:
-            if i > 0:
-                yield ("transfer_neighbor", i, elem, i - 1)
-            if i < k - 1:
-                yield ("transfer_neighbor", i, elem, i + 1)
-    for i in range(k - 1):
-        yield ("swap", i)
-    for i, block in enumerate(blocks):
-        for elem in block:
-            p = positions[elem]
-            targets = {
-                j for j, other in enumerate(blocks)
-                if j != i and any(abs(positions[o] - p) <= WINDOW for o in other)
-            }
-            for j in targets:
-                yield ("window_transfer", i, elem, j)
-
-
-def apply_move(blocks: list[list[int]], move, maj_tier: dict) -> list[list[int]] | None:
-    blocks = [list(b) for b in blocks]
-    kind = move[0]
-
-    if kind == "merge":
-        i = move[1]
-        if not tiers_compatible(block_tier(blocks[i], maj_tier), block_tier(blocks[i + 1], maj_tier)):
-            return None
-        blocks[i] = blocks[i] + blocks[i + 1]
-        del blocks[i + 1]
-
-    elif kind == "split":
-        _, i, at = move
-        block = blocks[i]
-        blocks[i:i + 1] = [block[:at], block[at:]]
-
-    elif kind in ("transfer_neighbor", "window_transfer"):
-        _, i, elem, j = move
-        if len(blocks[i]) <= 1:
-            return None  # would empty the source block — not a valid move
-        if not tiers_compatible(maj_tier[elem], block_tier(blocks[j], maj_tier)):
-            return None
-        blocks[i].remove(elem)
-        blocks[j].append(elem)
-        if not blocks[i]:
-            return None
-
-    elif kind == "swap":
-        i = move[1]
-        blocks[i], blocks[i + 1] = blocks[i + 1], blocks[i]
-
-    return [b for b in blocks if b]
-
-
-def hill_climb(blocks: list[list[int]], pass_codes: dict, pass_valid: dict, m: int, maj_tier: dict) -> list[list[int]]:
-    current_key = maximin_key(evaluate(blocks, pass_codes, pass_valid, m))
-    improved = True
-    while improved:
-        improved = False
-        positions = {elem: pos for pos, elem in enumerate(e for b in blocks for e in b)}
-        for move in gen_moves(blocks, positions):
-            candidate = apply_move(blocks, move, maj_tier)
-            if candidate is None or len(candidate) < 1:
-                continue
-            cand_key = maximin_key(evaluate(candidate, pass_codes, pass_valid, m))
-            if cand_key > current_key:
-                blocks, current_key = candidate, cand_key
-                improved = True
-                break
-    return blocks
-
-
-# ── top level ─────────────────────────────────────────────────────────────
 
 def consensus_rank(per_pass_scores: dict[int, dict[str, float | None]], roster: list[str]) -> tuple[dict, dict]:
     """per_pass_scores[p][name] = tier*10 + within, or None. One parameter.
@@ -267,7 +87,7 @@ def consensus_rank(per_pass_scores: dict[int, dict[str, float | None]], roster: 
         vals = [per_pass_scores[p][n] for p in PASSES if per_pass_scores[p].get(n) is not None]
         borda_score[idx_of[n]] = sum(vals) / len(vals)
     tiers_by_idx = {p: {idx_of[n]: t for n, t in tiers[p].items() if n in idx_of} for p in PASSES}
-    maj_tier = {i: majority_tier(i, tiers_by_idx) for i in range(m)}
+    maj_tier = {i: majority_tier(i, tiers_by_idx, PASSES) for i in range(m)}
 
     pass_codes, pass_valid = {}, {}
     for p in PASSES:
@@ -280,13 +100,13 @@ def consensus_rank(per_pass_scores: dict[int, dict[str, float | None]], roster: 
     best_blocks, best_key = None, None
     for restart in range(RESTARTS):
         rng = random.Random(restart) if restart > 0 else None
-        init_blocks = borda_init(indices, borda_score, tiers_by_idx, maj_tier, rng)
-        final_blocks = hill_climb(init_blocks, pass_codes, pass_valid, m, maj_tier)
-        key = maximin_key(evaluate(final_blocks, pass_codes, pass_valid, m))
+        init_blocks = borda_init(indices, borda_score, tiers_by_idx, maj_tier, PASSES, rng)
+        final_blocks = hill_climb(init_blocks, pass_codes, pass_valid, m, maj_tier, PASSES)
+        key = maximin_key(evaluate(final_blocks, pass_codes, pass_valid, m, PASSES))
         if best_key is None or key > best_key:
             best_blocks, best_key = final_blocks, key
 
-    kappas = evaluate(best_blocks, pass_codes, pass_valid, m)
+    kappas = evaluate(best_blocks, pass_codes, pass_valid, m, PASSES)
     block_sizes = [len(b) for b in best_blocks]
     std = math.sqrt((m * m - 1) / 12) if m > 1 else 0.0
 
@@ -298,11 +118,19 @@ def consensus_rank(per_pass_scores: dict[int, dict[str, float | None]], roster: 
         for elem in block:
             name = elig_names[elem]
             available_tiers = [tiers[p][name] for p in PASSES if name in tiers[p]]
+            # maj_tier[elem] (2-of-3 agreement) when it exists; otherwise the
+            # rounded average of whatever tiers are available — a display
+            # anchor for "Observe Beauty"'s fixed tier axis, not used by the
+            # block search itself (that already ran, see hill_climb above).
+            tier = maj_tier[elem]
+            if tier is None:
+                tier = round(sum(available_tiers) / len(available_tiers))
             per_character[name] = {
                 "block_index": b_idx,
                 "block_size": size,
                 "consensus_z": round(z, 4),
                 "pass_range": max(available_tiers) - min(available_tiers),
+                "tier": tier,
             }
         cumulative += size
 
@@ -333,6 +161,26 @@ def consensus_rank(per_pass_scores: dict[int, dict[str, float | None]], roster: 
     return per_character, quality
 
 
+def positions_from_consensus(per_character: dict[str, dict | None]) -> dict[str, int | None]:
+    """Flattens a consensus_rank/flag_consensus per_character result (keyed
+    by block_index/consensus_z — both produce the same shape by design)
+    into a single 0..N-1 integer position per character — the shape the
+    `characters` table's ordinal/flag columns store (see
+    CharacterRepository.save_feature_positions), and what a drag-to-reorder
+    UI edits directly. None stays None (not placed by consensus — dropped
+    for excess disagreement, or too little data). Ties within a block
+    (same consensus_z) break by name for a stable, deterministic order —
+    the block structure doesn't define a within-block order on its own."""
+    ranked = sorted(
+        (name for name, cell in per_character.items() if cell is not None),
+        key=lambda name: (per_character[name]["consensus_z"], name),
+    )
+    positions: dict[str, int | None] = {name: None for name in per_character}
+    for i, name in enumerate(ranked):
+        positions[name] = i
+    return positions
+
+
 # ── self-test ───────────────────────────────────────────────────────────────
 
 def _selftest():
@@ -360,7 +208,7 @@ def _selftest():
 
     # test 1: everything in one block -> kappa == 0 for every pass.
     one_block = [list(range(m))]
-    k_one = evaluate(one_block, pass_codes, pass_valid, m)
+    k_one = evaluate(one_block, pass_codes, pass_valid, m, PASSES)
     assert all(abs(k) < 1e-9 for k in k_one), f"one-block kappa should be 0, got {k_one}"
     print(f"test 1 (one block -> kappa 0): PASS  {k_one}")
 
@@ -368,8 +216,8 @@ def _selftest():
     # data that actually contains tier-equalities.
     true_blocks = [[idx_of["a"], idx_of["b"]], [idx_of["c"], idx_of["d"]], [idx_of["e"], idx_of["f"]]]
     strict_order = [[i] for i in range(m)]  # every element its own block
-    k_true = evaluate(true_blocks, pass_codes, pass_valid, m)
-    k_strict = evaluate(strict_order, pass_codes, pass_valid, m)
+    k_true = evaluate(true_blocks, pass_codes, pass_valid, m, PASSES)
+    k_strict = evaluate(strict_order, pass_codes, pass_valid, m, PASSES)
     assert maximin_key(k_true) > maximin_key(k_strict), (
         f"true blocks should beat strict order: true={k_true} strict={k_strict}"
     )
@@ -387,7 +235,7 @@ def _selftest():
     # test 4: no returned block may mix two different, both-defined majority
     # tiers — merging real tiers to chase kappa (seen live on authority_scope:
     # one block spanning raw tiers 0/1/2) must be impossible, not just unlikely.
-    maj = {i: majority_tier(i, tiers_by_idx) for i in range(m)}
+    maj = {i: majority_tier(i, tiers_by_idx, PASSES) for i in range(m)}
     by_block = {}
     for name, cell in per_character.items():
         if cell is not None:
