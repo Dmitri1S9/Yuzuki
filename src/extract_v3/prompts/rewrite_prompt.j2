@@ -1,0 +1,75 @@
+You rewrite ONE target sentence (marked <<< >>> in the passage below) into a list of simple sentences, for
+a later step that turns each simple sentence into a graph fact. {{ universe }} universe. Use ONLY what the
+target sentence says; the sentences around it are context for pronouns/references only, never a source of
+new facts.
+
+RULES:
+1. Pronouns and descriptive references ("the girl", "her father", "the villain") -> the canonical name from
+   the roster below, resolved using the surrounding context.
+2. Active voice only: "X was defeated by Y" -> "Y defeats X." If no agent is stated or knowable from
+   context, use "people" as the subject: "The villain was captured" (no agent stated) -> "People capture
+   the villain."
+3. Present simple tense always. Keep modality in words: wants to / can / cannot / must.
+4. Enumerations become separate sentences: "She plays bass and guitar" -> "Jiro plays bass." / "Jiro plays
+   guitar."
+5. "A did X with the help of K" -> "A does X." / "K helps A."
+6. Purpose clauses ("to X", "in order to X", "so that X") become a separate "A wants to X": "She became a
+   hero to protect people" -> "Jiro becomes a hero." / "Jiro wants to protect people."
+7. "because Y" -> Y becomes its own sentence.
+8. Appositions: "Jiro, a talented musician, joined..." -> "Jiro is a talented musician." / "Jiro joins..."
+9. Relative clauses: "the villain who attacked her" -> its own "Villain attacks Jiro."
+10. Concession ("Despite her fear, she fights"): "Jiro is afraid." / "Jiro fights."
+11. Reciprocal actions ("They fought each other"): "A fights B." / "B fights A."
+12. Group actions ("Class 1-A defeats...") keep the group as subject -- never distribute to its members.
+13. Frequency / degree / uncertainty / past-state words are kept, in words: often / always / never; very /
+    slightly; "it is implied that"; "used to" / "no longer".
+14. Conditionals/hypotheticals ("if...", "would have...") are NOT rewritten -- output exactly one line:
+    HYPOTHETICAL.
+15. Add nothing that is not in the target sentence.
+
+=== EXAMPLES (invented characters, unrelated to {{ universe }} -- format reference only) ===
+
+Target: "She healed the wounded soldier quickly." (context established "Elira" as the subject)
+-> ["Elira heals the wounded soldier quickly."]
+
+Target: "The merchant was robbed by Aldric."
+-> ["Aldric robs the merchant."]
+
+Target: "She wanted to become a healer, but could not yet lift the heavy stone jars."
+-> ["Elira wants to become a healer.", "Elira cannot lift the heavy stone jars."]
+
+Target: "Toma carries a sword and a shield."
+-> ["Toma carries a sword.", "Toma carries a shield."]
+
+Target: "Aldric built the bridge with the help of Reyna."
+-> ["Aldric builds the bridge.", "Reyna helps Aldric."]
+
+Target: "She trained for years to become a knight."
+-> ["Elira trains for years.", "Elira wants to become a knight."]
+
+Target: "Reyna, a gifted blacksmith, forged the blade."
+-> ["Reyna is a gifted blacksmith.", "Reyna forges the blade."]
+
+Target: "Despite her fear, Elira fights on, and it is implied she no longer trusts the old professor."
+-> ["Elira is afraid.", "Elira fights on.", "It is implied that Elira no longer trusts the old professor."]
+
+Target: "Aldric and Toma fought each other outside the tavern."
+-> ["Aldric fights Toma.", "Toma fights Aldric."]
+
+Target: "If Toma had stayed, he would have died."
+-> ["HYPOTHETICAL"]
+
+=== KNOWN CHARACTERS (canonical name = alternate names/hero names) ===
+{% for c in characters %}- {{ c.name }}{% if c.aliases %} = {{ c.aliases | join(", ") }}{% endif %}
+{% endfor %}
+=== KNOWN GROUPS (canonical name = alternate names) ===
+{% for g in groups %}- {{ g.name }}{% if g.aliases %} = {{ g.aliases | join(", ") }}{% endif %}
+{% endfor %}
+
+{# Everything above is identical for every sentence -> prefix cache. The passage goes last. #}
+=== PASSAGE (section: {{ section }}) ===
+{{ before }}<<<{{ target }}>>>{{ after }}
+=== END PASSAGE ===
+
+Rewrite ONLY the <<< >>> marked sentence, following the rules. Return only JSON, no other text:
+{"simple_sentences": ["...", "..."]}

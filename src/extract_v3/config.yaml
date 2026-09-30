@@ -1,13 +1,18 @@
-# graph_extract prototype config. Kyoka Jiro / My Hero Academia only.
+# extract_v3 prototype config. Kyoka Jiro's OWN wiki page only -- no subpages, no other pages.
 universe: "My Hero Academia"
 target_character: "Kyoka Jiro"
+page: "Kyoka Jiro"
 dump_path: "/home/Di/Загрузки/bokunoheroacademia_pages_current.xml"
+
+drop_sections: ["trivia", "references", "gallery", "navigation", "site navigation", "external links",
+               "image gallery"]
 
 llm:
   model: "qwen3.5:9b"
   temperature: 0.0
-  num_ctx: 8192          # chunk + roster is small; no need for the 20480 the old pipeline used
-  num_predict: 900
+  think: false
+  num_ctx: 4096          # single sentence + small window + few-shot -- short prompts
+  num_predict: 500
   keep_alive: "30m"
   timeout_s: 300
   retries: 2
@@ -15,42 +20,13 @@ llm:
 embedding:
   model: "BAAI/bge-small-en-v1.5"
 
-chunking:
-  min_sentences: 3
-  max_sentences: 8
-  # the alt strategy (1 sentence + 1 neighbor each side) is used only for the stage-4 comparison, not the
-  # main run -- see run_jiro.py / REPORT.md section 4.
-
 neo4j:
-  # NEO4J_URI/NEO4J_USER/NEO4J_PASSWORD come from the repo .env (same variables the yuzuki_local pipeline
-  # already added there), read the same way as DB_* -- only NEO4J_* keys are ever read from that file.
   default_uri: "bolt://localhost:7687"
   default_user: "neo4j"
 
-# Pages processed for Kyoka Jiro. NOT "every page that mentions her anywhere" -- the dump has 737 pages
-# containing her name (11.5MB raw wikitext), the overwhelming majority being full Story Arc / other
-# characters' Synopsis pages that mention her once or twice in passing among thousands of unrelated
-# sentences about other people. Processing all 737 as 3-8 sentence chunks was not tractable for one
-# prototype session (would be several thousand LLM calls) and would mostly extract OTHER characters'
-# actions, not hers. Scope instead: pages that are actually ABOUT her -- her own article and subpages, her
-# hero-name page, her parents' articles, and the battle/team pages her name appears in the title of. This
-# is a stated scoping decision, not a silent limitation -- see REPORT.md.
-pages:
-  - "Kyoka Jiro"
-  - "Kyoka Jiro/Relationships"
-  - "Kyoka Jiro/Synopsis"
-  - "Earphone Jack"
-  - "Kyotoku Jiro"
-  - "Mika Jiro"
-  - "Jiro House"
-  - "Momo Yaoyorozu, Kyoka Jiro & Denki Kaminari vs. Villains"
-  - "Kyoka Jiro & Koji Koda vs. Hizashi Yamada"
-  - "Enji Todoroki, Keigo Takami, Kyoka Jiro and Fumikage Tokoyami vs. All For One"
+spacy_model: "en_core_web_sm"
 
-# Roster given to the model so it can resolve names/pronouns to a canonical id instead of inventing one.
-# Characters: the 20 real students in Category:Class 1-A (pulled from the dump) + Jiro's parents + the
-# named non-student characters who appear in her own pages above. Aliases are real redirect titles from the
-# dump (hero names, nicknames) -- not guessed.
+# Same roster as graph_extract/config.yaml (Class 1-A + Jiro's parents + named non-students in her pages).
 roster:
   characters:
     - {name: "Kyoka Jiro", aliases: ["Jiro Kyoka"]}
@@ -80,6 +56,7 @@ roster:
     - {name: "Keigo Takami", aliases: ["Hawks", "Takami Keigo"]}
     - {name: "Tomura Shigaraki", aliases: ["Shigaraki Tomura", "Tenko Shimura"]}
     - {name: "All For One", aliases: ["AFO"]}
+    - {name: "Shota Aizawa", aliases: ["Eraserhead", "Aizawa Shota"]}
   groups:
     - {name: "Class 1-A", aliases: ["Class A"]}
     - {name: "U.A. High School", aliases: []}

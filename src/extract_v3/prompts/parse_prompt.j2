@@ -1,0 +1,109 @@
+You turn ONE simple sentence into exactly one graph fact: an EDGE (an action, relation, evaluation,
+comparison, or possession between two things) or a PROPERTY (a single trait/role of one subject). The
+sentence has already been rewritten into simple present-tense active voice with canonical names -- do not
+re-resolve names or re-normalize tense, just classify and extract.
+
+- "kind": "edge" or "property".
+- "subject" / "subject_type": who/what the sentence is about ("character", "group", or "people").
+- EDGE ONLY:
+  - "predicate": ONE word in the verb slot. Can be an action (kill, save, teach, attack -- keep the
+    outcome, drop the method: stab/blast -> attack), a relation (classmate, father, friend, rival, mentor),
+    an evaluation (regard, with "description" holding the judgement word), or a comparison (stronger,
+    smarter, better).
+  - "predicate_raw": the literal word from the simple sentence.
+  - "target" / "target_type": who/what the predicate is directed at/compared to/owned -- a noun only, never
+    a clause. "concept" if it is a thing/idea rather than an agent.
+  - "via": if a part or belonging of the subject is what actually acts ("Jiro's earphone jacks pierce the
+    wall" -> subject "Jiro", via "earphone jacks", predicate "pierce", target "wall"). Empty if not.
+  - "mutual": true for inherently symmetric relations (classmate, friend, sibling, rival) or when the
+    sentence is one half of a pair of reciprocal actions. Otherwise false.
+- PROPERTY ONLY:
+  - "property": ONE word -- a base-form adjective (shy, smart) or a role/profession noun (student, hero,
+    musician).
+- BOTH:
+  - "description": how/in what way, or the judgement word for an evaluation predicate. Empty if not
+    applicable/not stated.
+  - "modality": "none" (stated as true), "want", "can", or "must".
+  - "negated": true only if the sentence explicitly denies it.
+  - "frequency": "often" / "always" / "sometimes" / "never", or empty.
+  - "degree": "very" / "slightly" / "extremely", or empty.
+  - "certainty": "fact" (stated plainly), "implied" (the sentence says "it is implied that..."), or
+    "rumored" (the sentence attributes it to rumor/hearsay).
+  - "former": true if the sentence marks this as no longer true (used to / no longer), i.e. a past state.
+
+=== EXAMPLES (invented characters, unrelated to {{ universe }} -- format reference only) ===
+
+"Aldric attacks the merchant."
+-> {"kind": "edge", "subject": "Aldric", "subject_type": "character", "predicate": "attack",
+"predicate_raw": "attacks", "target": "the merchant", "target_type": "character", "via": "", "description":
+"", "modality": "none", "negated": false, "mutual": false, "frequency": "", "degree": "", "certainty":
+"fact", "former": false}
+
+"Elira is Toma's classmate."
+-> {"kind": "edge", "subject": "Elira", "subject_type": "character", "predicate": "classmate",
+"predicate_raw": "classmate", "target": "Toma", "target_type": "character", "via": "", "description": "",
+"modality": "none", "negated": false, "mutual": true, "frequency": "", "degree": "", "certainty": "fact",
+"former": false}
+
+"Aldric considers Reyna weak."
+-> {"kind": "edge", "subject": "Aldric", "subject_type": "character", "predicate": "regard",
+"predicate_raw": "considers", "target": "Reyna", "target_type": "character", "via": "", "description":
+"weak", "modality": "none", "negated": false, "mutual": false, "frequency": "", "degree": "", "certainty":
+"fact", "former": false}
+
+"Elira is stronger than Toma."
+-> {"kind": "edge", "subject": "Elira", "subject_type": "character", "predicate": "stronger",
+"predicate_raw": "stronger", "target": "Toma", "target_type": "character", "via": "", "description": "",
+"modality": "none", "negated": false, "mutual": false, "frequency": "", "degree": "", "certainty": "fact",
+"former": false}
+
+"Reyna owns a forge."
+-> {"kind": "edge", "subject": "Reyna", "subject_type": "character", "predicate": "own", "predicate_raw":
+"owns", "target": "a forge", "target_type": "concept", "via": "", "description": "", "modality": "none",
+"negated": false, "mutual": false, "frequency": "", "degree": "", "certainty": "fact", "former": false}
+
+"Elira's enchanted blade pierces the shield."
+-> {"kind": "edge", "subject": "Elira", "subject_type": "character", "predicate": "pierce",
+"predicate_raw": "pierces", "target": "the shield", "target_type": "concept", "via": "enchanted blade",
+"description": "", "modality": "none", "negated": false, "mutual": false, "frequency": "", "degree": "",
+"certainty": "fact", "former": false}
+
+"Elira is shy."
+-> {"kind": "property", "subject": "Elira", "subject_type": "character", "property": "shy", "description":
+"", "modality": "none", "negated": false, "frequency": "", "degree": "", "certainty": "fact", "former": false}
+
+"Toma is a blacksmith."
+-> {"kind": "property", "subject": "Toma", "subject_type": "character", "property": "blacksmith",
+"description": "", "modality": "none", "negated": false, "frequency": "", "degree": "", "certainty": "fact",
+"former": false}
+
+"Elira wants to become a knight."
+-> {"kind": "edge", "subject": "Elira", "subject_type": "character", "predicate": "become",
+"predicate_raw": "become", "target": "a knight", "target_type": "concept", "via": "", "description": "",
+"modality": "want", "negated": false, "mutual": false, "frequency": "", "degree": "", "certainty": "fact",
+"former": false}
+
+"Elira no longer trusts Aldric."
+-> {"kind": "edge", "subject": "Elira", "subject_type": "character", "predicate": "trust",
+"predicate_raw": "trusts", "target": "Aldric", "target_type": "character", "via": "", "description": "",
+"modality": "none", "negated": true, "mutual": false, "frequency": "", "degree": "", "certainty": "fact",
+"former": true}
+
+"It is implied that Elira used to be very afraid of Aldric."
+-> {"kind": "property", "subject": "Elira", "subject_type": "character", "property": "afraid",
+"description": "of Aldric", "modality": "none", "negated": false, "frequency": "", "degree": "very",
+"certainty": "implied", "former": true}
+
+=== KNOWN CHARACTERS (canonical name = alternate names/hero names) ===
+{% for c in characters %}- {{ c.name }}{% if c.aliases %} = {{ c.aliases | join(", ") }}{% endif %}
+{% endfor %}
+=== KNOWN GROUPS (canonical name = alternate names) ===
+{% for g in groups %}- {{ g.name }}{% if g.aliases %} = {{ g.aliases | join(", ") }}{% endif %}
+{% endfor %}
+
+{# Everything above is identical for every simple sentence -> prefix cache. Sentence goes last. #}
+=== SIMPLE SENTENCE ===
+{{ sentence }}
+=== END ===
+
+Return only the JSON object for this one sentence, no other text, no list wrapper.

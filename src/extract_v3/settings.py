@@ -1,6 +1,6 @@
-"""Config for graph_extract. Standalone -- no import from yuzuki_local's settings/flags/ordinals/Postgres."""
+"""Config for extract_v3. Standalone, own folder -- v2 (graph_extract/) is untouched."""
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
@@ -18,21 +18,22 @@ class RosterEntry:
 class Settings:
     universe: str
     target_character: str
+    page: str
     dump_path: Path
+    drop_sections: tuple[str, ...]
     model: str
     temperature: float
+    think: bool
     num_ctx: int
     num_predict: int
     keep_alive: str
     timeout_s: float
     retries: int
     embedding_model: str
-    min_sentences: int
-    max_sentences: int
     neo4j_uri: str
     neo4j_user: str
     neo4j_password: str
-    pages: tuple[str, ...]
+    spacy_model: str
     characters: tuple[RosterEntry, ...]
     groups: tuple[RosterEntry, ...]
 
@@ -41,17 +42,17 @@ class Settings:
         raw = yaml.safe_load(Path(path or PACKAGE_DIR / "config.yaml").read_text(encoding="utf-8"))
         env = _prefixed_env("NEO4J_")
         return cls(
-            universe=raw["universe"], target_character=raw["target_character"],
+            universe=raw["universe"], target_character=raw["target_character"], page=raw["page"],
             dump_path=Path(raw["dump_path"]).expanduser(),
-            model=raw["llm"]["model"], temperature=raw["llm"]["temperature"], num_ctx=raw["llm"]["num_ctx"],
-            num_predict=raw["llm"]["num_predict"], keep_alive=raw["llm"]["keep_alive"],
-            timeout_s=raw["llm"]["timeout_s"], retries=raw["llm"]["retries"],
+            drop_sections=tuple(s.lower() for s in raw["drop_sections"]),
+            model=raw["llm"]["model"], temperature=raw["llm"]["temperature"], think=raw["llm"]["think"],
+            num_ctx=raw["llm"]["num_ctx"], num_predict=raw["llm"]["num_predict"],
+            keep_alive=raw["llm"]["keep_alive"], timeout_s=raw["llm"]["timeout_s"], retries=raw["llm"]["retries"],
             embedding_model=raw["embedding"]["model"],
-            min_sentences=raw["chunking"]["min_sentences"], max_sentences=raw["chunking"]["max_sentences"],
             neo4j_uri=env.get("NEO4J_URI", raw["neo4j"]["default_uri"]),
             neo4j_user=env.get("NEO4J_USER", raw["neo4j"]["default_user"]),
             neo4j_password=env.get("NEO4J_PASSWORD", ""),
-            pages=tuple(raw["pages"]),
+            spacy_model=raw["spacy_model"],
             characters=tuple(RosterEntry(c["name"], tuple(c.get("aliases", []))) for c in raw["roster"]["characters"]),
             groups=tuple(RosterEntry(g["name"], tuple(g.get("aliases", []))) for g in raw["roster"]["groups"]),
         )
