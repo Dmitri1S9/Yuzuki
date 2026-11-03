@@ -1,0 +1,31 @@
+=== ARTICLE TEXT ===
+{{ article_text }}
+=== END ARTICLE TEXT ===
+
+=== RELATIONSHIPS EXTRACTED FROM THE TEXT ===
+{{ triples_block }}
+=== END RELATIONSHIPS ===
+
+Trait: {{ param.name }}
+Definition: {{ param.definition }}
+{% if param.sort_axis %}
+Axis: {{ param.sort_axis }}
+{% endif %}
+
+{% if param.ordinal %}
+Allowed answers (T1 is the lowest level, {{ top_tier }} the highest; the level is given by what the text shows):
+{% for t in tiers %}
+{% if param.tier_descriptions.get(t) %}
+[{{ t }}] {{ param.tier_descriptions[t] }}
+{% else %}
+[{{ t }}]
+{% endif %}
+{% endfor %}
+[unknown] The text says nothing that allows placing the character on this scale.
+{% else %}
+Allowed answers:
+[T1] The text shows the character clearly does NOT have this trait (a quote shows the opposite or an explicit absence).
+[T2] The text is unclear, mixed or only weakly hints at it.
+[T3] The text shows the character clearly has this trait.
+[unknown] The text says nothing about this trait.
+{% endif %}

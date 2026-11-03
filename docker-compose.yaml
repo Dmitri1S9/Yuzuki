@@ -13,6 +13,18 @@ services:
     networks:
       - backend
 
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-yuzuki_graph}
+    volumes:
+      - neo4j_data_yuzuki:/data
+    networks:
+      - backend
+
   analyse_service:
     build:
       context: .
@@ -99,6 +111,7 @@ volumes:
   redis_data:
   static:
   media:
+  neo4j_data_yuzuki:
 
 networks:
   backend:

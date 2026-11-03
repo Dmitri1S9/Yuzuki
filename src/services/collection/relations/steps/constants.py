@@ -6,7 +6,16 @@ RELATION_TYPES = ("for", "against", "want", "with")
 DIRECTED_TYPES = ("for", "want")
 
 GENERAL_POOL_ROUNDS = 3
-STAR_REDUCTION_FRACTION = 0.25  # remove the top quarter by combined degree each round
+STAR_REDUCTION_FRACTION = 0.10  # round 1 (general_pool): remove the top 10%
+                                 # by combined degree between rounds — softened
+                                 # from 25% (large casts, e.g. MHA S5's 109
+                                 # characters, need more of the roster to stay
+                                 # in play across all 3 rounds, not just the
+                                 # already-well-covered stars getting trimmed)
+MEDIUM_STAR_REDUCTION_FRACTION = 0.25  # round 2 (within one medium group):
+                                        # kept at the original 25% — a group's
+                                        # own pass1->pass2 reduction, distinct
+                                        # from round 1's softened number
 STAR_MIN_POOL = 15              # never shrink the pool below this — matches
                                  # SINGLE_PASS_MAX_N below, so a pool already
                                  # this small gets no benefit from another round

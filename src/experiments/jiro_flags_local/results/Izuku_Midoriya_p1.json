@@ -1,0 +1,642 @@
+[
+ {
+  "flag": "lies_for_gain",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 0,
+  "prompt_eval": 48173,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "manipulates_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47661,
+  "prompt_eval": 48175,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tells_hard_truths",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a very timid, reserved, and polite boy, frequently overreacting to abnormal situations with exaggerated expressions.",
+  "cached": 47663,
+  "prompt_eval": 48208,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "belittles_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48174,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "harms_for_pleasure",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48173,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "sacrifices_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48178,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "exploits_affection",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48190,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "envies_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48190,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "ingratiates_with_powerful",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48184,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "helps_without_gain",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is caring and emotional, never hesitating to help or rescue someone in danger, even if he knows that he might not be strong or otherwise qualified enough to do it.",
+  "cached": 47696,
+  "prompt_eval": 48164,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "responds_to_feelings",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is caring and emotional, never hesitating to help or rescue someone in danger, even if he knows that he might not be strong or otherwise qualified enough to do it.",
+  "cached": 47696,
+  "prompt_eval": 48162,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "self_sacrifice",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku will routinely break his arms for the sake of others, even if it's not completely necessary, such as demanding Shoto to unlock his full potential by using his fire side.",
+  "cached": 47696,
+  "prompt_eval": 48163,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "forgives",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku managed to stop him and his parents from fleeing and brings them back to the school grounds for interrogation. During so, Izuku tells Yuga that despite learning that he was the traitor, he doesn't bear any ill will to him...",
+  "cached": 47696,
+  "prompt_eval": 48164,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "disciplined_effort",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a quite diligent and strong-willed student, being extremely (and sometimes scarily) enthusiastic about topics related to heroes.",
+  "cached": 47696,
+  "prompt_eval": 48159,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fulfills_duties",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a quite diligent and strong-willed student, being extremely (and sometimes scarily) enthusiastic about topics related to heroes.",
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "acts_rashly",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku will routinely break his arms for the sake of others, even if it's not completely necessary, such as demanding Shoto to unlock his full potential by using his fire side.",
+  "cached": 47696,
+  "prompt_eval": 48159,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "plans_ahead",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is an exceptional strategist and tactician. By combining his aforementioned quick learning and knowledge about Quirks, Izuku is able to devise plans that take advantage of his friends' abilities to the fullest.",
+  "cached": 47696,
+  "prompt_eval": 48157,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_company",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "avoids_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48157,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "jokes_around",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48162,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "loses_control",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Enraged, Izuku lost his calm and went straight toward Tomura/All For One, leaving him vulnerable to getting One For All stolen.",
+  "cached": 47696,
+  "prompt_eval": 48154,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "shows_insecurity",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Izuku is a very timid, reserved, and polite boy, frequently overreacting to abnormal situations with exaggerated expressions. Due to years of being looked down on by Katsuki for lacking a Quirk, he is initially portrayed as insecure, tearful, vulnerable, and non-expressive.",
+  "cached": 47696,
+  "prompt_eval": 48155,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "endures_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even when Izuku went to confront All For One in the Haibori Woods mansion, he only showed his anger-filled eyes and determination of defeating him.",
+  "cached": 47696,
+  "prompt_eval": 48150,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_novelty",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a quite diligent and strong-willed student, being extremely (and sometimes scarily) enthusiastic about topics related to heroes. His dream drives him to write down notes about everything he learns about heroes' Quirks and fighting capabilities.",
+  "cached": 47696,
+  "prompt_eval": 48149,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "creates",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is an avid collector of All Might merchandise, has knowledge of his numerous feats of heroism (no matter how minor), and emulates many of his traits.",
+  "cached": 47696,
+  "prompt_eval": 48142,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "adapts_approach",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is an exceptional strategist and tactician. By combining his aforementioned quick learning and knowledge about Quirks, Izuku is able to devise plans that take advantage of his friends' abilities to the fullest.",
+  "cached": 47696,
+  "prompt_eval": 48159,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "takes_command",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is an exceptional strategist and tactician. By combining his aforementioned quick learning and knowledge about Quirks, Izuku is able to devise plans that take advantage of his friends' abilities to the fullest.",
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "defers_to_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku resigned as Class President and named Tenya as his successor, knowing that he has better leadership qualities than him.",
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "provokes_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48164,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "competes",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "I'm not gonna be your worthless punching bag Deku forever... Kacchan. I'm... I'm the Deku who always does his best!",
+  "cached": 47696,
+  "prompt_eval": 48184,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "stays_loyal_under_pressure",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Even after Rody tried to abandon Deku and turn the briefcase over to Humarise, Izuku still saved him from Rogone and took an arrow to the chest protecting Rody.",
+  "cached": 47696,
+  "prompt_eval": 48169,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "betrays",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48173,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "hides_self",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48153,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_power",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_achievement",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "I have to work harder than anyone else to make it! I'll never catch up otherwise...! I want to be like you...! Like you. The strongest hero.",
+  "cached": 47696,
+  "prompt_eval": 48152,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_hedonism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_stimulation",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a very timid, reserved, and polite boy, frequently overreacting to abnormal situations with exaggerated expressions.",
+  "cached": 47696,
+  "prompt_eval": 48157,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_self_direction",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "I decided to leave U.A. before finishing my first year to keep his classmates out of harm's way.",
+  "cached": 47696,
+  "prompt_eval": 48161,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_universalism",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is known to help or lecture people with personal and emotional problems, regardless of if it's his business or not, claiming that a hero should meddle in other people's lives.",
+  "cached": 47696,
+  "prompt_eval": 48164,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_benevolence",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku will routinely break his arms for the sake of others, even if it's not completely necessary, such as demanding Shoto to unlock his full potential by using his fire side.",
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_tradition",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48153,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_conformity",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is a quite diligent and strong-willed student, being extremely (and sometimes scarily) enthusiastic about topics related to heroes.",
+  "cached": 47696,
+  "prompt_eval": 48155,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_security",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_revenge",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_romance",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku realizes his feelings for Ochaco and goes looking for her, finding her alone in a crowd. He tells her that, while he respects and loves everyone, he really wants to spend more time with her now, even into the future.",
+  "cached": 47696,
+  "prompt_eval": 48153,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_freedom",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48189,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_order",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48158,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "egalitarian",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Izuku expresses pity towards All For One. He remarked that he wasn't a monster beyond understanding or even a demon lord; just a lonely man without any friends, something that ultimately proved to be true.",
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "elitist",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48163,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "revolutionary",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48149,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fanatical",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "principled_at_cost",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku is known to help or lecture people with personal and emotional problems, regardless of if it's his business or not, claiming that a hero should meddle in other people's lives.",
+  "cached": 47696,
+  "prompt_eval": 48145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "results_over_principles",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48163,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "nihilistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48142,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fatalistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "visible_scars",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "After his battle against Shoto Todoroki, the fingers on his right hand became slightly deformed, and his hand shows visible scarring. His right arm was further damaged after his intense fight with Muscular, leaving many more scars.",
+  "cached": 47696,
+  "prompt_eval": 48136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "muscular_build",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Though he was initially very skinny, Izuku has gained toned muscles after his ten months of extensive training with All Might, and as the series progresses, these are shown to become more developed and defined as he gradually grows stronger.",
+  "cached": 47696,
+  "prompt_eval": 48145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "distinctive_feature",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "His eyes are large and somewhat circular and his irises are the same shade of green as his hair, which at times are very watery, and are usually stretched quite wide, giving him an innocent, energized appearance.",
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "cares_about_appearance",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku's first hero costume, known as \"Costume Alpha\", was made by his mother. It was a light green full-body jumpsuit with a red belt, black elbow pads and knee pads, and white gloves, along with his signature red boots.",
+  "cached": 47696,
+  "prompt_eval": 48148,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "intimidating",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48156,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "charismatic",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Izuku is one of the main motivators within his class alongside Katsuki, thanks to a combination of his heroic drive and practical intellect.",
+  "cached": 47696,
+  "prompt_eval": 48184,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tragic_past",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48192,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "physical_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even so, he still possessed impressive physical durability, and his drive allowed him to withstand the drawbacks of One For All for the most part.",
+  "cached": 47696,
+  "prompt_eval": 48144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "psychological_weakness",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 47696,
+  "prompt_eval": 48146,
+  "done_reason": "stop"
+ }
+]

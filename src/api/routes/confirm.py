@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException
 
 from src.api.schemas import RelationsConfirmRequest, RosterConfirmRequest
 from src.repository import CharacterRepository, GroupRepository, RelationRepository, UniverseRepository
+from src.shared.media_url import parse_portrait_url
 
 log = logging.getLogger(__name__)
 router = APIRouter(tags=["confirm"])
@@ -40,21 +41,33 @@ def confirm_roster(universe_id: int, body: RosterConfirmRequest):
     # zero rows, then sync_roster deletes anyone no longer in the confirmed
     # list — roster confirmation is authoritative, not additive.
     _universe_repo.create_universe(universe.get_name(), [c.name for c in body.roster], universe.get_arc())
+
+    # Portrait bytes live on the row itself now (characters.image_bytes),
+    # not a filename that survives independently of it — so a DCS rename
+    # (Miniskirt Santa -> Nene Iwamizawa, live-confirmed) needs its bytes
+    # carried across by hand before sync_roster deletes the old row: DCS's
+    # draft UI edits the name field in place and keeps whatever image_url
+    # was cached for that row, so a confirmed entry's image_url can still
+    # point at the OLD name — parse it back to find where the real bytes
+    # currently are. A same-name entry (no rename) parses to its own
+    # (universe_id, name) and is skipped; its row already has its bytes.
+    carried_portraits: dict[str, bytes] = {}
+    for character in body.roster:
+        source = parse_portrait_url(character.image_url)
+        if source and source != (universe_id, character.name):
+            portrait = _character_repo.get_character_portrait(*source)
+            if portrait is not None:
+                carried_portraits[character.name] = portrait[0]
+
     _character_repo.sync_roster(universe_id, [c.name for c in body.roster])
 
     for character in body.roster:
         if character.aliases:
             _character_repo.save_character_aliases(universe_id, character.name, character.aliases)
         _character_repo.save_character_isolation(universe_id, character.name, character.is_isolated)
-        if character.image_url is not None:
-            # Carries image_url/existence_hits through even when this name
-            # wasn't in the DB before this confirm — e.g. a DCS rename
-            # (Miniskirt Santa -> Nene Iwamizawa, live-confirmed) looks like
-            # "delete the old name, add a new one" from sync_roster's plain
-            # name-list diff, which would otherwise lose the image stage 1
-            # already found for that row.
-            _character_repo.save_character_image(
-                universe_id, character.name, character.image_url, character.existence_hits)
+        if character.name in carried_portraits:
+            _character_repo.save_character_portrait(universe_id, character.name, carried_portraits[character.name])
+        _character_repo.save_character_existence_hits(universe_id, character.name, character.existence_hits)
 
     for group_type, groups in body.groups.items():
         _group_repo.save_groups(

@@ -1,12 +1,9 @@
-import logging
-
 from psycopg2.extras import Json
 
 from src.domain.relation import GroupRelation, Relation
 from src.infra.exceptions import falseRelationTypeException
 from src.repository.connection import read_only, transactional
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import logged
 
 # relation_type -> "directed" (source/target) or "symmetric" (members)
 RELATION_TYPES: dict[str, str] = {"for": "directed", "against": "symmetric", "want": "directed", "with": "symmetric"}
@@ -29,6 +26,8 @@ class RelationRepository:
             for rt, source, target, members, count, level in rows
         ]
 
+    @logged(lambda _, self, entries, universe_id, relation_type, replace=False:
+            f"saved {len(entries)} {relation_type} relations for universe {universe_id} (replace={replace})")
     @transactional
     def save_relations(self, conn, entries: list[dict], universe_id: int, relation_type: str,
                         replace: bool = False) -> None:
@@ -64,7 +63,6 @@ class RelationRepository:
                         (universe_id, relation_type, Json(rel["members"]),
                          rel["count"], rel["source_level"]),
                     )
-        log.info("saved %d %s relations for universe %d (replace=%s)", len(entries), relation_type, universe_id, replace)
 
     @read_only
     def get_group_relations(self, conn, universe_id: int) -> list[GroupRelation]:
@@ -76,9 +74,11 @@ class RelationRepository:
             rows = cur.fetchall()
         return [GroupRelation(group_a=a, group_b=b, kind=kind) for a, b, kind in rows]
 
+    @logged(lambda total, self, group_relations, universe_id, replace=False:
+            f"saved {total} group_relations for universe {universe_id} (replace={replace})")
     @transactional
     def save_group_relations(self, conn, group_relations: dict, universe_id: int,
-                              replace: bool = False) -> None:
+                              replace: bool = False) -> int:
         # Separate table, never merged into character-level `relations`.
         # Input: {"allied": [[group_a, group_b], ...], "rival": [...]}.
         # replace=True: this universe's existing rows are deleted first —
@@ -96,4 +96,4 @@ class RelationRepository:
                         (universe_id, group_a, group_b, kind),
                     )
                     total += 1
-        log.info("saved %d group_relations for universe %d (replace=%s)", total, universe_id, replace)
+        return total

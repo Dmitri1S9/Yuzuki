@@ -1,0 +1,11 @@
+Article character: {{ character }}
+Paragraph title: {{ section }}
+{% if names %}
+Known names (canonical full names that occur in this paragraph):
+{% for n in names %}
+- {{ n }}
+{% endfor %}
+{% endif %}
+
+Paragraph:
+{{ paragraph }}

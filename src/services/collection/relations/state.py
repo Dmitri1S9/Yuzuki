@@ -13,6 +13,7 @@ class RelationsCollection:
     all_groups: list = field(default_factory=list)
     medium_per_group: dict = field(default_factory=dict)
     general_rounds: list = field(default_factory=list)
+    cross_group: dict = field(default_factory=dict)
     group_relations: dict = field(default_factory=dict)
     group_relations_dropped: list = field(default_factory=list)
     merged: dict = field(default_factory=dict)
@@ -20,3 +21,4 @@ class RelationsCollection:
     low_info: list = field(default_factory=list)
     output: dict = field(default_factory=dict)
     universe_id: int | None = None
+    alias_map: dict = field(default_factory=dict)

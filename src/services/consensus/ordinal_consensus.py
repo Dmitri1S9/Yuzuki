@@ -32,6 +32,13 @@ Algorithm:
    majority tier and are left free for the search to place at whichever
    tier boundary fits best. That's the actual fix: the existing floor
    already does exactly the reconciliation the exact-match rule couldn't.
+   _UNKNOWN only exists as an internal search/kappa anchor, though — it has
+   no real tier index, so the agreed-unknown block is reported as None
+   (not placed) in the final per-character output, same as any other
+   no-info case, never as the raw sentinel value (that used to leak
+   straight through as a fake "tier -1", confirmed live to break Observe
+   Beauty's display for every character an ordinal had no information on
+   at all — 2026-09-23, Bunny Girl Senpai).
 3. Post-search, a separate greedy pass considers *actually* excluding
    pass_range==1 characters (never gap-0/agreed-unknown ones) — tried
    strictly after the search has already converged, and only excluded if
@@ -203,7 +210,21 @@ def ordinal_consensus(per_pass_scores: dict[int, dict[str, float | None]], roste
     kappas = evaluate(best_blocks, pass_codes, final_valid, m, PASSES)
     min_kappa = min((k for k in kappas if not math.isnan(k)), default=None)
     block_sizes = [len(b) for b in best_blocks]
-    survivor_m = m - len(excluded)
+
+    # The agreed-unknown block (both passes say "unknown") still counts
+    # toward kappa above — both raters agreeing there's no information is
+    # real inter-rater signal, not noise. But it has no valid tier: Observe
+    # Beauty's ordinal view is a FIXED T1..Tn grid (see the /features/
+    # {param} route and ObserveBeauty.tsx), and _UNKNOWN sorts *below*
+    # every real tier by construction — there is no slot for that. Reporting
+    # the raw sentinel (-1) as "tier" used to leak straight through the API
+    # into the UI as a broken out-of-scale block (confirmed live on Bunny
+    # Girl Senpai: 5 characters showed as if they'd "fallen off" every
+    # ordinal entirely). Treated the same as every other no-real-placement
+    # case in this module instead: None, landing in Observe Beauty's
+    # existing "removed" zone, restorable by hand — not a fabricated tier.
+    unknown_members = {e for block in best_blocks for e in block if maj_tier[block[0]] == _UNKNOWN}
+    survivor_m = m - len(excluded) - len(unknown_members)
     std = math.sqrt((survivor_m * survivor_m - 1) / 12) if survivor_m > 1 else 0.0
 
     avg_score = {
@@ -213,10 +234,14 @@ def ordinal_consensus(per_pass_scores: dict[int, dict[str, float | None]], roste
 
     cumulative = 0
     for b_idx, block in enumerate(best_blocks):
+        tier = maj_tier[block[0]]
+        if tier == _UNKNOWN:
+            for e in block:
+                per_character[search_names[e]] = None
+            continue
         size = len(block)
         midrank = cumulative + (size + 1) / 2.0
         z = (midrank - (survivor_m + 1) / 2.0) / std if std > 0 else 0.0
-        tier = maj_tier[block[0]]
         if tier is None:  # no majority (gap-1 members of this block) -> best-effort rounded compromise
             vals = [tiers_by_idx[p][block[0]] for p in PASSES]
             tier = round(sum(vals) / len(vals))
@@ -286,18 +311,23 @@ def _selftest():
     assert quality["n_high_disagreement"] == 1, quality
     print(f"test 2 (gap>1 -> auto-excluded, not sent to search): PASS  {quality}")
 
-    # test 3: agreed-unknown (both passes say "unknown") gets its own
-    # bottom-tier placement, not dropped; one-sided-unknown (real contradiction)
-    # stays dropped.
+    # test 3: agreed-unknown (both passes say "unknown") still counts toward
+    # kappa as real rater agreement internally, but is reported as None
+    # (not placed) — there's no valid tier slot for it in Observe Beauty's
+    # fixed T1..Tn grid, and the raw internal sentinel must never leak out
+    # as a fake tier (confirmed live: it used to, and broke the display for
+    # every character an ordinal had zero information about — see this
+    # module's docstring). One-sided-unknown (real contradiction) also
+    # stays dropped, same as before.
     tiers3 = dict(tiers)
     per_pass3 = {1: _scores(tiers3), 2: _scores(tiers3)}
     per_pass3[1]["c0"] = None
     per_pass3[2]["c0"] = None  # agreed-unknown
     per_pass3[1]["c1"] = None  # one-sided-unknown vs c1's real tier in pass 2
     per_character, quality = ordinal_consensus(per_pass3, names)
-    assert per_character["c0"] is not None and per_character["c0"]["tier"] == _UNKNOWN, per_character
+    assert per_character["c0"] is None, per_character
     assert per_character["c1"] is None, per_character
-    print(f"test 3 (agreed-unknown placed at bottom tier; one-sided stays dropped): PASS  {quality}")
+    print(f"test 3 (agreed-unknown reported as not-placed, no fake tier leaks out; one-sided stays dropped): PASS  {quality}")
 
     # test 4: a character 1 tier apart, alone at the seam between two large
     # real blocks — confirms the search reconciles this into its own small

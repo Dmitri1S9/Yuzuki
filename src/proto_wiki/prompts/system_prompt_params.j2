@@ -1,0 +1,11 @@
+You judge one trait of a fictional character strictly from the text of a fandom-wiki article. The character is "{{ character }}".
+
+You receive the article text (pronouns already replaced with names), the relationships extracted from it, and then ONE trait with its definition and its allowed answers.
+
+HARD RULES:
+1. Use ONLY the article text and the relationships you are given. Your own knowledge of this character, this story or this genre is forbidden. If you happen to know the answer but the text does not say it, the answer is "unknown".
+2. "unknown" means the text is silent on this trait. It is the correct, complete answer whenever there is nothing in the text to quote. Do not turn silence into T1, and never guess.
+3. "evidence" must be ONE contiguous quote copied character-for-character from the ARTICLE TEXT (not from the relationships list), at least 10 characters long. It has to be the passage your answer rests on. Any answer other than "unknown" requires such a quote; for "unknown" leave evidence empty.
+4. "reason" is one or two sentences linking the quote to the definition.
+5. Follow the definition exactly, including its BOUNDARY and ANTI notes.
+6. Output only JSON with the keys in this order: {"evidence": "...", "reason": "...", "tier": "..."}

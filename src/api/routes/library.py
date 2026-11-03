@@ -15,24 +15,19 @@ image client-side, and this just stores the already-cropped result. No
 face detection here — a manually-chosen, manually-cropped image is already
 human-verified, unlike a blind web-search result.
 """
-import csv
-import hashlib
 import io
 import logging
-import os
-import time
-from pathlib import Path
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from PIL import Image
 
+from src.api.media import portrait_url, portrait_url_for
 from src.api.schemas import CharacterEditIn, CharacterProfileOut
 from src.domain.parameters import FLAG_PARAMS, ORDINAL_PARAMS
-from src.repository import CharacterRepository, GroupRepository, UniverseRepository
+from src.repository import CharacterRepository, GroupRepository, RawPassRepository, UniverseRepository
 from src.services.collection.cast.steps import anime_db
-from src.services.collection.cast.steps.images import MEDIA_DIR, YUZUKI_PUBLIC_URL
 from src.services.consensus.flag_consensus import FLAG_PASSES, flag_consensus
-from src.shared.naming import slugify
+from src.services.consensus.ordinal_consensus import PASSES as ORDINAL_PASSES, ordinal_consensus
 
 log = logging.getLogger(__name__)
 router = APIRouter(tags=["library"])
@@ -40,8 +35,7 @@ router = APIRouter(tags=["library"])
 _universe_repo = UniverseRepository()
 _character_repo = CharacterRepository()
 _group_repo = GroupRepository()
-
-RUN_DIR = "run"
+_raw_pass_repo = RawPassRepository()
 
 
 @router.get("/characters")
@@ -58,7 +52,7 @@ def list_characters():
                 "universe_name": full.get_name(),
                 "arc": full.get_arc(),
                 "name": c.get_name(),
-                "image_url": c.get_image_url(),
+                "image_url": portrait_url(c),
             })
     return out
 
@@ -99,9 +93,7 @@ def edit_character(universe_id: int, name: str, body: CharacterEditIn):
     "edit" affordance, distinct from RosterReview's pending-draft edit
     (that one edits the DCS queue payload before anything is in Postgres
     at all). Only fields actually present in the request change."""
-    character = _character_repo.get_character(universe_id, name)
-    if character is None:
-        raise HTTPException(status_code=404, detail=f"character {name!r} not found in universe {universe_id}")
+    character = _character_repo.get_character_or_raise(universe_id, name)
 
     fields = body.model_dump(exclude_unset=True, exclude={"new_name"})
     current_name = name
@@ -119,7 +111,7 @@ def edit_character(universe_id: int, name: str, body: CharacterEditIn):
     return CharacterProfileOut(
         name=character.get_name(),
         aliases=character.get_aliases(),
-        image_url=character.get_image_url(),
+        image_url=portrait_url(character),
         existence_hits=character.get_existence_hits(),
         body_age=character.get_profile_field("body_age"),
         soul_age=character.get_profile_field("soul_age"),
@@ -128,77 +120,62 @@ def edit_character(universe_id: int, name: str, body: CharacterEditIn):
     )
 
 
-def _read_pass_csv(slug: str, pass_number: int, param_name: str) -> dict[str, float | None] | None:
-    path = os.path.join(RUN_DIR, f"pass{pass_number}_{slug}.csv")
-    if not os.path.exists(path):
-        return None
-    with open(path, encoding="utf-8") as f:
-        rows = list(csv.DictReader(f))
-    if not rows or param_name not in rows[0]:
-        return None
-    return {row["entity"]: (None if row.get(param_name) in (None, "", "None") else float(row[param_name]))
-            for row in rows}
-
-
-def _param_standing(param_name: str, target_universe_id: int, target_name: str) -> dict:
+def _param_standing(param_name: str, target_universe_id: int, target_name: str, is_ordinal: bool) -> dict:
     """local: this character's own tier/sub_position within its own
-    universe. global_percentile: where consensus_z for this character
-    ranks among every character (from every universe that has collected
-    this parameter) — consensus_z is a standardized (mean-0) position
-    within its own universe's distribution already, so pooling it across
-    universes is the same trick GET .../features/{param} uses for a single
-    universe, just applied over all of them at once."""
-    pooled: list[tuple[str, int, float]] = []
-    local = None
-    for u in _universe_repo.list_universes():
-        slug = slugify(u.get_name(), u.get_arc())
-        per_pass_scores = {p: (_read_pass_csv(slug, p, param_name) or {}) for p in FLAG_PASSES}
-        if not any(per_pass_scores[p] for p in FLAG_PASSES):
-            continue
-        roster = sorted({n for p in FLAG_PASSES for n in per_pass_scores[p]})
-        per_character, _ = flag_consensus(per_pass_scores, roster)
-        for name, cell in per_character.items():
-            if not cell or cell.get("consensus_z") is None:
-                continue
-            pooled.append((name, u.get_id(), cell["consensus_z"]))
-            if u.get_id() == target_universe_id and name == target_name:
-                local = cell
+    universe. local_rank/local_total: where this character's consensus_z
+    ranks among every OTHER character in the SAME universe with a real
+    placement for this param (1 = highest z) — plain "X of Y" within the
+    cast, not a cross-universe pool. Cross-universe percentile pooling
+    (every universe's own distribution, different sample sizes, different
+    collection runs) used to feed this and read as noise dressed up as
+    precision — "97.9%ile (of 98)" answers a question nobody asked
+    (2026-09-23, user's call: drop it, local rank only, for now).
 
-    if not pooled:
-        return {"local": local, "global_percentile": None, "global_rank": None, "global_total": 0}
+    Reads the DB-backed raw-pass cache (RawPassRepository), same source
+    GET .../features/{param} uses — not the old per-universe pass{N}.csv
+    files, which no stage has written since the raw_passes migration.
+    Ordinals and flags are collected at different pass counts (ORDINAL_
+    PASSES=(1,2) vs FLAG_PASSES=(1,)) and reconciled through different
+    consensus functions — same split as features.py's get_feature."""
+    passes = ORDINAL_PASSES if is_ordinal else FLAG_PASSES
+    consensus_fn = ordinal_consensus if is_ordinal else flag_consensus
+    all_passes = _raw_pass_repo.get_passes(target_universe_id, passes, {param_name})
+    if all_passes is None:
+        return {"local": None, "local_rank": None, "local_total": 0}
 
-    pooled.sort(key=lambda t: t[2])
-    total = len(pooled)
-    rank = next((i for i, t in enumerate(pooled) if t[1] == target_universe_id and t[0] == target_name), None)
-    percentile = round(100 * rank / (total - 1), 1) if rank is not None and total > 1 else None
+    per_pass_scores = {p: all_passes[p].get(param_name, {}) for p in passes}
+    roster = sorted({n for p in passes for n in per_pass_scores[p]})
+    per_character, _ = consensus_fn(per_pass_scores, roster)
+    local = per_character.get(target_name)
+
+    placed = [(name, cell["consensus_z"]) for name, cell in per_character.items()
+              if cell and cell.get("consensus_z") is not None]
+    if not placed:
+        return {"local": local, "local_rank": None, "local_total": 0}
+
+    placed.sort(key=lambda t: t[1], reverse=True)  # rank 1 = highest z
+    total = len(placed)
+    rank = next((i for i, t in enumerate(placed) if t[0] == target_name), None)
     return {
         "local": local,
-        "global_percentile": percentile,
-        "global_rank": (rank + 1) if rank is not None else None,
-        "global_total": total,
+        "local_rank": (rank + 1) if rank is not None else None,
+        "local_total": total,
     }
 
 
 @router.get("/characters/{universe_id}/{name}/standing")
 def character_standing(universe_id: int, name: str):
-    character = _character_repo.get_character(universe_id, name)
-    if character is None:
-        raise HTTPException(status_code=404, detail=f"character {name!r} not found in universe {universe_id}")
+    _character_repo.get_character_or_raise(universe_id, name)
 
     return {
-        param: _param_standing(param, universe_id, name)
-        for param in list(ORDINAL_PARAMS) + list(FLAG_PARAMS)
+        **{param: _param_standing(param, universe_id, name, True) for param in ORDINAL_PARAMS},
+        **{param: _param_standing(param, universe_id, name, False) for param in FLAG_PARAMS},
     }
 
 
 @router.post("/universes/{universe_id}/characters/{name}/upload-image", response_model=CharacterProfileOut)
 async def upload_character_image(universe_id: int, name: str, file: UploadFile = File(...)):
-    universe = _universe_repo.get_universe_by_id(universe_id)
-    if universe is None:
-        raise HTTPException(status_code=404, detail=f"universe {universe_id} not found")
-    character = _character_repo.get_character(universe_id, name)
-    if character is None:
-        raise HTTPException(status_code=404, detail=f"character {name!r} not found in universe {universe_id}")
+    character = _character_repo.get_character_or_raise(universe_id, name)
 
     raw = await file.read()
     try:
@@ -206,19 +183,14 @@ async def upload_character_image(universe_id: int, name: str, file: UploadFile =
     except Exception:
         raise HTTPException(status_code=400, detail="not a readable image")
 
-    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
-    slug = hashlib.sha1(f"{universe.get_name()}|{name}".encode()).hexdigest()[:16]
     buf = io.BytesIO()
     image.save(buf, format="JPEG", quality=90)
-    (MEDIA_DIR / f"{slug}.jpg").write_bytes(buf.getvalue())
-    image_url = f"{YUZUKI_PUBLIC_URL}/media/characters/{slug}.jpg?v={int(time.time())}"
-
-    _character_repo.save_character_image(universe_id, name, image_url, character.get_existence_hits())
+    _character_repo.save_character_portrait(universe_id, name, buf.getvalue())
 
     return CharacterProfileOut(
         name=name,
         aliases=character.get_aliases(),
-        image_url=image_url,
+        image_url=portrait_url_for(universe_id, name),
         existence_hits=character.get_existence_hits(),
         body_age=character.get_profile_field("body_age"),
         soul_age=character.get_profile_field("soul_age"),

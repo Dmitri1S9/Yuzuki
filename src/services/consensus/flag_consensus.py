@@ -1,203 +1,107 @@
-"""Consensus for a single flag parameter — 2 passes, not 3, and a
-deliberately different algorithm from consensus.py's ordinal path, not a
-smaller version of it.
-
-Ordinals (consensus.py) search for the best block structure across 3 passes
-via maximin-kappa hill-climbing — worth the cost because ordinals keep their
-3-pass budget, and they measure agreement on pairwise ORDER (sign_matrix)
-since a rank has too many distinct positions for exact-position agreement to
-mean much. Flags move to 2 passes specifically to cut cost, so spending a
-combinatorial search on top would give away the saving; there is also no
-majority (2-of-3) vote possible with only 2 raters. Flags also have very
-few tiers (typically 2-3), where exact tier agreement is both meaningful and
-simple, unlike a fine-grained rank.
-
-Algorithm: build blocks directly from where the 2 passes already agree —
-nobody is excluded from the result for disagreeing. Kappa is reported as a
-quality signal, not used to drive removal: an earlier version repeatedly
-dropped whichever character's two passes disagreed most until kappa
-cleared a target, but that silently deleted real characters from a human
-reviewer's view exactly the way the roster's old hard pass-count filter
-did (same fix, same reasoning — a human decides who's unreliable, not the
-algorithm). A character whose passes land in different tiers still gets a
-best-effort placement (tier = round of the average, pass_range = the gap
-between the two passes) instead of being erased; pass_range is the
-per-character signal a reviewer highlights instead of a silent drop.
-
-The flag prompt itself (user_prompt_flagger.j2) gives the model a third
-option beyond the tiered "sorted" list: "unknown", for a character it
-can't confidently place at all — every character is required to land in
-one of the two, never silently missing. A character marked unknown in
-BOTH passes is real agreement ("neither pass could place them"), not
-absence of data — it gets its own bottom-most tier (below every real T0
-placement) via the _UNKNOWN sentinel, same as any other agreed tier,
-rather than being erased. A character is only left out of the result
-(None) when the two passes actively contradict each other about it —
-one placed it on the real tier scale, the other marked it unknown —
-genuine disagreement about whether it's even placeable, which is exactly
-the "worst case: recommend dropping this one" scenario a human reviewer
-should see flagged, not something to average away.
-
-Why tier agreement, not sign_matrix's pairwise order (tried first, rejected
-on real data): sign_matrix only measures relative order, which goes blind
-once nobody is left to compare within a pass. Confirmed live on flag
-"ruthless" (MHA Sports Festival): after removing the clearest outliers, the
-26 remaining characters ended up tier 0 in every pass-1 read and tier 2 in
-every pass-2 read — total, glaring disagreement about the whole group — yet
-sign_matrix kappa reported NaN ("undefined"), because with everyone tied
-within each pass there was no pairwise order left to disagree on. Direct
-tier-agreement kappa sees this immediately (0% of characters land in the
-same category) and correctly reports a very low kappa instead of hiding the
-problem behind "undefined".
+"""Consensus for a single flag parameter — 1 pass, fixed 3-tier ranking
+(T1=doesn't have it, T2=unsure, T3=clearly has it; see
+system_prompt_flag_rank.j2). Back from a brief plain-list-membership design
+(2026-09-23, user's call after live review): a flat yes/no list gave no way
+to tell a borderline match from a strong one, so a flag with only ~1% real
+matches looked the same as a cast full of near-identical entries — no
+texture, no way to tell "barely qualifies" from "obviously qualifies."
+Reuses collection.py's scores_from_result/parse_sorted/compute_score
+unchanged (the same T1..Tn marker parsing rank() already does for
+ordinals) — a flag's raw score is `tier*10 + within_tier_fraction`, same
+encoding, just always exactly 3 possible tiers. Single rater (1 pass), so
+still no kappa to compute — this module just reshapes the one ranking into
+the block/tier output shape everything downstream (output assembly, DCS's
+report, Observe Beauty) already expects.
 """
 import math
 
-import numpy as np
-
-FLAG_PASSES = (1, 2)
-FLAG_HIGH_DISAGREEMENT_GAP = 1  # pass_range strictly above this marks a
-                                  # character as high-disagreement in the
-                                  # quality summary — informational only,
-                                  # never excludes anyone from the result.
-_UNKNOWN = -1  # a character the prompt's "unknown" bucket caught in a pass —
-               # sorts below every real tier (T0's own "clearly does not
-               # have it" is tier 0), never collides with a real tier value.
-
-
-def tier_kappa(tiers_a: list[int], tiers_b: list[int]) -> float:
-    """Cohen's kappa for 2 raters classifying the same items into discrete
-    tiers — direct category agreement. NaN when the raters never disagree
-    AND never see more than one shared category between them (kappa is
-    mathematically undefined at zero variance — e.g. every character is
-    tier 0 in both passes; genuinely perfect agreement, not a failure)."""
-    n = len(tiers_a)
-    cats = sorted(set(tiers_a) | set(tiers_b))
-    if n == 0 or len(cats) < 2:
-        return float("nan")
-    idx = {c: i for i, c in enumerate(cats)}
-    k = len(cats)
-    conf = np.zeros((k, k))
-    for a, b in zip(tiers_a, tiers_b):
-        conf[idx[a], idx[b]] += 1
-    po = np.trace(conf) / n
-    row, col = conf.sum(axis=1), conf.sum(axis=0)
-    pe = np.sum(row * col) / (n * n)
-    if abs(1.0 - pe) < 1e-10:
-        return float("nan")
-    return float((po - pe) / (1.0 - pe))
-
-
-def _build_blocks(alive: list[str], tiers1: dict, tiers2: dict) -> list[list[str]]:
-    """Adjacent survivors (sorted by average tier) share a block only when
-    both passes agree on their tier exactly — no hill-climbing to merge
-    further, unlike the ordinal path; agreement is already the removal
-    criterion, so nothing here needs to chase kappa."""
-    order = sorted(alive, key=lambda n: (tiers1[n] + tiers2[n]) / 2)
-    blocks = [[order[0]]]
-    for a, b in zip(order, order[1:]):
-        if tiers1[a] == tiers1[b] and tiers2[a] == tiers2[b]:
-            blocks[-1].append(b)
-        else:
-            blocks.append([b])
-    return blocks
+FLAG_PASSES = (1,)
 
 
 def flag_consensus(per_pass_scores: dict[int, dict[str, float | None]], roster: list[str]) -> tuple[dict, dict]:
-    """per_pass_scores[p] for p in FLAG_PASSES; p[name] = tier*10 + within, or None.
+    """per_pass_scores[p] for p in FLAG_PASSES (just pass 1); p[name] =
+    tier*10+within (real placement) or absent/None (either collection.py's
+    "unknown" list — the model didn't recognize the character at all — or
+    a defensive missing-data case like a stale raw_passes cache entry).
+    Both read the same way here: not placed.
 
-    Returns (per_character, quality) in the same shape as consensus_rank so
-    downstream code (output assembly, DCS's kappa report) needs no
-    flag-specific branch:
+    Returns (per_character, quality), same shape flag_consensus always
+    produced so downstream code needs no branch:
       per_character[name] = {"block_index", "block_size", "consensus_z",
-                              "tier", "sub_position", "pass_range"} for
-                              every name present in both passes — None only
-                              when a name is missing from one of the 2
-                              passes entirely, never for disagreeing.
-                              pass_range is the reviewer-facing signal: 0
-                              means the passes agreed exactly, >0 means
-                              they didn't (see FLAG_HIGH_DISAGREEMENT_GAP).
-      quality has min_kappa / kappa_raw_min (identical here — there is no
-      fitted 3rd sequence to distinguish them from, unlike the ordinal
-      path) reported for awareness only, n_blocks, block_sizes, and
-      n_high_disagreement — how many characters' pass_range exceeded the
-      threshold, again informational, not an exclusion.
+                              "tier" (0, 1, or 2), "sub_position",
+                              "pass_range"} for every name with a real
+                              placement; None for unknown/missing.
+      quality: no kappa fields (one rater, nothing to measure agreement
+      against) — n_blocks, block_sizes only, kept alongside null kappa
+      fields for schema stability.
     """
-    tiers = {p: {} for p in FLAG_PASSES}
-    for p in FLAG_PASSES:
-        for name in roster:
-            score = per_pass_scores[p].get(name)
-            tiers[p][name] = int(score // 10) if score is not None else _UNKNOWN
+    p = FLAG_PASSES[0]
+    scores = per_pass_scores[p]
+    # compute_score's raw segment index is 1-based in practice, not 0-based:
+    # with 3 markers (T1/T2/T3) the model always opens "sorted" with T1
+    # (system_prompt_flag_rank.j2's own format example puts it first, and
+    # nothing meaningfully belongs "before" T1 = "doesn't have it" at all),
+    # so parse_sorted's segment 0 (before the first marker) stays empty and
+    # every real name lands in segment 1 (T1) through segment 3 (after T3,
+    # i.e. T3 itself). Confirmed live: a real response placed T1-tier names
+    # at raw index 1, not 0. Shifted down by 1 and clamped to [0, 2] so the
+    # output "tier" is what the rest of this module (and the frontend's
+    # T${tier+1} labeling) actually expects: 0=T1, 1=T2, 2=T3. The clamp
+    # also folds the rare "before T1"/"after T3" edge cases into T1/T3
+    # respectively, matching the prompt's own rule 2 ("placed before T1 is
+    # treated the same as T1").
+    tiers = {name: min(2, max(0, int(scores[name] // 10) - 1)) for name in roster if scores.get(name) is not None}
+    per_character: dict[str, dict | None] = {name: None for name in roster}
 
-    # Eligible: both passes agree on placeability — either both gave a real
-    # tier, or both marked the character unknown. Excluded only when exactly
-    # one pass could place it and the other couldn't — a real contradiction,
-    # not just fine-grained tier disagreement (which _build_blocks/the
-    # round-average path already handles for two real tiers).
-    elig_names = [n for n in roster if (tiers[1][n] == _UNKNOWN) == (tiers[2][n] == _UNKNOWN)]
-    m = len(elig_names)
-    per_character = {n: None for n in roster}
     empty_quality = {
         "kappa_raw_12": None, "min_kappa": None, "kappa_raw_min": None,
         "n_blocks": 0, "block_sizes": [], "n_high_disagreement": 0,
     }
-    if m == 0:
+    if not tiers:
         return per_character, empty_quality
 
-    tiers1, tiers2 = tiers[1], tiers[2]
-    alive = elig_names
-    kappa = tier_kappa([tiers1[n] for n in alive], [tiers2[n] for n in alive])
+    # Up to 3 blocks (T1/T2/T3 -> tier 0/1/2) — not every tier necessarily
+    # has a member (e.g. nobody landed on "unsure"), so this builds however
+    # many are actually present, same pattern ordinal_consensus.py uses.
+    # Within a tier, ordered by the real score (the model's own within-tier
+    # sorting-axis placement), not alphabetically — this is the "хоть
+    # какое-то сравнение" the plain list-membership design lost entirely.
+    placed = sorted(tiers, key=lambda n: scores[n])
+    blocks: list[list[str]] = [[placed[0]]]
+    for a, b in zip(placed, placed[1:]):
+        if tiers[a] == tiers[b]:
+            blocks[-1].append(b)
+        else:
+            blocks.append([b])
 
-    blocks = _build_blocks(alive, tiers1, tiers2)
-    survivor_m = len(alive)
-    block_sizes = [len(b) for b in blocks]
-    std = math.sqrt((survivor_m * survivor_m - 1) / 12) if survivor_m > 1 else 0.0
-
-    # Average raw score (tier*10+within, both passes) breaks ties within a
-    # block for display/cross-universe purposes only — it never affects
-    # which block a character is in, only their order inside one. 3 people
-    # in one block become sub_position tier+0.25/0.50/0.75 (evenly spaced by
-    # rank), not all stacked at the same point. The unknown-in-both block has
-    # no real score to break ties with — ordered by name instead, just to be
-    # deterministic (their relative order within that block carries no
-    # meaning either way).
-    avg_score = {
-        n: (per_pass_scores[1][n] + per_pass_scores[2][n]) / 2.0 if tiers1[n] != _UNKNOWN else n
-        for n in alive
-    }
-
+    m = len(placed)
+    # Normalized-rank z-score, same formula ordinal_consensus.py uses (std
+    # = stdev of a discrete uniform 1..m rank distribution) — without this,
+    # z blows out to roughly +-m/2 instead of a bounded ~+-1.7 scale, which
+    # broke Observe Beauty's bell-curve display (fixed 2026-09-23, confirmed
+    # live on MHA's is_strategist collection).
+    std = math.sqrt((m * m - 1) / 12) if m > 1 else 0.0
     cumulative = 0
     for b_idx, block in enumerate(blocks):
         size = len(block)
         midrank = cumulative + (size + 1) / 2.0
-        z = (midrank - (survivor_m + 1) / 2.0) / std if std > 0 else 0.0
-        # Every member of one block shares the same (tiers1, tiers2) pair by
-        # construction (_build_blocks only merges on exact equality of both)
-        # — round(average) when the two passes disagree on this block's own
-        # tier, same tie-break _build_blocks' own sort key already uses.
-        t1, t2 = tiers1[block[0]], tiers2[block[0]]
-        tier = t1 if t1 == t2 else round((t1 + t2) / 2)
-        ranked = sorted(block, key=lambda n: avg_score[n])
-        for rank, name in enumerate(ranked):
+        z = round((midrank - (m + 1) / 2.0) / std, 4) if std > 0 else 0.0
+        tier = tiers[block[0]]
+        for rank, name in enumerate(block):
             per_character[name] = {
                 "block_index": b_idx,
                 "block_size": size,
-                "consensus_z": round(z, 4),
-                "pass_range": abs(tiers1[name] - tiers2[name]),
+                "consensus_z": z,
+                "pass_range": 0,
                 "tier": tier,
                 "sub_position": round(tier + (rank + 1) / (size + 1), 4),
             }
         cumulative += size
 
-    kappa_final = None if math.isnan(kappa) else round(kappa, 4)
     quality = {
-        "kappa_raw_12": kappa_final,
-        "min_kappa": kappa_final,
-        "kappa_raw_min": kappa_final,
-        "n_blocks": len(blocks),
-        "block_sizes": sorted(block_sizes),
-        "n_high_disagreement": sum(
-            1 for n in alive if abs(tiers1[n] - tiers2[n]) > FLAG_HIGH_DISAGREEMENT_GAP
-        ),
+        "kappa_raw_12": None, "min_kappa": None, "kappa_raw_min": None,
+        "n_blocks": len(blocks), "block_sizes": sorted(len(b) for b in blocks),
+        "n_high_disagreement": 0,
     }
     return per_character, quality
 
@@ -218,79 +122,68 @@ def merge_flag_consensus(per_pass, roster, flags) -> tuple[dict, dict]:
 # ── self-test ───────────────────────────────────────────────────────────────
 
 def _scores(tier_map):
-    return {n: t * 10 + 0.5 for n, t in tier_map.items()}
+    """tier_map: {name: intended output tier (0/1/2)} -> {name: raw_segment
+    *10 + within}, matching what compute_score() actually produces from a
+    real "sorted" response — raw_segment = tier+1 (parse_sorted's segment 0
+    stays empty in practice since T1 is always the first token; see
+    flag_consensus's own comment on the -1 shift this exercises end to
+    end, not just the already-shifted output)."""
+    by_tier: dict[int, list[str]] = {}
+    for n, t in tier_map.items():
+        by_tier.setdefault(t, []).append(n)
+    out = {}
+    for t, names in by_tier.items():
+        raw_segment = t + 1
+        for i, n in enumerate(names):
+            out[n] = round(raw_segment * 10 + (i + 1) / (len(names) + 1), 4)
+    return out
 
 
 def _selftest():
     names = [f"c{i}" for i in range(10)]
 
-    # test 1: perfect agreement -> kappa 1.0, everyone placed.
-    tiers = {n: i % 3 for i, n in enumerate(names)}
-    per_pass = {1: _scores(tiers), 2: _scores(tiers)}
-    per_character, quality = flag_consensus(per_pass, names)
-    assert quality["min_kappa"] == 1.0, quality
-    assert quality["n_high_disagreement"] == 0, quality
-    assert all(per_character[n] is not None for n in names), per_character
-    print(f"test 1 (perfect agreement -> kappa 1.0, everyone placed): PASS  {quality}")
-
-    # test 2: one shared category only -> kappa undefined (None), not an error.
-    tiers_flat = {n: 0 for n in names}
-    per_pass = {1: _scores(tiers_flat), 2: _scores(tiers_flat)}
-    per_character, quality = flag_consensus(per_pass, names)
-    assert quality["min_kappa"] is None, quality
-    assert all(per_character[n] is not None for n in names), per_character
-    print(f"test 2 (unanimous single category -> kappa None, not 'bad'): PASS  {quality}")
-
-    # test 3: the real bug this file was rewritten to fix. Two outliers
-    # aside, pass 1 calls everyone tier 0 and pass 2 calls everyone tier 2 —
-    # total disagreement about the whole group. A pairwise-ORDER metric
-    # (sign_matrix, as tried first) sees zero variance within each pass and
-    # reports kappa as undefined; direct tier agreement must instead report
-    # a very low kappa, since po=0 with disjoint marginals.
-    tiers1 = {n: 0 for n in names}
-    tiers2 = {n: 2 for n in names}
-    per_pass = {1: _scores(tiers1), 2: _scores(tiers2)}
-    per_character, quality = flag_consensus(per_pass, names)
-    assert quality["min_kappa"] is not None, "total disagreement must not report as undefined"
-    assert quality["min_kappa"] < 0.5, quality
-    assert all(per_character[n] is not None for n in names), per_character
-    print(f"test 3 (total absolute disagreement surfaces as low kappa, not None): PASS  {quality}")
-
-    # test 4: nobody gets dropped for disagreeing anymore — a couple of
-    # noisy characters lower kappa and get flagged via pass_range/
-    # n_high_disagreement, but still receive a best-effort placement, same
-    # as everyone else.
-    tiers_base = {n: i % 3 for i, n in enumerate(names)}
-    tiers_noisy = dict(tiers_base)
-    tiers_noisy["c0"] = (tiers_base["c0"] + 1) % 3
-    tiers_noisy["c1"] = (tiers_base["c1"] + 1) % 3
-    per_pass = {1: _scores(tiers_base), 2: _scores(tiers_noisy)}
+    # test 1: a real 3-way split -> three blocks, correct tiers, within-tier
+    # order follows the given score (not alphabetical).
+    tier_map = {n: (i % 3) for i, n in enumerate(names)}
+    per_pass = {1: _scores(tier_map)}
     per_character, quality = flag_consensus(per_pass, names)
     assert all(per_character[n] is not None for n in names), per_character
-    assert quality["n_high_disagreement"] == 0, quality  # gap is exactly 1, at the threshold, not above it
-    assert per_character["c0"]["pass_range"] == 1 and per_character["c1"]["pass_range"] == 1, per_character
-    assert all(per_character[n]["pass_range"] == 0 for n in names if n not in ("c0", "c1")), per_character
-    print(f"test 4 (disagreeing characters flagged via pass_range, not dropped): PASS  {quality}")
+    assert quality["n_blocks"] == 3, quality
+    for n in names:
+        assert per_character[n]["tier"] == tier_map[n], (n, per_character[n], tier_map[n])
+    print(f"test 1 (3-way split -> three blocks, correct tiers): PASS  {quality}")
 
-    # test 5: the bug this fix addresses. c0/c1 land in "unknown" in BOTH
-    # passes (score None both times, e.g. minor characters the model can't
-    # confidently place at all) — real agreement, must get their own
-    # placement, not be dropped. c2 is unknown in pass 1 only, a real tier
-    # in pass 2 — a genuine contradiction, must still be dropped (None).
-    per_pass_scores = {1: _scores({n: i % 3 for i, n in enumerate(names)}),
-                        2: _scores({n: i % 3 for i, n in enumerate(names)})}
-    per_pass_scores[1]["c0"] = None
-    per_pass_scores[2]["c0"] = None
-    per_pass_scores[1]["c1"] = None
-    per_pass_scores[2]["c1"] = None
-    per_pass_scores[1]["c2"] = None  # unknown in pass 1 only -> contradiction
-    per_character, quality = flag_consensus(per_pass_scores, names)
-    assert per_character["c0"] is not None and per_character["c1"] is not None, per_character
-    assert per_character["c0"]["tier"] == per_character["c1"]["tier"] == _UNKNOWN, per_character
-    assert per_character["c0"]["block_index"] == per_character["c1"]["block_index"], per_character
-    assert per_character["c2"] is None, per_character
-    assert all(per_character[n] is not None for n in names if n not in ("c2",)), per_character
-    print(f"test 5 (unknown-in-both gets its own block; unknown-in-one stays dropped): PASS  {quality}")
+    # test 2: nobody matches (everyone T1) -> one block, tier 0.
+    per_pass = {1: _scores({n: 0 for n in names})}
+    per_character, quality = flag_consensus(per_pass, names)
+    assert quality["n_blocks"] == 1 and quality["block_sizes"] == [10], quality
+    assert all(per_character[n]["tier"] == 0 for n in names), per_character
+    print(f"test 2 (everyone T1 -> one block, tier 0): PASS  {quality}")
+
+    # test 3: everybody clearly has it (T3) -> one block, tier 2.
+    per_pass = {1: _scores({n: 2 for n in names})}
+    per_character, quality = flag_consensus(per_pass, names)
+    assert quality["n_blocks"] == 1 and quality["block_sizes"] == [10], quality
+    assert all(per_character[n]["tier"] == 2 for n in names), per_character
+    print(f"test 3 (everyone T3 -> one block, tier 2): PASS  {quality}")
+
+    # test 4: missing from the response entirely (client.flag()'s "unknown"
+    # list, or a defensive stale-cache gap) -> not placed, everyone else
+    # unaffected.
+    tier_map4 = dict(tier_map)
+    per_pass = {1: _scores(tier_map4)}
+    del per_pass[1]["c0"]
+    per_character, quality = flag_consensus(per_pass, names)
+    assert per_character["c0"] is None, per_character
+    assert all(per_character[n] is not None for n in names if n != "c0"), per_character
+    print(f"test 4 (unknown/missing -> not placed, everyone else unaffected): PASS  {quality}")
+
+    # test 5: nobody has any data at all -> empty result, not an error.
+    per_pass = {1: {}}
+    per_character, quality = flag_consensus(per_pass, names)
+    assert all(per_character[n] is None for n in names), per_character
+    assert quality["n_blocks"] == 0, quality
+    print(f"test 5 (no data at all -> empty result, no crash): PASS  {quality}")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,21 @@
+=== CHARACTER CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+
+You are checking ONE property of the character "{{ character }}" from {{ universe }}.
+Use ONLY the context above. Do not use outside knowledge of the series.
+
+Answer rules:
+- "yes": the context contains a passage that shows this property. Give exactly ONE quote: the single strongest passage, copied EXACTLY from the context, under 40 words. Never use "..." or "…" inside the quote; if the passage is long, pick a shorter continuous piece.
+- "no": the context shows the clear opposite. Quotes list stays EMPTY.
+- "no_data": the context says nothing either way. Quotes list stays EMPTY. Missing evidence is "no_data", never "no".
+- An event that every character of the story goes through (mandatory school events, exams, wars) is not evidence of a personal trait.
+
+{# Everything above is identical for all flags of this character -> prefix cache. Flag-specific part goes last. #}
+PROPERTY: {{ flag.id }}
+QUESTION: {{ flag.question }}
+COUNTS AS YES: {{ flag.look_for }}
+DOES NOT COUNT: {{ flag.not_this }}
+
+Return only JSON, no other text:
+{"flag": "{{ flag.id }}", "answer": "yes" | "no" | "no_data", "quotes": ["..."]}

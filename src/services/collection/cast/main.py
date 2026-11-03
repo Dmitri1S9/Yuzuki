@@ -24,7 +24,7 @@ def main():
     client = create_client()
 
     collection = collect_candidates(client)
-    collection = reconcile_names(client, collection)
+    collection = reconcile_names(collection)
     collection = build_roster_and_groups(collection)
     output = assemble_and_publish(collection)
 

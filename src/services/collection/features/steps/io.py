@@ -9,9 +9,8 @@ import logging
 from src.repository import RelationRepository, UniverseRepository
 from src.services.collection.features.steps.constants import ARC, LOCATION, UNIVERSE_NAME
 from src.services.collection.relations.steps.low_info import compute_low_info
-from src.shared.decorators import announce, report
+from src.shared.decorators import announce, logged, report
 
-log = logging.getLogger(__name__)
 _universe_repo = UniverseRepository()
 _relation_repo = RelationRepository()
 
@@ -44,6 +43,17 @@ def _merged_from_db_relations(relations) -> dict:
     return merged
 
 
+@logged(lambda _, universe_id: f"no approved relations in database for universe {universe_id} — approve the "
+        "relations queue item in DCS first; proceeding without low_info exclusion", level=logging.WARNING)
+def _log_no_approved_relations(universe_id: int) -> None:
+    pass
+
+
+@logged(lambda _, count: f"low_info characters (recomputed from approved DB relations): {count} — excluded from collection")
+def _log_low_info_count(count: int) -> None:
+    pass
+
+
 def load_low_info_set(universe, roster: list[str]) -> set[str]:
     # Recomputed from the database's approved relations — confirm_relations
     # (see api/routes/confirm.py) is the only place relations data is ever
@@ -54,14 +64,12 @@ def load_low_info_set(universe, roster: list[str]) -> set[str]:
     # must not still get silently skipped here.
     relations = _relation_repo.get_relations(universe.get_id())
     if not relations:
-        log.warning("no approved relations in database for universe %d — approve the relations queue "
-                    "item in DCS first; proceeding without low_info exclusion", universe.get_id())
+        _log_no_approved_relations(universe.get_id())
         return set()
     merged = _merged_from_db_relations(relations)
     isolate_set = {c.get_name() for c in universe.get_roster() if c.is_isolated()}
     low_info_set = set(compute_low_info(merged, roster, isolate_set))
-    log.info("low_info characters (recomputed from approved DB relations): %d — excluded from collection",
-              len(low_info_set))
+    _log_low_info_count(len(low_info_set))
     return low_info_set
 
 
@@ -88,19 +96,34 @@ def assemble_output(roster, low_info_set, ordinal_names, flag_names, profile_nam
     }
 
 
+@logged(lambda _, param, old_null, new_unplaced, min_kappa, n_blocks:
+        f"  {param:<28} old_null={old_null:2d}  new_unplaced={new_unplaced:2d}  "
+        f"new_min_kappa={min_kappa}  new_n_blocks={n_blocks}")
+def _log_legacy_comparison_row(param: str, old_null: int, new_unplaced: int, min_kappa, n_blocks) -> None:
+    pass
+
+
+@logged(lambda _: "--legacy-null comparison (old per-cell vote/null rule vs new consensus blocks):")
+def _log_legacy_comparison_header() -> None:
+    pass
+
+
 def log_legacy_comparison(legacy, merged, quality, collect_roster, params) -> None:
-    log.info("--legacy-null comparison (old per-cell vote/null rule vs new consensus blocks):")
+    _log_legacy_comparison_header()
     for param in params:
         old_null = sum(1 for n in collect_roster if legacy[n][param]["value"] is None)
         new_unplaced = sum(1 for n in collect_roster if merged[n][param] is None)
-        log.info(
-            "  %-28s old_null=%2d  new_unplaced=%2d  new_min_kappa=%s  new_n_blocks=%s",
-            param, old_null, new_unplaced,
-            quality[param]["min_kappa"], quality[param]["n_blocks"],
-        )
+        _log_legacy_comparison_row(param, old_null, new_unplaced,
+                                    quality[param]["min_kappa"], quality[param]["n_blocks"])
+
+
+@logged(lambda _, param, min_kappa, n_blocks, block_sizes:
+        f"{param:<28} min_kappa={min_kappa}  n_blocks={n_blocks}  block_sizes={block_sizes}")
+def _log_consensus_row(param: str, min_kappa, n_blocks, block_sizes) -> None:
+    pass
 
 
 def log_consensus_summary(quality, params) -> None:
     for param in params:
         q = quality[param]
-        log.info("%-28s min_kappa=%s  n_blocks=%s  block_sizes=%s", param, q["min_kappa"], q["n_blocks"], q["block_sizes"])
+        _log_consensus_row(param, q["min_kappa"], q["n_blocks"], q["block_sizes"])

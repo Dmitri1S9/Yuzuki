@@ -18,7 +18,13 @@ import subprocess
 
 from src.infra.celery_app import app
 from src.repository import UniverseRepository
+from src.shared.decorators import logged
 
+# The stdout/stderr dump below (on failure only) stays a plain inline log
+# call, not a decorator — same carve-out as OllamaClient's own retry/VRAM
+# diagnostics: it's raw output from an external subprocess at a failure
+# boundary, needed right before raising, not narration of this task's own
+# business logic.
 log = logging.getLogger(__name__)
 _universe_repo = UniverseRepository()
 
@@ -26,6 +32,17 @@ STAGE_MODULES = {
     "relations": "src.services.collection.relations.main",
     "features": "src.services.collection.features.main",
 }
+
+
+@logged(lambda _, stage, universe_id, universe_name, args:
+        f"launching stage {stage!r} for universe {universe_id} ({universe_name!r}): {args}")
+def _log_launching_stage(stage: str, universe_id: int, universe_name: str, args: list[str]) -> None:
+    pass
+
+
+@logged(lambda _, stage, universe_id, returncode: f"stage {stage!r} for universe {universe_id} finished with code {returncode}")
+def _log_stage_finished(stage: str, universe_id: int, returncode: int) -> None:
+    pass
 
 
 @app.task(name="pipeline.run_stage")
@@ -42,9 +59,9 @@ def run_stage(stage: str, universe_id: int) -> dict:
         "python", "-m", STAGE_MODULES[stage],
         universe.get_name(), universe.get_arc() or "", "", universe.get_anilist_title(),
     ]
-    log.info("launching stage %r for universe %d (%r): %s", stage, universe_id, universe.get_name(), args)
+    _log_launching_stage(stage, universe_id, universe.get_name(), args)
     result = subprocess.run(args, cwd="/app", capture_output=True, text=True)
-    log.info("stage %r for universe %d finished with code %d", stage, universe_id, result.returncode)
+    _log_stage_finished(stage, universe_id, result.returncode)
     if result.returncode != 0:
         log.error("stage %r stdout:\n%s", stage, result.stdout[-4000:])
         log.error("stage %r stderr:\n%s", stage, result.stderr[-4000:])

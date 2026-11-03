@@ -1,12 +1,9 @@
-import logging
-
 from psycopg2.extras import Json
 
 from src.domain.group import Group
 from src.infra.exceptions import falseGroupTypeException
 from src.repository.connection import read_only, transactional
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import logged
 
 GROUP_CALL_TYPES: set[str] = {"small", "medium", "large", "isolates"}
 
@@ -32,6 +29,8 @@ class GroupRepository:
     def get_groups(self, conn, universe_id: int) -> list[Group]:
         return _load_groups(conn, universe_id)
 
+    @logged(lambda _, self, groups, universe_id, group_type, replace=False:
+            f"saved {len(groups)} {group_type} groups for universe {universe_id} (replace={replace})")
     @transactional
     def save_groups(self, conn, groups: list[dict], universe_id: int, group_type: str,
                      replace: bool = False) -> None:
@@ -57,4 +56,3 @@ class GroupRepository:
                     (universe_id, group["name"], group_type, Json(group["members"]),
                      Json(group["name_variants"]), Json(group["passes"])),
                 )
-        log.info("saved %d %s groups for universe %d (replace=%s)", len(groups), group_type, universe_id, replace)

@@ -1,5 +1,5 @@
-"""Same approach as graph_extract/resolve.py: exact name/alias match, plus a single unambiguous name-word
-fallback (e.g. "Katsuki" alone), guarded against short/common words and cross-character collisions."""
+"""Exact name/alias match, plus a single unambiguous name-word fallback (e.g. "Katsuki" alone), guarded
+against short/common words and cross-character collisions."""
 from collections import Counter
 
 from .settings import RosterEntry

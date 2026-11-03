@@ -1,0 +1,642 @@
+[
+ {
+  "flag": "lies_for_gain",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 0,
+  "prompt_eval": 26967,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "manipulates_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26455,
+  "prompt_eval": 26969,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tells_hard_truths",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka has a pragmatic, unenthusiastic, blunt, and teasing personality that is mostly shown to those she finds irritating, like her fellow classmate Denki Kaminari, whose cluelessness makes him an easy target for her snarky comments.",
+  "cached": 26457,
+  "prompt_eval": 27002,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "belittles_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26968,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "harms_for_pleasure",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26967,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "sacrifices_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26972,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "exploits_affection",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26984,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "envies_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26984,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "ingratiates_with_powerful",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26978,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "helps_without_gain",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka and the rest of Class 1-A receive a letter from Izuku explaining the history of him being Quirkless and One For All, making him leave to avoid them being targets by All For One.",
+  "cached": 26490,
+  "prompt_eval": 26958,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "responds_to_feelings",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "When Denki begins to panic and fear for his life during the raid on the Gunga Mountain Villa, Midnight tells him to think of the person who matters most to him, and Denki's focus centers on Kyoka, who encourages him and tells him to stay strong.",
+  "cached": 26490,
+  "prompt_eval": 26956,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "self_sacrifice",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka and Mashirao tell Mezo to take the kids away while they hold off against Nine.",
+  "cached": 26490,
+  "prompt_eval": 26957,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "forgives",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "After learning the whole story however, Kyoka gains the desire to forgive Yuga and help him redeem himself by taking down All For One together.",
+  "cached": 26490,
+  "prompt_eval": 26958,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "disciplined_effort",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "As part of her training, Kyoka honed her headphone jacks by repeatedly piercing them into a stone cliff, all to increase the amount of audio she can hear with her Quirk.",
+  "cached": 26490,
+  "prompt_eval": 26953,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fulfills_duties",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka and Mezo, who worked with Gang Orca, show off their enhanced search techniques.",
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "acts_rashly",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26953,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "plans_ahead",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "The plan is to lure the villains to the furthest corner of the island where ancient castle ruins are. The heroes will engage the villains using the terrain to their advantage and spit the villains apart, so each member has to face several students alone.",
+  "cached": 26490,
+  "prompt_eval": 26951,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_company",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26945,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "avoids_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26951,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "jokes_around",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka is very helpful to Denki at the U.S.J., helping him to have more self-confidence about using his Quirk. As Denki thinks that he can't use his Quirk with Kyoka and Momo around, he is not able to use it well, but when forced to by Kyoka, he finally realized that he too can fight and be helpful.",
+  "cached": 26490,
+  "prompt_eval": 26956,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "loses_control",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26948,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "shows_insecurity",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "She was so far the only student in Class 1-A whose hero name is the exact same as her Quirk (Earphone Jack). Kyoka recently started taking an interest in tea, likely from spending time with Momo. Kyoka's personality describes her as a \"shy rock fan\".",
+  "cached": 26490,
+  "prompt_eval": 26949,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "endures_pressure",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Despite the pain, she retorted that she had to face All For One for putting her friends Izuku and Yuga through so much distress before firing off her new ultimate move, Heartbeat Surround Legato.",
+  "cached": 26490,
+  "prompt_eval": 26944,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_novelty",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26943,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "creates",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26936,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "adapts_approach",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She then uses her Quirk to protect Denki from an attack by one of the villains. Kyoka plugs her jacks into her boots to launch a sonic attack, causing the villains to block their ears in pain, which gives Momo the time needed to create an insulator sheet.",
+  "cached": 26490,
+  "prompt_eval": 26953,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "takes_command",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She then listens to Katsuki apologizing to Izuku before he collapses from the shock and exhaustion.",
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "defers_to_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "provokes_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26958,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "competes",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26978,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "stays_loyal_under_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Despite her skepticism and disliking of Minoru, she still seems to accept him as a fellow classmate.",
+  "cached": 26490,
+  "prompt_eval": 26963,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "betrays",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26967,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "hides_self",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26947,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_power",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_achievement",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26946,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_hedonism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_stimulation",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26951,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_self_direction",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Despite her parents desires for her to become a musician, she decided to become a hero instead because she wanted to dedicate her work to others.",
+  "cached": 26490,
+  "prompt_eval": 26955,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_universalism",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She also became a role model and music tutor for Eri as she attends middle school with the goal of becoming a singer, with Kyoka teaching her how to play bass and guitar on her days off.",
+  "cached": 26490,
+  "prompt_eval": 26958,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_benevolence",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Despite the pain, she angrily responds that all he does is talk about who's weak, strong, and special, while she doesn't care at all, only that he made her friends cry.",
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_tradition",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26947,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_conformity",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26949,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_security",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Kyoka remarks that she isn't too worried about Fumikage, but is more concerned for Denki, though Momo reassures her that he will be fine.",
+  "cached": 26490,
+  "prompt_eval": 26945,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_revenge",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_romance",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26947,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_freedom",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26983,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_order",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26952,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "egalitarian",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "elitist",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26957,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "revolutionary",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26943,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fanatical",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "principled_at_cost",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "She states class 1-A sticks together.",
+  "cached": 26490,
+  "prompt_eval": 26939,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "results_over_principles",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26957,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "nihilistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26936,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fatalistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26939,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "visible_scars",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Following the Paranormal Liberation War, she gains a small scar on her right earphone jack.",
+  "cached": 26490,
+  "prompt_eval": 26930,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "muscular_build",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26939,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "distinctive_feature",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Her most prominent features are the flexible, plug-like earphone jacks hanging from each of her earlobes; they act like extra limbs that she is able to control at will, and change their length if so desired.",
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "cares_about_appearance",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Unlike the other students, Kyoka sometimes wears a waistcoat over her school uniform, in place of the usual U.A. blazer.",
+  "cached": 26490,
+  "prompt_eval": 26942,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "intimidating",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26950,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "charismatic",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Class 1-A's performance ends up being a huge hit.",
+  "cached": 26490,
+  "prompt_eval": 26978,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tragic_past",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26490,
+  "prompt_eval": 26986,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "physical_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "During the battle between Class 1-A and Izuku, Kyoka tells Izuku she is very happy that he not only helped her with how to organize notes during the Culture Festival, but also sharing a hobby of note-taking. She also commented on how Izuku got stronger.",
+  "cached": 26490,
+  "prompt_eval": 26938,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "psychological_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "She is afraid of horror-based activities, and has an aversion to nudity.",
+  "cached": 26490,
+  "prompt_eval": 26940,
+  "done_reason": "stop"
+ }
+]

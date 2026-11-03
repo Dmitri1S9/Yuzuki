@@ -2,7 +2,7 @@
 import time
 from dataclasses import dataclass
 
-from yuzuki_local.external.ollama import LLMError, OllamaClient, PromptTooLong
+from .external.ollama import LLMError, OllamaClient, PromptTooLong
 
 from .prompt_renderer import PromptRenderer
 from .schemas import ParseReply

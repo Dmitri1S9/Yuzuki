@@ -7,38 +7,40 @@ from collections import Counter
 
 from src.infra.ai_clients.gemini_client import GeminiClient
 from src.services.collection.cast.steps.constants import (
-    ARC, CAST_PASSES, DEDUP_OVERLAP, GROUP_TYPES, LOCATION, ROSTER_MIN_PASSES,
-    SURVIVE_PASSES, UNIVERSE_NAME,
+    ARC, DEDUP_OVERLAP, GROUP_TYPES, LOCATION, ROSTER_MIN_PASSES, SURVIVE_PASSES, UNIVERSE_NAME,
 )
 from src.services.collection.cast.steps.name_matching import name_key
-from src.shared.decorators import announce, report
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import announce, logged, report
 
 
 def create_client() -> GeminiClient:
     return GeminiClient()
 
 
-def run_group(client: GeminiClient, group_type: str, characters: list[str] | None = None) -> list[dict]:
-    results = []
-    for pass_number in range(1, CAST_PASSES[group_type] + 1):
-        log.info("  %s pass=%d ...", group_type, pass_number)
-        results.append(client.group(group_type, UNIVERSE_NAME, ARC,
-                                     pass_number=pass_number, location=LOCATION,
-                                     characters=characters))
-    return results
-
-
-@announce("collecting groups: medium/large/isolates")
+@announce("collecting groups: medium (own call), large+isolates (combined call)")
 @report(lambda r: f"collected {sum(len(v) for v in r.values())} raw pass results")
 def collect_raw_groups(client: GeminiClient, characters: list[str] | None = None) -> dict[str, list[dict]]:
     # characters: AniList's cast list for this title (see anime_db.py),
-    # fetched before any model call now exists — passed to every group
-    # type as a ground-truth reference, not a cap (see base_client.py's
-    # group() for why this used to be impossible: groups used to BE the
-    # roster's only source).
-    return {ct: run_group(client, ct, characters) for ct in CAST_PASSES}
+    # fetched before any model call now exists — passed as a ground-truth
+    # reference, not a cap (see base_client.py's group_medium()/
+    # group_large_isolates() for why this used to be impossible: groups
+    # used to BE the roster's only source).
+    #
+    # Medium, large and isolates used to be 3 separate calls x 2 passes
+    # (6 total); now 2 calls, 1 pass each (2026-09-23, cost cut) — medium
+    # kept as its own prompt (opposite definition from large, risk of the
+    # model blurring the two if combined), large+isolates combined into
+    # one (unrelated axes, safe to ask together). Each value below is still
+    # shaped as a list of pass-results (length 1 now, was 2) so
+    # consolidate_groups/extract_candidate_names need no change — they
+    # only ever iterated "however many passes came in."
+    medium_result = client.group_medium(UNIVERSE_NAME, ARC, location=LOCATION, characters=characters)
+    large_result = client.group_large_isolates(UNIVERSE_NAME, ARC, location=LOCATION, characters=characters)
+    return {
+        "medium": [{"groups": [g for g in medium_result.get("groups", []) if g.get("group_type") == "medium"]}],
+        "large": [{"groups": [g for g in large_result.get("groups", []) if g.get("group_type") == "large"]}],
+        "isolates": [{"isolates": large_result.get("isolates", [])}],
+    }
 
 
 def overlap(a: set, b: set) -> float:
@@ -50,6 +52,12 @@ def overlap(a: set, b: set) -> float:
     if not a or not b:
         return 0.0
     return len(a & b) / min(len(a), len(b))
+
+
+@logged(lambda _, group_type, names, passes:
+        f"dropped {group_type} group {names[0]!r} (passes={sorted(passes)} < {SURVIVE_PASSES[group_type]})")
+def _log_dropped_group(group_type: str, names: list[str], passes: set) -> None:
+    pass
 
 
 def merge_groups(results: list[dict], group_type: str, key_fn=name_key) -> list[dict]:
@@ -79,8 +87,7 @@ def merge_groups(results: list[dict], group_type: str, key_fn=name_key) -> list[
         if len(cl["passes"]) >= SURVIVE_PASSES[group_type]:
             survivors.append(cl)
         else:
-            log.info("dropped %s group %r (passes=%s < %d)", group_type,
-                     cl["names"][0], sorted(cl["passes"]), SURVIVE_PASSES[group_type])
+            _log_dropped_group(group_type, cl["names"], cl["passes"])
     return survivors
 
 
@@ -93,14 +100,19 @@ def find_leaders_outside_members(survivors: list[dict], group_type: str, key_fn=
     return problems
 
 
+@logged(lambda _, problem: f"LEADER NOT IN MEMBERS ({problem['group_type']}, {problem['group']!r}): {problem['leader']!r}",
+        level=logging.WARNING)
+def _log_leader_not_in_members(problem: dict) -> None:
+    pass
+
+
 @announce("consolidating medium/large groups across passes")
 @report(lambda r: f"groups={ {gt: len(r[gt]) for gt in r} }")
 def consolidate_groups(raw_groups: dict[str, list[dict]], resolve) -> dict[str, list[dict]]:
     merged = {gt: merge_groups(raw_groups[gt], gt, resolve) for gt in GROUP_TYPES}
     for gt, survivors in merged.items():
         for problem in find_leaders_outside_members(survivors, gt, resolve):
-            log.warning("LEADER NOT IN MEMBERS (%s, %r): %r",
-                        problem["group_type"], problem["group"], problem["leader"])
+            _log_leader_not_in_members(problem)
     return merged
 
 
@@ -113,6 +125,11 @@ def format_groups_for_output(merged_groups: dict, canon: dict) -> dict:
              for cl in merged_groups[gt]]
         for gt in GROUP_TYPES
     }
+
+
+@logged(lambda _, members: f"synthesized one large group ({UNIVERSE_NAME!r}) from AniList's cast list: {len(members)} member(s)")
+def _log_synthesized_large_group(members: set) -> None:
+    pass
 
 
 def synthesize_large_group_from_cast(merged_groups: dict, anilist_names: list[str],
@@ -132,8 +149,7 @@ def synthesize_large_group_from_cast(merged_groups: dict, anilist_names: list[st
     merged_groups["large"] = [{
         "members": members, "passes": set(), "names": [UNIVERSE_NAME], "leaders": [None],
     }]
-    log.info("synthesized one large group (%r) from AniList's cast list: %d member(s)",
-             UNIVERSE_NAME, len(members))
+    _log_synthesized_large_group(members)
     return merged_groups
 
 

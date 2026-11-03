@@ -14,7 +14,7 @@ class Character:
     def __init__(self, name: str, universe_id: int, aliases: list[str] | None = None,
                  low_info: bool = False, profile: dict | None = None,
                  ordinals: dict | None = None, flags: dict | None = None,
-                 image_url: str | None = None, existence_hits: int | None = None,
+                 has_portrait: bool = False, existence_hits: int | None = None,
                  is_isolated: bool = False):
         self._name = name
         self._universe_id = universe_id
@@ -23,7 +23,7 @@ class Character:
         self._profile = dict(profile or {})
         self._ordinals = dict(ordinals or {})
         self._flags = dict(flags or {})
-        self._image_url = image_url
+        self._has_portrait = has_portrait
         self._existence_hits = existence_hits
         self._is_isolated = is_isolated
 
@@ -36,8 +36,8 @@ class Character:
     def get_aliases(self) -> list[str]:
         return list(self._aliases)
 
-    def get_image_url(self) -> str | None:
-        return self._image_url
+    def has_portrait(self) -> bool:
+        return self._has_portrait
 
     def get_existence_hits(self) -> int | None:
         return self._existence_hits

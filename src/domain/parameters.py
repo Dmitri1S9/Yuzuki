@@ -57,6 +57,14 @@ FLAG_PARAMS: dict[str, dict]
 ORDINAL_META: dict[str, dict]
 PROFILE_PARAMS, ORDINAL_PARAMS, FLAG_PARAMS, ORDINAL_META = _load_parameters()
 
+# Every flag shares the same fixed 3-tier scale now (T1=doesn't have it,
+# T2=unsure, T3=clearly has it — see system_prompt_flag_rank.j2), unlike
+# ordinals where tier_count/normal_tier_index vary per parameter — so this
+# is one shared constant, not a per-flag dict like ORDINAL_META.
+# normal_tier_index=1 (T2, "unsure") is the closest a flag has to ordinals'
+# "ordinary person" mid-scale anchor.
+FLAG_META = {"tier_count": 3, "normal_tier_index": 1}
+
 
 def all_param_names() -> list[str]:
     """Ordinals + flags — the parameters stage2 (rank/flag collection) loops

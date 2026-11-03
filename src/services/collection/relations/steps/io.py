@@ -9,9 +9,8 @@ import logging
 from src.repository import UniverseRepository
 from src.services.collection.relations.steps.constants import ARC, LOCATION, UNIVERSE_NAME
 from src.services.collection.relations.steps.low_info import has_small_group
-from src.shared.decorators import announce, report
+from src.shared.decorators import announce, logged, report
 
-log = logging.getLogger(__name__)
 _universe_repo = UniverseRepository()
 
 
@@ -33,9 +32,13 @@ def load_cast_data():
             "roster in DCS before running stage 3 (relations)")
     roster = [c.get_name() for c in universe.get_roster()]
     isolate_set = {c.get_name() for c in universe.get_roster() if c.is_isolated()}
+    # Same recognition aid rank()/flag() already get (2026-09-23) — a
+    # character known mostly by a codename/civilian identity/native name
+    # can go unrecognized by bare name alone. See naming.display_name().
+    alias_map = {c.get_name(): c.get_aliases() for c in universe.get_roster()}
     medium_groups = [_group_to_dict(g) for g in universe.get_groups() if g.get_type() == "medium"]
     large_groups = [_group_to_dict(g) for g in universe.get_groups() if g.get_type() == "large"]
-    return roster, isolate_set, medium_groups, large_groups, universe.get_id()
+    return roster, isolate_set, medium_groups, large_groups, universe.get_id(), alias_map
 
 
 def assemble_output(merged, dropped, group_relations, group_relations_dropped,
@@ -61,11 +64,10 @@ def assemble_output(merged, dropped, group_relations, group_relations_dropped,
     }
 
 
+@logged(lambda _, out, roster:
+        f"edge counts: {out['quality']['edge_counts']} | edge counts by level: {out['quality']['edge_counts_by_level']} | "
+        f"has_small_group: {len(out['has_small_group'])} characters | "
+        f"group_relations: allied={len(out['group_relations']['allied'])} rival={len(out['group_relations']['rival'])} | "
+        f"low_info characters: {len(out['low_info_characters'])} / {len(roster)}")
 def log_final_summary(out: dict, roster: list[str]) -> None:
-    q = out["quality"]
-    log.info("edge counts: %s", q["edge_counts"])
-    log.info("edge counts by level: %s", q["edge_counts_by_level"])
-    log.info("has_small_group: %d characters", len(out["has_small_group"]))
-    log.info("group_relations: allied=%d rival=%d",
-              len(out["group_relations"]["allied"]), len(out["group_relations"]["rival"]))
-    log.info("low_info characters: %d / %d", len(out["low_info_characters"]), len(roster))
+    pass

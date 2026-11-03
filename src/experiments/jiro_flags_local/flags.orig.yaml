@@ -1,0 +1,492 @@
+# Yuzuki flags v2 — for local model WITH full character context.
+# One flag = one call. Answer: yes / no / no_data, always with verbatim quotes.
+#
+# Fields:
+#   id          stable key
+#   type        behavior | value | worldview | impression | narrative
+#   question    what to check (goes into prompt)
+#   look_for    what counts as YES
+#   not_this    boundary cases that must NOT count (anti-patterns)
+#   trait       aggregation target(s): [[name, sign], ...]; null = standalone
+#   conflicts   pairs to review if both are "yes" (may be character development, not an error)
+#
+# Frameworks: Big Five + HEXACO Honesty-Humility, Dark Triad, interpersonal circumplex (dominance),
+# Schwartz basic values, political axes (freedom-order, equality-hierarchy).
+
+version: "2.1"   # 2.0 = the 61 flags as delivered; 2.1 = + exploits_affection, envies_others, ingratiates_with_powerful
+
+types:
+  behavior:  "Observable actions in the story. Aggregated into traits, never asked as abstract traits."
+  value:      "What the character wants from life: stated explicitly or pursued repeatedly (Schwartz)."
+  worldview:  "Stance on society, order, equality, meaning — shown by statements or consistent actions."
+  impression: "Appearance and how others react to the character."
+  narrative:  "Backstory and vulnerabilities."
+
+flags:
+
+  # ───────────── BEHAVIOR: Honesty-Humility / Dark Triad ─────────────
+  - id: lies_for_gain
+    type: behavior
+    question: "Does the character deliberately lie to or deceive others to gain an advantage for themselves?"
+    look_for: "Fabricated stories, false promises, fake identities or feigned emotions used for personal benefit."
+    not_this: "Withholding information or keeping a secret; lying to protect someone else; bluffing or feints in a fight or game."
+    trait: [[honesty_humility, -1], [machiavellianism, 1]]
+
+  - id: manipulates_others
+    type: behavior
+    question: "Does the character steer other people's decisions without their awareness?"
+    look_for: "Exploiting someone's emotions, weaknesses or trust; playing people against each other; engineering situations so others act as they want."
+    not_this: "Open persuasion or argument; giving orders with authority; honest negotiation; tactics against an enemy in combat."
+    trait: [[honesty_humility, -1], [machiavellianism, 1]]
+
+  - id: tells_hard_truths
+    type: behavior
+    question: "Does the character say an uncomfortable truth or admit their own fault when lying or staying silent would be easier?"
+    look_for: "Confessing a mistake, delivering bad news honestly, refusing to lie despite pressure."
+    not_this: "Rudeness or insults presented as 'honesty'; blurting things out by accident."
+    trait: [[honesty_humility, 1]]
+
+  - id: belittles_others
+    type: behavior
+    question: "Does the character openly claim superiority over others or dismiss them as beneath them?"
+    look_for: "Mocking others' weakness or status, contempt, demanding recognition, boasting at others' expense."
+    not_this: "Friendly teasing between equals; calm confidence without contempt; trash talk that is clearly part of a mutual rivalry game."
+    trait: [[honesty_humility, -1], [narcissism, 1]]
+
+  - id: harms_for_pleasure
+    type: behavior
+    question: "Does the character inflict pain or humiliation beyond what the situation requires, or visibly enjoy others' suffering?"
+    look_for: "Torture, gratuitous violence, gloating over victims, humiliating the defeated."
+    not_this: "Fighting or killing in battle or self-defense; harsh but purposeful training; accidental harm."
+    trait: [[psychopathy, 1], [agreeableness, -1]]
+
+  - id: sacrifices_others
+    type: behavior
+    question: "Does the character knowingly cause or accept serious harm to innocents or their own allies to reach a goal?"
+    look_for: "Using people as expendable tools, abandoning allies to die, accepting civilian casualties as a price."
+    not_this: "Risking their own life; collateral damage they tried to prevent; a forced impossible choice they clearly regret."
+    trait: [[psychopathy, 1]]
+
+  # ───────────── BEHAVIOR: added in v2.1 (social exploitation, envy, sycophancy) ─────────────
+  - id: exploits_affection
+    type: behavior
+    question: "Does the character use another person's attachment, trust or love for them to get something for themselves?"
+    look_for: "Playing on someone's feelings toward them to obtain help, resources, protection or obedience; keeping a devoted person close only because they are useful."
+    not_this: "Simply being liked or trusted; accepting help that was freely offered without being solicited; a genuine relationship that also happens to be beneficial."
+    trait: [[honesty_humility, -1], [machiavellianism, 1]]
+
+  - id: envies_others
+    type: behavior
+    question: "Does the character resent other people for their abilities, success or the attention they receive?"
+    look_for: "Bitterness or jealousy shown toward someone who is stronger, more praised or more successful; wishing to have what another has; being hurt by another's recognition."
+    not_this: "Healthy admiration or motivation to catch up without resentment; rivalry that is purely competitive and friendly; anger about an injustice unrelated to comparison."
+    trait: [[neuroticism, 1]]
+
+  - id: ingratiates_with_powerful
+    type: behavior
+    question: "Does the character flatter or serve powerful people to gain their protection or advancement?"
+    look_for: "Fawning praise, servile behaviour, attaching themselves to a strong patron or leader for safety or promotion."
+    not_this: "Ordinary politeness or respect for a superior; loyalty to a leader based on shared goals; following orders as part of a job."
+    trait: [[honesty_humility, -1], [dominance, -1]]
+
+  # ───────────── BEHAVIOR: Warmth / Agreeableness ─────────────
+  - id: helps_without_gain
+    type: behavior
+    question: "Does the character help someone at a real cost to themselves with no expected benefit?"
+    look_for: "Giving time, effort, resources or protection to others without reward or obligation."
+    not_this: "Help that is simply part of their paid job or orders; transactional help expecting repayment."
+    trait: [[agreeableness, 1]]
+
+  - id: responds_to_feelings
+    type: behavior
+    question: "Does the character notice another person's emotional state and respond with care?"
+    look_for: "Comforting, encouraging, adjusting their behavior to spare someone's feelings."
+    not_this: "Reading emotions in order to exploit them (that is manipulates_others)."
+    trait: [[agreeableness, 1], [psychopathy, -1]]
+
+  - id: self_sacrifice
+    type: behavior
+    question: "Does the character risk their own life, health, goals or status to protect others?"
+    look_for: "Shielding someone, taking a blow, giving up a personal goal or opportunity for another's sake."
+    not_this: "Risk taken for personal glory, thrill or revenge."
+    trait: [[agreeableness, 1]]
+
+  - id: forgives
+    type: behavior
+    question: "Does the character forgive or reconcile with someone who wronged them?"
+    look_for: "Accepting an apology, letting go of a grudge, rebuilding a relationship after a betrayal or conflict."
+    not_this: "Ignoring someone; a truce purely for tactical reasons while still holding the grudge."
+    trait: [[agreeableness, 1]]
+
+  # ───────────── BEHAVIOR: Conscientiousness ─────────────
+  - id: disciplined_effort
+    type: behavior
+    question: "Does the character put sustained effort into training, study or work toward a goal over time?"
+    look_for: "Repeated training, long preparation, persistence through failures."
+    not_this: "A single burst of effort; success described as pure talent without work."
+    trait: [[conscientiousness, 1]]
+
+  - id: fulfills_duties
+    type: behavior
+    question: "Does the character carry out responsibilities or obligations even when inconvenient or unobserved?"
+    look_for: "Keeping promises, completing assigned tasks, showing up when needed."
+    not_this: "Obeying only out of fear of punishment."
+    trait: [[conscientiousness, 1]]
+
+  - id: acts_rashly
+    type: behavior
+    question: "Does the character act without thinking in a way that causes trouble?"
+    look_for: "Charging in against advice, rash decisions with negative consequences, acting on impulse."
+    not_this: "Fast reflexes in combat; a quick decision that follows a clear plan."
+    trait: [[conscientiousness, -1]]
+
+  - id: plans_ahead
+    type: behavior
+    question: "Does the character devise plans that anticipate other people's moves?"
+    look_for: "Traps, long-term schemes, contingency plans, predicting an opponent's actions."
+    not_this: "Being described as smart without any plan shown; improvising on the spot."
+    trait: [[conscientiousness, 1]]
+
+  # ───────────── BEHAVIOR: Extraversion ─────────────
+  - id: seeks_company
+    type: behavior
+    question: "Does the character actively seek out social contact and enjoy being with groups?"
+    look_for: "Initiating conversations, organizing gatherings, energized by others."
+    not_this: "Being around people only because the job or school requires it."
+    trait: [[extraversion, 1]]
+
+  - id: avoids_others
+    type: behavior
+    question: "Does the character prefer solitude or keep others at a distance?"
+    look_for: "Working alone by choice, rejecting companionship, withdrawing from groups."
+    not_this: "Forced isolation; shyness while clearly wanting connection (that is shows_insecurity)."
+    trait: [[extraversion, -1]]
+    conflicts: [seeks_company]
+
+  - id: jokes_around
+    type: behavior
+    question: "Does the character intentionally make jokes or tease others playfully?"
+    look_for: "Puns, banter, pranks, deliberate comic remarks."
+    not_this: "Being the unintentional butt of a joke; mockery meant to hurt (that is belittles_others)."
+    trait: [[extraversion, 1]]
+
+  # ───────────── BEHAVIOR: Emotional stability ─────────────
+  - id: loses_control
+    type: behavior
+    question: "Does the character lose emotional control in a way that overrides their judgment?"
+    look_for: "Rage outbursts, panic, breakdowns, erratic mood swings."
+    not_this: "Justified anger that stays controlled; crying in grief without losing judgment."
+    trait: [[neuroticism, 1]]
+
+  - id: shows_insecurity
+    type: behavior
+    question: "Does the character express self-doubt, fear of failure or need for reassurance?"
+    look_for: "Doubting their abilities or worth, comparing themselves unfavorably, seeking approval."
+    not_this: "Realistic assessment of a stronger opponent."
+    trait: [[neuroticism, 1]]
+
+  - id: endures_pressure
+    type: behavior
+    question: "Does the character keep going under pain, pressure or humiliation instead of giving up?"
+    look_for: "Refusing to surrender, fighting on while injured, resisting intimidation."
+    not_this: "Stubbornness about trivial matters."
+    trait: [[neuroticism, -1]]
+
+  # ───────────── BEHAVIOR: Openness ─────────────
+  - id: seeks_novelty
+    type: behavior
+    question: "Does the character actively seek new knowledge, ideas or experiences?"
+    look_for: "Research, asking questions, exploring, trying unfamiliar things."
+    not_this: "Learning only what an exam or mission requires."
+    trait: [[openness, 1]]
+
+  - id: creates
+    type: behavior
+    question: "Does the character produce art, music, inventions or unconventional solutions?"
+    look_for: "Composing, drawing, building devices, inventing techniques."
+    not_this: "Merely consuming or enjoying art."
+    trait: [[openness, 1]]
+
+  - id: adapts_approach
+    type: behavior
+    question: "Does the character change their approach when the situation changes?"
+    look_for: "Switching tactics mid-fight, revising a plan after new information, adjusting to a new environment."
+    not_this: "Changing loyalties or opinions to please others."
+    trait: [[openness, 1]]
+
+  # ───────────── BEHAVIOR: Dominance (interpersonal circumplex) ─────────────
+  - id: takes_command
+    type: behavior
+    question: "Does the character take the lead and direct others, and do others follow?"
+    look_for: "Giving orders, organizing a group, making decisions for others."
+    not_this: "Holding a formal rank without actually exercising it."
+    trait: [[dominance, 1], [extraversion, 1]]
+
+  - id: defers_to_others
+    type: behavior
+    question: "Does the character follow others' lead or yield in disagreements?"
+    look_for: "Submitting to a stronger will, going along with decisions, avoiding confrontation."
+    not_this: "Following a plan they agree with as an equal partner."
+    trait: [[dominance, -1]]
+    conflicts: [takes_command]
+
+  - id: provokes_others
+    type: behavior
+    question: "Does the character deliberately taunt or antagonize others to start conflict?"
+    look_for: "Insults to trigger a fight, baiting, picking fights."
+    not_this: "Defending themselves when attacked; tactical taunting as a planned trick (that is plans_ahead)."
+    trait: [[dominance, 1], [agreeableness, -1]]
+
+  - id: competes
+    type: behavior
+    question: "Does the character turn situations into contests and need to beat specific others?"
+    look_for: "Declaring rivalry, keeping score, refusing to lose to someone."
+    not_this: "Taking part in an official competition without personal drive to win."
+    trait: [[dominance, 1]]
+
+  # ───────────── BEHAVIOR: Loyalty / Secrecy (standalone) ─────────────
+  - id: stays_loyal_under_pressure
+    type: behavior
+    question: "Does the character stay loyal to a person or group when betrayal would benefit them or loyalty costs them?"
+    look_for: "Refusing bribes or threats, protecting allies at personal cost, keeping faith after being wronged."
+    not_this: "Loyalty that has never been tested."
+    trait: [[loyalty, 1]]
+
+  - id: betrays
+    type: behavior
+    question: "Does the character betray an ally, friend or their own group?"
+    look_for: "Switching sides, secretly working for the enemy, abandoning allies for personal gain."
+    not_this: "Openly leaving a group; a spy who was loyal to the other side from the start is betrayal of the group they infiltrated — this DOES count."
+    trait: [[loyalty, -1], [honesty_humility, -1]]
+    conflicts: [stays_loyal_under_pressure]
+
+  - id: hides_self
+    type: behavior
+    question: "Does the character conceal important facts about their identity, past, abilities or intentions from people close to them?"
+    look_for: "Secret identity, hidden past, concealed powers or plans."
+    not_this: "Ordinary privacy; information simply never discussed."
+    trait: [[secrecy, 1]]
+
+  # ───────────── VALUE: Schwartz basic values + narrative motives ─────────────
+  - id: value_power
+    type: value
+    question: "Does the character want control or dominance over people or resources?"
+    look_for: "Stated ambition to rule, lead, own; repeated actions to gain control."
+    not_this: "Wanting strength only to protect others."
+    trait: [[self_enhancement, 1]]
+
+  - id: value_achievement
+    type: value
+    question: "Does the character want success, recognition or to be acknowledged as the best?"
+    look_for: "Goal to become number one, to be recognized, to prove themselves."
+    not_this: "Doing well at something without caring about recognition."
+    trait: [[self_enhancement, 1]]
+
+  - id: value_hedonism
+    type: value
+    question: "Does the character pursue pleasure, comfort or enjoyment for themselves as a priority?"
+    look_for: "Prioritizing fun, food, luxury, leisure, sensual pleasure over other goals."
+    not_this: "Enjoying a hobby occasionally."
+    trait: [[openness_to_change, 1], [self_enhancement, 1]]
+
+  - id: value_stimulation
+    type: value
+    question: "Does the character seek excitement, thrill, challenge or adventure?"
+    look_for: "Seeking strong opponents, danger, adventure, boredom with routine."
+    not_this: "Being forced into danger."
+    trait: [[openness_to_change, 1]]
+
+  - id: value_self_direction
+    type: value
+    question: "Does the character want independence, freedom to choose their own path, or understanding for its own sake?"
+    look_for: "Refusing to follow a prescribed path, pursuing knowledge, choosing their own goals."
+    not_this: "Political freedom for society (that is favors_freedom)."
+    trait: [[openness_to_change, 1]]
+
+  - id: value_universalism
+    type: value
+    question: "Does the character pursue justice or the good of people in general, beyond their own circle?"
+    look_for: "Fighting for justice, protecting strangers, wanting a fairer world."
+    not_this: "Protecting only family, friends or team (that is value_benevolence)."
+    trait: [[self_transcendence, 1]]
+
+  - id: value_benevolence
+    type: value
+    question: "Does the character prioritize the wellbeing of people close to them?"
+    look_for: "Protecting family, friends or team as a central goal."
+    not_this: "Duty-based protection of strangers."
+    trait: [[self_transcendence, 1]]
+
+  - id: value_tradition
+    type: value
+    question: "Does the character want to preserve customs, heritage, religion or family legacy?"
+    look_for: "Honoring ancestors, continuing a family line or style, upholding rituals."
+    not_this: "Simply belonging to a traditional group."
+    trait: [[conservation, 1]]
+
+  - id: value_conformity
+    type: value
+    question: "Does the character prioritize following rules, duty and others' expectations?"
+    look_for: "Doing what is expected, obeying rules even when they disagree, fear of disappointing others."
+    not_this: "Obeying orders out of fear."
+    trait: [[conservation, 1]]
+
+  - id: value_security
+    type: value
+    question: "Does the character prioritize safety, stability or survival for themselves or their family?"
+    look_for: "Avoiding risk, seeking a stable life, survival as the main goal."
+    not_this: "Momentary self-preservation in a fight."
+    trait: [[conservation, 1]]
+
+  - id: motive_revenge
+    type: value
+    question: "Does the character seek revenge against a specific person or group?"
+    look_for: "Stated desire for vengeance, hunting someone who wronged them."
+    not_this: "General anger at injustice without a target."
+    trait: null
+
+  - id: motive_romance
+    type: value
+    question: "Does the character actively seek a romantic relationship or pursue someone romantically?"
+    look_for: "Confessions, pursuing a crush, wanting a partner."
+    not_this: "Being the object of someone else's interest without reciprocating."
+    trait: null
+
+  # ───────────── WORLDVIEW: political axes + stances ─────────────
+  - id: favors_freedom
+    type: worldview
+    question: "Does the character argue or act for individual freedom against control, authority or rules?"
+    look_for: "Defying unjust rules, opposing surveillance or control, defending others' right to choose."
+    not_this: "Personal rebelliousness for its own sake without a stance on freedom."
+    trait: [[freedom_vs_order, 1]]
+
+  - id: favors_order
+    type: worldview
+    question: "Does the character argue or act for law, order and authority, even at the cost of freedom?"
+    look_for: "Enforcing rules strictly, supporting control to prevent chaos, respect for hierarchy of command."
+    not_this: "Simply having a job in law enforcement."
+    trait: [[freedom_vs_order, -1]]
+    conflicts: [favors_freedom]
+
+  - id: egalitarian
+    type: worldview
+    question: "Does the character treat people as equals regardless of status, power or birth?"
+    look_for: "Opposing privilege, treating the weak and strong the same, rejecting class distinctions."
+    not_this: "Being polite to everyone."
+    trait: [[equality_vs_hierarchy, 1]]
+
+  - id: elitist
+    type: worldview
+    question: "Does the character believe some people are inherently superior and deserve more?"
+    look_for: "Statements that the strong, talented or well-born should rule; contempt for 'lesser' people as a principle."
+    not_this: "Personal arrogance without a general principle (that is belittles_others)."
+    trait: [[equality_vs_hierarchy, -1]]
+    conflicts: [egalitarian]
+
+  - id: revolutionary
+    type: worldview
+    question: "Does the character seek to overthrow or fundamentally change the existing social order?"
+    look_for: "Plans to destroy or replace the system, rebellion against the ruling structure."
+    not_this: "Reform within the system; personal revenge on individuals."
+    trait: null
+
+  - id: fanatical
+    type: worldview
+    question: "Does the character's devotion to a cause, person or ideology override morality, self-preservation or other ties?"
+    look_for: "Unquestioning obedience, willingness to do anything for the cause, zealotry."
+    not_this: "Strong but critical commitment."
+    trait: null
+
+  - id: principled_at_cost
+    type: worldview
+    question: "Does the character stick to their ideals even when it costs them?"
+    look_for: "Refusing an advantageous compromise on principle."
+    not_this: "Stubbornness without a stated principle."
+    trait: [[principle_vs_result, 1]]
+
+  - id: results_over_principles
+    type: worldview
+    question: "Does the character compromise ideals or rules to achieve results?"
+    look_for: "'The end justifies the means', breaking own rules for a goal, accepting dirty methods."
+    not_this: "Adapting tactics without any moral compromise (that is adapts_approach)."
+    trait: [[principle_vs_result, -1]]
+    conflicts: [principled_at_cost]
+
+  - id: nihilistic
+    type: worldview
+    question: "Does the character hold that life, morality or meaning is pointless?"
+    look_for: "Statements that nothing matters, rejection of all values."
+    not_this: "Temporary despair after a loss."
+    trait: null
+
+  - id: fatalistic
+    type: worldview
+    question: "Does the character believe outcomes are predetermined and accept fate?"
+    look_for: "Statements about destiny, refusing to resist what 'must happen'."
+    not_this: "Believing in a prophecy while actively fighting it."
+    trait: null
+
+  # ───────────── IMPRESSION: appearance and others' reactions ─────────────
+  - id: visible_scars
+    type: impression
+    question: "Does the character have visible scars?"
+    look_for: "Explicit mention of scars, burns or disfiguring marks."
+    not_this: "Temporary injuries."
+    trait: null
+
+  - id: muscular_build
+    type: impression
+    question: "Is the character described as muscular or physically powerful in build?"
+    look_for: "Explicit description of muscles, large or athletic build."
+    not_this: "Strength coming only from powers with an ordinary body."
+    trait: null
+
+  - id: distinctive_feature
+    type: impression
+    question: "Does the character have a distinctive non-scar physical feature?"
+    look_for: "Unusual body parts, eye color, hair, markings, prosthetics, non-human traits."
+    not_this: "Clothing or accessories; scars (that is visible_scars)."
+    trait: null
+
+  - id: cares_about_appearance
+    type: impression
+    question: "Is the character shown to care about their appearance or style?"
+    look_for: "Grooming, fashion, vanity, concern about how they look."
+    not_this: "Wearing a uniform."
+    trait: null
+
+  - id: intimidating
+    type: impression
+    question: "Do other characters react to this character with fear, avoidance or deference because of their presence?"
+    look_for: "Others trembling, backing off, going silent, being afraid to oppose them."
+    not_this: "Fear caused only by a specific attack in progress."
+    trait: null
+
+  - id: charismatic
+    type: impression
+    question: "Are other characters drawn to, inspired by or willing to follow this character?"
+    look_for: "People rallying around them, being inspired by their words, admiring them."
+    not_this: "Following only because of rank or payment."
+    trait: null
+
+  # ───────────── NARRATIVE ─────────────
+  - id: tragic_past
+    type: narrative
+    question: "Does the character have a tragic event in their past that shaped them?"
+    look_for: "Loss of family, abuse, disaster, trauma explicitly linked to who they became."
+    not_this: "Ordinary hardship with no lasting effect."
+    trait: null
+
+  - id: physical_weakness
+    type: narrative
+    question: "Does the character have a lasting physical weakness or limitation?"
+    look_for: "Illness, disability, drawback of their ability, exploitable physical limit."
+    not_this: "A temporary injury."
+    trait: null
+
+  - id: psychological_weakness
+    type: narrative
+    question: "Does the character have a lasting psychological vulnerability?"
+    look_for: "Trauma triggers, phobias, obsessions, a fear that recurs."
+    not_this: "A single moment of fear."
+    trait: null

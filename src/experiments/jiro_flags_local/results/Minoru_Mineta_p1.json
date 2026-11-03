@@ -1,0 +1,642 @@
+[
+ {
+  "flag": "lies_for_gain",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 0,
+  "prompt_eval": 25580,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "manipulates_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru uses his move Grape Rush (which involves throwing the sticky substance from his head at the opponent while running towards them); Minoru's move hits Midnight, causing Midnight to become stuck in place which allows Minoru to run past her.",
+  "cached": 25068,
+  "prompt_eval": 25582,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tells_hard_truths",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru is one who always speaks his mind, even when it comes off as harsh and insulting due to his comments being more on the cynical side.",
+  "cached": 25070,
+  "prompt_eval": 25615,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "belittles_others",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru is shown to be slightly jealous of Izuku gaining affection from females. This was first shown when Hanta made the claim that Camie Utsushimi (who was actually Himiko Toga in disguise) was hiding with Izuku while naked, with Minoru specifically screaming and assuming he crossed 'several bases' with her at that time.",
+  "cached": 25103,
+  "prompt_eval": 25581,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "harms_for_pleasure",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25580,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "sacrifices_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25585,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "exploits_affection",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Mina convinced a dispirited Minoru (who couldn't reach the guitar strings due to his small size) to take part by promising him a harem part in the performance, this caused Minoru to quickly come around while in joy and Mina later made good on her promise.",
+  "cached": 25103,
+  "prompt_eval": 25597,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "envies_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru has a huge jealous streak, often envying those who are seen as cool and attract female attention, while lamenting how seemingly simple and underpowered his Quirk is compared to his classmates.",
+  "cached": 25103,
+  "prompt_eval": 25597,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "ingratiates_with_powerful",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25591,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "helps_without_gain",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even despite being unable to stand up, Minoru weakly throws one of his Pop Off balls at All For One's leg, getting his attention. He tells him not to steal Dark Shadow or else he'll become an edgelord, and that he should steal his Quirk instead as he'll get a cool hairdo out of it, begging him not to take it from Fumikage.",
+  "cached": 25103,
+  "prompt_eval": 25571,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "responds_to_feelings",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru was the most desperate to comfort him when he broke down into tears, running up to him before being stopped by Tenya and then running up to him later alongside Kota to hug him.",
+  "cached": 25103,
+  "prompt_eval": 25569,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "self_sacrifice",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even despite being unable to stand up, Minoru weakly throws one of his Pop Off balls at All For One's leg, getting his attention. He tells him not to steal Dark Shadow or else he'll become an edgelord, and that he should steal his Quirk instead as he'll get a cool hairdo out of it, begging him not to take it from Fumikage.",
+  "cached": 25103,
+  "prompt_eval": 25570,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "forgives",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru also engaged in commentary with Izuku during the Joint Training Battle. Like Denki, Minoru has been shown too be slightly jealous of Izuku gaining affection from females.",
+  "cached": 25103,
+  "prompt_eval": 25571,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "disciplined_effort",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "As part of his training, Minoru continuously pulled off the balls on his head to increase their adhesiveness, strengthen his scalp, and reduce the risk of bleeding from his head despite suffering from the said injury during his training.",
+  "cached": 25103,
+  "prompt_eval": 25566,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fulfills_duties",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru is shown to be surprisingly intelligent, able to score very high on tests and be in the top half of Class 1-A's grades, despite being considered a slacker by most of the class.",
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "acts_rashly",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru easily freaks out in moments of great stress or fear, acting impulsively, crying when the situation does not look favorable, and abusing his Quirk recklessly, to the point of hurting himself.",
+  "cached": 25103,
+  "prompt_eval": 25566,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "plans_ahead",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru admits that his cowardice and his lack of courage was all part of his plan to lure Midnight away from the escape gate and Hanta, all in the name of becoming a cool Hero.",
+  "cached": 25103,
+  "prompt_eval": 25564,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_company",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru is shown to be greatly shocked by Kyoka's beautiful singing voice, alongside the rest of the class.",
+  "cached": 25103,
+  "prompt_eval": 25558,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "avoids_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25564,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "jokes_around",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru has a teasing and goading side, even when he's not being perverted and has a habit of jeering at others for fun.",
+  "cached": 25103,
+  "prompt_eval": 25569,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "loses_control",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru easily freaks out in moments of great stress or fear, acting impulsively, crying when the situation does not look favorable, and abusing his Quirk recklessly, to the point of hurting himself.",
+  "cached": 25103,
+  "prompt_eval": 25561,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "shows_insecurity",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru is not a very confident fighter and may attempt to flee in highly disadvantageous situations whenever the opportunity presents itself.",
+  "cached": 25103,
+  "prompt_eval": 25562,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "endures_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru can also be just as heroic and selfless as the rest of Class 1-A. During the Final War, even after he and his companions were ruthlessly defeated by All For One, he used his remaining strength to plead to the villain to spare his classmate Fumikage Tokoyami and to take his Quirk instead, even though this would have certainly ended his dream of becoming a Hero.",
+  "cached": 25103,
+  "prompt_eval": 25557,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_novelty",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru is shown to be surprisingly intelligent, able to score very high on tests and be in the top half of Class 1-A's grades, despite being considered a slacker by most of the class.",
+  "cached": 25103,
+  "prompt_eval": 25556,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "creates",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru has shown to be good at drawing. Alongside Manga Fukidashi, he served as the lead artist in a manga that featured a story about U.A.'s Hero course, with his skills only improving as he refined his character designs.",
+  "cached": 25103,
+  "prompt_eval": 25549,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "adapts_approach",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru uses his Pop Off Quirk to create effective traps for which his spheres are very suitable. Pop Off tends to be a relatively underestimated ability, which allows Minoru to surprise those who let their guard down.",
+  "cached": 25103,
+  "prompt_eval": 25566,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "takes_command",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru Mineta suggests his team try to neutralize Hitoshi first, but Ochaco Uraraka argues that Class 1-B has plenty of other Quirks they should worry about.",
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "defers_to_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "provokes_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25571,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "competes",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru competes in the group of Katsuki, who wins the race using his Quirk to reach the other end of the pool without even swimming.",
+  "cached": 25103,
+  "prompt_eval": 25591,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "stays_loyal_under_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru was the most desperate to comfort him when he broke down into tears, running up to him before being stopped by Tenya and then running up to him later alongside Kota to hug him.",
+  "cached": 25103,
+  "prompt_eval": 25576,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "betrays",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25580,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "hides_self",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25560,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_power",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_achievement",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He believed if he managed to become one, he would also be popular.",
+  "cached": 25103,
+  "prompt_eval": 25559,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_hedonism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_stimulation",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Minoru's mind frequently trails off to lewd thoughts, even in completely unrelated situations.",
+  "cached": 25103,
+  "prompt_eval": 25564,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_self_direction",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru has graduated from U.A. High School, becoming an independent Pro Hero after taking down a major Villain.",
+  "cached": 25103,
+  "prompt_eval": 25568,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_universalism",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru is shown to be surprisingly intelligent, able to score very high on tests and be in the top half of Class 1-A's grades, despite being considered a slacker by most of the class.",
+  "cached": 25103,
+  "prompt_eval": 25571,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_benevolence",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru was the most desperate to comfort him when he broke down into tears, running up to him before being stopped by Tenya and then running up to him later alongside Kota to hug him.",
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_tradition",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25560,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_conformity",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25562,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_security",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25558,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_revenge",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_romance",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25560,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_freedom",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25596,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_order",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25565,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "egalitarian",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "elitist",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25570,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "revolutionary",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25556,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fanatical",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "principled_at_cost",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even despite being unable to stand up, Minoru weakly throws one of his Pop Off balls at All For One's leg, getting his attention. He tells him not to steal Dark Shadow or else he'll become an edgelord, and that he should steal his Quirk instead as he'll get a cool hairdo out of it, begging him not to take it from Fumikage.",
+  "cached": 25103,
+  "prompt_eval": 25552,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "results_over_principles",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25570,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "nihilistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25549,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fatalistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25552,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "visible_scars",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25543,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "muscular_build",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25552,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "distinctive_feature",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He has a head of short dark purple hair with four large ball-shaped clumps resembling a mohawk.",
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "cares_about_appearance",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "His hero costume has remained mostly the same, but he now adorns new arm bands and wears headphones for communications.",
+  "cached": 25103,
+  "prompt_eval": 25555,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "intimidating",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25563,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "charismatic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25591,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tragic_past",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 25103,
+  "prompt_eval": 25599,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "physical_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "His overall health determines the duration of their adhesive quality.",
+  "cached": 25103,
+  "prompt_eval": 25551,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "psychological_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Minoru easily freaks out in moments of great stress or fear, acting impulsively, crying when the situation does not look favorable, and abusing his Quirk recklessly, to the point of hurting himself.",
+  "cached": 25103,
+  "prompt_eval": 25553,
+  "done_reason": "stop"
+ }
+]

@@ -12,11 +12,17 @@ services/collection/features/steps/collection.py's collect_or_load_passes,
 which writes it) and calls the consensus function directly (not via
 services.collection.features — that package parses sys.argv at import time
 for the universe/arc CLI args, which would misfire inside this long-running
-API process). Both ordinals and flags are 2 passes now (see
-features/constants.py), but go through different consensus algorithms —
-ordinals through ordinal_consensus (real tier reconciliation, 8-10 tiers),
-flags through flag_consensus (cheap exact-match blocks, 2-3 tiers) — same
-split the real pipeline now uses, see features/pipeline.py.
+API process). Ordinals and flags are collected at a different pass count —
+ordinals PASSES=(1,2), flags FLAG_PASSES=(1,) (see features/constants.py)
+— and go through different consensus algorithms to match: ordinals through
+ordinal_consensus (2-pass tier reconciliation with search + auto-exclusion,
+a per-param tier count), flags through flag_consensus (single-pass ranking,
+a fixed 3-tier scale shared by every flag — T1/T2/T3, no reconciliation
+needed with one rater) — same split the real pipeline uses, see
+features/pipeline.py. `_read_pass_scores` takes the correct passes
+tuple per param kind — using the wrong one here silently starves ordinals
+of pass 2 (making every character look "one-sided unknown" and get
+excluded) without ever raising an error, so don't default it.
 """
 import logging
 import os
@@ -25,10 +31,10 @@ import re
 from fastapi import APIRouter, HTTPException
 
 from src.api.schemas import FeatureConfirmRequest, FeatureDetailOut
-from src.domain.parameters import FLAG_PARAMS, ORDINAL_META, ORDINAL_PARAMS
+from src.domain.parameters import FLAG_META, FLAG_PARAMS, ORDINAL_META, ORDINAL_PARAMS
 from src.repository import CharacterRepository, RawPassRepository, UniverseRepository
 from src.services.consensus.flag_consensus import FLAG_PASSES, flag_consensus
-from src.services.consensus.ordinal_consensus import ordinal_consensus
+from src.services.consensus.ordinal_consensus import PASSES as ORDINAL_PASSES, ordinal_consensus
 
 _TIER_LINE_RE = re.compile(r"^\[T(\d+)\]\s+(.*)$")
 _TEMPLATES_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
@@ -76,11 +82,11 @@ def _tier_labels(prompt_template: str) -> list[str]:
     return [labels[i] for i in sorted(labels)]
 
 
-def _read_pass_scores(universe_id: int, param_name: str) -> dict[int, dict[str, float | None]]:
-    all_passes = _raw_pass_repo.get_passes(universe_id, FLAG_PASSES)
+def _read_pass_scores(universe_id: int, param_name: str, passes: tuple[int, ...]) -> dict[int, dict[str, float | None]]:
+    all_passes = _raw_pass_repo.get_passes(universe_id, passes, {param_name})
     if all_passes is None:
-        return {p: {} for p in FLAG_PASSES}
-    return {p: all_passes[p].get(param_name, {}) for p in FLAG_PASSES}
+        return {p: {} for p in passes}
+    return {p: all_passes[p].get(param_name, {}) for p in passes}
 
 
 @router.get("/features/params")
@@ -96,8 +102,9 @@ def get_feature(universe_id: int, param_name: str):
     positions = _character_repo.get_feature_positions(universe_id, param_name)
     roster = sorted(positions)
 
-    per_pass_scores = _read_pass_scores(universe_id, param_name)
-    have_data = any(per_pass_scores[p] for p in FLAG_PASSES)
+    passes = ORDINAL_PASSES if is_ordinal else FLAG_PASSES
+    per_pass_scores = _read_pass_scores(universe_id, param_name, passes)
+    have_data = any(per_pass_scores[p] for p in passes)
 
     if have_data:
         consensus_fn = ordinal_consensus if is_ordinal else flag_consensus
@@ -121,9 +128,14 @@ def get_feature(universe_id: int, param_name: str):
         scale = {"tier_count": meta["tier_count"], "normal_tier_index": meta["normal_tier_index"]}
         tier_labels = _tier_labels(ORDINAL_PARAMS[param_name])
     else:
+        # Flags share one fixed 3-tier scale now (T1/T2/T3 — see
+        # system_prompt_flag_rank.j2, FLAG_META), not a per-flag one like
+        # ordinals — same template name for every flag's tier_labels, not
+        # ORDINAL_PARAMS[param_name] (that dict doesn't even have flag
+        # entries).
         definition = FLAG_PARAMS[param_name]["definition"]
-        scale = None
-        tier_labels = []
+        scale = {"tier_count": FLAG_META["tier_count"], "normal_tier_index": FLAG_META["normal_tier_index"]}
+        tier_labels = _tier_labels("system_prompt_flag_rank")
 
     return {
         "param_name": param_name,

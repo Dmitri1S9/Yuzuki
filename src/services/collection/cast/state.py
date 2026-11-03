@@ -15,7 +15,6 @@ class CastCollection:
     raw_cluster_count: int = 0
     spelling_merge_count: int = 0
     ambiguous_matches: list = field(default_factory=list)
-    alias_pairs: list = field(default_factory=list)
     aliases_of: dict = field(default_factory=dict)
     anilist_names: list = field(default_factory=list)
     anilist_added: list = field(default_factory=list)

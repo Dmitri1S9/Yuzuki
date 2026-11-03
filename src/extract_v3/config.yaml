@@ -1,14 +1,16 @@
-# extract_v3 prototype config. Kyoka Jiro's OWN wiki page only -- no subpages, no other pages.
+# extract_v3 prototype config. Kyoka Jiro's own pages: main article + Relationships + Synopsis subpages.
+# Order matters: sentence ids are assigned in this order, so appending a page here keeps existing ids (and
+# any checkpoint keyed by them) stable; reordering or removing a page does not.
 universe: "My Hero Academia"
 target_character: "Kyoka Jiro"
-page: "Kyoka Jiro"
+pages: ["Kyoka Jiro", "Kyoka Jiro/Relationships", "Kyoka Jiro/Synopsis"]
 dump_path: "/home/Di/Загрузки/bokunoheroacademia_pages_current.xml"
 
 drop_sections: ["trivia", "references", "gallery", "navigation", "site navigation", "external links",
                "image gallery"]
 
 llm:
-  model: "qwen3.5:9b"
+  model: "hf.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0"
   temperature: 0.0
   think: false
   num_ctx: 4096          # single sentence + small window + few-shot -- short prompts
@@ -23,8 +25,6 @@ embedding:
 neo4j:
   default_uri: "bolt://localhost:7687"
   default_user: "neo4j"
-
-spacy_model: "en_core_web_sm"
 
 # Same roster as graph_extract/config.yaml (Class 1-A + Jiro's parents + named non-students in her pages).
 roster:

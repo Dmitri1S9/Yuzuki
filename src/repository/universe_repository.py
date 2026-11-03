@@ -1,15 +1,14 @@
-import logging
-
 from src.domain.universe import Universe
 from src.repository.character_repository import _load_roster
 from src.repository.connection import read_only, transactional
 from src.repository.group_repository import _load_groups
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import logged
 
 
 class UniverseRepository:
 
+    @logged(lambda uid, self, name, characters, arc=None, anilist_title=None:
+            f"universe {name!r} ({arc!r}) -> id={uid}, {len(characters)} characters")
     @transactional
     def create_universe(self, conn, name: str, characters: list[str], arc: str | None = None,
                          anilist_title: str | None = None) -> int:
@@ -30,7 +29,6 @@ class UniverseRepository:
                        ON CONFLICT (universe_id, name) DO NOTHING""",
                     (uid, char_name),
                 )
-        log.info("universe %r (%r) -> id=%d, %d characters", name, arc, uid, len(characters))
         return uid
 
     @read_only

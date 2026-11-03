@@ -3,17 +3,16 @@ is required on both networks below — pyvis silently drops any second edge
 between an already-connected node pair when directed is left at its False
 default, regardless of relation type.
 """
-import logging
-
 from pyvis.network import Network
 
 from src.services.graph.steps.constants import AREA_PALETTE, GROUP_RELATION_STYLE, RELATION_STYLE
 from src.services.graph.steps.io import assign_node_colors, compute_degree
 from src.services.graph.steps.overlay import inject_large_group_areas
+from src.shared.decorators import logged
 
-log = logging.getLogger(__name__)
 
-
+@logged(lambda _, characters, relation_edges, medium_groups, large_groups, isolate_set, low_info_set, out_path:
+        f"wrote {out_path} ({len(low_info_set)} low-info of {len(characters)} characters)")
 def render_graph(characters: list[str], relation_edges: list[dict],
                   medium_groups: dict[str, set[str]], large_groups: dict[str, set[str]],
                   isolate_set: set[str], low_info_set: set[str], out_path: str) -> None:
@@ -64,9 +63,8 @@ def render_graph(characters: list[str], relation_edges: list[dict],
     area_colors = {name: AREA_PALETTE[i % len(AREA_PALETTE)] for i, name in enumerate(large_groups)}
     inject_large_group_areas(out_path, large_groups, area_colors)
 
-    log.info("wrote %s (%d low-info of %d characters)", out_path, len(low_info_set), len(characters))
 
-
+@logged(lambda _, group_relations, medium_groups, large_groups, out_path: f"wrote {out_path}")
 def render_group_graph(group_relations: dict, medium_groups: dict[str, set[str]],
                         large_groups: dict[str, set[str]], out_path: str) -> None:
     all_groups = set(medium_groups) | set(large_groups)
@@ -103,12 +101,16 @@ def render_group_graph(group_relations: dict, medium_groups: dict[str, set[str]]
     }
     """)
     net.write_html(out_path)
-    log.info("wrote %s", out_path)
+
+
+@logged(lambda _: "no group_relations in database — skipping group graph")
+def _log_no_group_relations() -> None:
+    pass
 
 
 def maybe_render_group_graph(group_relations: dict, medium_groups: dict[str, set[str]],
                               large_groups: dict[str, set[str]], out_path: str) -> None:
     if not group_relations:
-        log.info("no group_relations in database — skipping group graph")
+        _log_no_group_relations()
         return
     render_group_graph(group_relations, medium_groups, large_groups, out_path)

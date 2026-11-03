@@ -1,5 +1,5 @@
 """Uniqueness constraints, created once before writing."""
-from yuzuki_local.external.neo4j_client import Neo4jClient
+from .external.neo4j_client import Neo4jClient
 
 CONSTRAINTS = (
     # Character/Group are keyed on `name` alone, not a "Universe::Name" composite id -- the universe tie is

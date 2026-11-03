@@ -1,0 +1,642 @@
+[
+ {
+  "flag": "lies_for_gain",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also left a video message at the former Creature Rejection Clan hideout when the heroes investigated it, telling Izuku that society will always exclude certain people and label them villains, so he is fighting an endless and ultimately pointless battle.",
+  "cached": 0,
+  "prompt_eval": 27134,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "manipulates_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He masked his true intentions by claiming that he just wanted to help restore order and balance to society.",
+  "cached": 26622,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tells_hard_truths",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Believe it, Number 6. You may doubt your eyes, but what you see is the cold, hard truth. That man does exist.",
+  "cached": 26624,
+  "prompt_eval": 27169,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "belittles_others",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He despised those who persistently defied him, especially the users of One For All. He loathed All Might in particular for crippling his body beyond repair and taking away his rule over Japan",
+  "cached": 26657,
+  "prompt_eval": 27135,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "harms_for_pleasure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also relished his total power over Japan and saw himself as a higher being. All For One would steal the most powerful Quirks during his rise to power and crushed anyone who stood in his way.",
+  "cached": 26657,
+  "prompt_eval": 27134,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "sacrifices_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also displayed signs of kleptomania, claiming that he couldn't resist stealing a powerful Quirk when the opportunity presented itself.",
+  "cached": 26657,
+  "prompt_eval": 27139,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "exploits_affection",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He also exploited Tomura's traumatic memories of his abusive father and groomed his rage so that he could use it as a tool to overwhelm the willpower of One For All and finally be able to steal the Quirk.",
+  "cached": 26657,
+  "prompt_eval": 27151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "envies_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "ingratiates_with_powerful",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "helps_without_gain",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27125,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "responds_to_feelings",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27123,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "self_sacrifice",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27124,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "forgives",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27125,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "disciplined_effort",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27120,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fulfills_duties",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "acts_rashly",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "All For One became nervous and desperate as Tomura's body began to fall apart, to the point where he was willing to take one of the Heroes' bodies as his new vessel.",
+  "cached": 26657,
+  "prompt_eval": 27120,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "plans_ahead",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He knew if that were to happen, he would be unable to transfer his All For One Quirk onto Tomura as planned. To ensure the inheritance of his power was fulfilled, the Symbol of Evil, before resurfacing, had his Quirk replicated by his physician, Kyudai Garaki.",
+  "cached": 26657,
+  "prompt_eval": 27118,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_company",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27112,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "avoids_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27118,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "jokes_around",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27123,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "loses_control",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "All For One's emotional instability worsened due to the repeated efforts and delays from the Heroes and students of U.A., the effects of the Rewind Drug, and the side effects of melding with Tomura's mind. This caused All For One to become far more expressive with his emotions than before.",
+  "cached": 26657,
+  "prompt_eval": 27115,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "shows_insecurity",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27116,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "endures_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Despite All For One's tremendously strong willpower, it ultimately lost to Tomura, who hid his origin deep within their vestige as a means of winning back control over his body and the All For One Quirk.",
+  "cached": 26657,
+  "prompt_eval": 27111,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_novelty",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27110,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "creates",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also left a video message at the former Creature Rejection Clan hideout when the heroes investigated it, telling Izuku that society will always exclude certain people and label them villains, so he is fighting an endless and ultimately pointless battle.",
+  "cached": 26657,
+  "prompt_eval": 27103,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "adapts_approach",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He was not averse to acting pragmatically, such as choosing to have Tomura's remaining forces retreat during the Paranormal Liberation War, switching priorities from defeating the Heroes to freeing himself from Tartarus.",
+  "cached": 26657,
+  "prompt_eval": 27120,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "takes_command",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He was the founder and benefactor of the League of Villains.",
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "defers_to_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "provokes_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also enjoys watching All Might become riled up by belittling Nana's heroism and death.",
+  "cached": 26657,
+  "prompt_eval": 27125,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "competes",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "All For One is the overarching antagonist of the My Hero Academia manga and anime series.",
+  "cached": 26657,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "stays_loyal_under_pressure",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27130,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "betrays",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "All For One admits that it was worth seeing what entertainment they could bring before their downfall and would even tempt someone into helping him before sadistically watching them suffer, showing his twisted willingness to toy with people's lives, with Lady Nagant and Yuga Aoyama being prominent victims of his manipulation.",
+  "cached": 26657,
+  "prompt_eval": 27134,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "hides_self",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "All For One presented himself as polite, sympathetic, and generous towards his associates and underlings, often seeming amicable and fair-minded. However, this was only glib that All For One employed to subtly manipulate people into following his bidding, showing no concern for them once they were captured or outlived their usefulness.",
+  "cached": 26657,
+  "prompt_eval": 27114,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_power",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He wanted a world that exists for my sake and mine alone. I've found my own dream!",
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_achievement",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "I want a world that exists for my sake and mine alone. I've found my own dream!",
+  "cached": 26657,
+  "prompt_eval": 27113,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_hedonism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_stimulation",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He was willing to take enjoyment in when they received their comeuppance, be it from him or someone else.",
+  "cached": 26657,
+  "prompt_eval": 27118,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_self_direction",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27122,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_universalism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27125,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_benevolence",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_tradition",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27114,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_conformity",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27116,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_security",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27112,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_revenge",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "All For One's ultimate goal was to steal One For All, the Quirk that originally belonged to his younger twin brother, and the only Quirk that can oppose him.",
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_romance",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27114,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_freedom",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27150,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_order",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27119,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "egalitarian",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "elitist",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also displayed signs of kleptomania, claiming that he couldn't resist stealing a powerful Quirk when the opportunity presented itself.",
+  "cached": 26657,
+  "prompt_eval": 27124,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "revolutionary",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He wanted to be like the Demon Lord in the Captain Hero comic books and create a world that would submit to him.",
+  "cached": 26657,
+  "prompt_eval": 27110,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fanatical",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He was willing to discard his own body once it could no longer serve him. After facing permanent injuries at the hands of All Might and having his power crippled as a result, All For One sought a younger and stronger body to serve as a replacement.",
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "principled_at_cost",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27106,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "results_over_principles",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He disguised his evil acts as benevolence, claiming that he only wanted to restore society by using his power to help people in exchange for their loyalty.",
+  "cached": 26657,
+  "prompt_eval": 27124,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "nihilistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27103,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fatalistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27106,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "visible_scars",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "After being mortally injured by All Might years ago, All For One's face was entirely made up of scar tissue, extending from above his upper lip and covering his entire head and the back of his neck.",
+  "cached": 26657,
+  "prompt_eval": 27097,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "muscular_build",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "In the past, All For One was a towering man with a powerfully muscular physique, imposing features, short white hair, and faded white eyes that showed no sense of feeling.",
+  "cached": 26657,
+  "prompt_eval": 27106,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "distinctive_feature",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He was blind but used an Infrared Quirk to \"see\", and he would sense the directions of vibrations in the area around him, similar to echolocation.",
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "cares_about_appearance",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He usually wore a dark suit over a white shirt. When All For One left his secret hideout during the Kamino Incident, he donned a navy blue, skull-like gas mask with angular tubes at the top, a wide collar-like life-support system around his neck with additional pipes connecting in the front and back, presumably to help him breathe.",
+  "cached": 26657,
+  "prompt_eval": 27109,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "intimidating",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Izuku, Tenya Ida, Momo Yaoyorozu, Shoto Todoroki, and Eijiro Kirishima were utterly paralyzed with fear, despite the quintet previously experiencing life-or-death situations and encountering lethal villains.",
+  "cached": 26657,
+  "prompt_eval": 27117,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "charismatic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26657,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tragic_past",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Zen was forced to survive in a chaotic era caused by the emergence of Quirks, he believed those who didn't help him deserved to perish, using the Quirk he took from his deceased mother to kill people while stealing their abilities.",
+  "cached": 26657,
+  "prompt_eval": 27153,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "physical_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "All For One's permanently injured body puts a limit on how many Quirks he can take and use in succession, making him far weaker than he was in his prime.",
+  "cached": 26657,
+  "prompt_eval": 27105,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "psychological_weakness",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "The negatives in life tend to stick in one's memory for so very long. This is why I thwart the futures of others.",
+  "cached": 26657,
+  "prompt_eval": 27107,
+  "done_reason": "stop"
+ }
+]

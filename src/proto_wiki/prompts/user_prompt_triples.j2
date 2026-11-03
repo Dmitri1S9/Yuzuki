@@ -1,0 +1,7 @@
+Article character: {{ character }}
+Section: {{ section }}
+
+Sentences:
+{% for s in sentences %}
+[{{ loop.index }}] {{ s }}
+{% endfor %}

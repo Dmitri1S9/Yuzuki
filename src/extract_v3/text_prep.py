@@ -1,10 +1,11 @@
-"""Kyoka Jiro's own page -> cleaned, sentence-split, section-tagged. Reuses yuzuki_local's dump reader and
-wikitext cleaner (pure text/IO utilities, not flags/ordinals/classifications/Postgres)."""
+"""Kyoka Jiro's pages (main article + Relationships + Synopsis) -> cleaned, sentence-split, page+section
+tagged. Reads pages in a fixed, stable order (as given) so existing sentence ids -- and any checkpoint keyed
+by them -- stay valid if a later page is appended to the list."""
 import re
 from dataclasses import dataclass
 
-from yuzuki_local.external.dump_reader import DumpReader
-from yuzuki_local.workers.wikitext_cleaner import WikiTextCleaner
+from .external.dump_reader import DumpReader
+from .external.wikitext_cleaner import WikiTextCleaner
 
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'])")
 # Dotted acronyms ("U.A.", "U.S.J." -- two or more single capital letters each followed by a period) and
@@ -18,6 +19,7 @@ _DOT_PLACEHOLDER = "․"
 @dataclass(frozen=True)
 class Sentence:
     id: int
+    page: str
     section: str
     text: str
 
@@ -30,18 +32,21 @@ def _split(paragraph: str) -> list[str]:
     return [p.strip().replace(_DOT_PLACEHOLDER, ".") for p in parts if p.strip()]
 
 
-def load_sentences(dump_path, page_title: str, drop_sections: tuple[str, ...]) -> list[Sentence]:
+def load_sentences(dump_path, page_titles: tuple[str, ...], drop_sections: tuple[str, ...]) -> list[Sentence]:
     dump = DumpReader(dump_path)
-    text = next((p.text for p in dump.pages() if p.title == page_title), None)
-    if text is None:
-        raise ValueError(f"page {page_title!r} not found in dump")
+    wanted = set(page_titles)
+    texts = {p.title: p.text for p in dump.pages() if p.title in wanted}
+    missing = wanted - set(texts)
+    if missing:
+        raise ValueError(f"page(s) not found in dump: {missing}")
     cleaner = WikiTextCleaner(min_paragraph_words=4)
-    sections = [s for s in cleaner.sections(text) if s.name.strip().lower() not in drop_sections]
     sentences = []
     i = 0
-    for sec in sections:
-        for p in sec.paragraphs:
-            for sent in _split(p):
-                sentences.append(Sentence(i, sec.name, sent))
-                i += 1
+    for title in page_titles:  # fixed order, not dict/set order -- keeps ids stable across runs
+        sections = [s for s in cleaner.sections(texts[title]) if s.name.strip().lower() not in drop_sections]
+        for sec in sections:
+            for p in sec.paragraphs:
+                for sent in _split(p):
+                    sentences.append(Sentence(i, title, sec.name, sent))
+                    i += 1
     return sentences

@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Тест модели — Kyoka Jiro</title>
+<style>
+  :root { --bg:#12141a; --panel:#1b1e27; --edge:#2c3040; --ink:#e8eaf0; --dim:#8b93a8; --accent:#7dd3fc; }
+  * { box-sizing: border-box; }
+  body { background:var(--bg); color:var(--ink); font-family: ui-sans-serif, system-ui, sans-serif; margin:0; padding:20px; }
+  h1 { font-size: 18px; font-weight: 600; margin: 0 0 4px; }
+  .sub { color: var(--dim); font-size: 13px; margin-bottom: 18px; }
+  .row { display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start; }
+  .col { flex:1; min-width: 340px; }
+  .panel { background:var(--panel); border:1px solid var(--edge); border-radius:10px; padding:14px; margin-bottom:14px; }
+  .panel h2 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--dim); margin:0 0 10px; font-weight:600; }
+  .modes { display:flex; gap:8px; margin-bottom:12px; }
+  .modes button { flex:1; padding:8px; border-radius:8px; border:1px solid var(--edge); background:var(--bg); color:var(--ink); cursor:pointer; font-size:13px; }
+  .modes button.active { background:var(--accent); color:#0b1220; border-color:var(--accent); font-weight:600; }
+  .meta { font-size:12px; color:var(--dim); margin-bottom:8px; }
+  textarea, .readonly { width:100%; background:var(--bg); color:var(--ink); border:1px solid var(--edge); border-radius:8px; padding:10px; font-family: ui-monospace, monospace; font-size:12.5px; line-height:1.5; resize:vertical; }
+  .readonly { white-space:pre-wrap; overflow-y:auto; max-height:280px; }
+  #ctxParagraph { min-height:120px; }
+  #ctxFull { height:280px; }
+  #promptBox { min-height:90px; }
+  .controls { display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+  .controls label { font-size:12.5px; color:var(--dim); display:flex; align-items:center; gap:5px; }
+  input[type=number] { width:64px; background:var(--bg); color:var(--ink); border:1px solid var(--edge); border-radius:6px; padding:4px 6px; }
+  button.primary { background:var(--accent); color:#0b1220; border:none; border-radius:8px; padding:9px 18px; font-weight:600; cursor:pointer; font-size:13px; }
+  button.primary:disabled { opacity:.5; cursor:default; }
+  button.secondary { background:var(--bg); color:var(--ink); border:1px solid var(--edge); border-radius:8px; padding:8px 14px; cursor:pointer; font-size:12.5px; }
+  #resp { white-space:pre-wrap; font-family: ui-monospace, monospace; font-size:13px; line-height:1.5; min-height:60px; }
+  .stats { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--dim); margin-top:10px; border-top:1px solid var(--edge); padding-top:8px; }
+  .stats b { color:var(--ink); font-family: ui-monospace, monospace; }
+  .status { font-size:12.5px; color:var(--accent); margin-top:8px; min-height:16px; }
+</style>
+</head>
+<body>
+
+<h1>Тест модели — Kyoka Jiro (qwen3.5:9b, локально)</h1>
+<div class="sub">Реальные абзацы со страниц Kyoka Jiro / Relationships / Synopsis. Отправка сразу идёт в Ollama.</div>
+
+<div class="panel">
+  <h2>Контекст</h2>
+  <div class="modes">
+    <button id="modeParagraph" class="active">Один абзац</button>
+    <button id="modeFull">Весь контекст</button>
+  </div>
+
+  <div id="paragraphView">
+    <div class="meta" id="paraMeta">—</div>
+    <div class="readonly" id="ctxParagraph"></div>
+    <div class="controls"><button class="secondary" id="rerollBtn">🎲 Новый случайный абзац</button></div>
+  </div>
+
+  <div id="fullView" style="display:none">
+    <div class="meta" id="fullMeta">—</div>
+    <div class="readonly" id="ctxFull"></div>
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Промпт (идёт последним, после контекста)</h2>
+  <textarea id="promptBox" placeholder="Например: перепиши это предложение в активном залоге, настоящем времени..."></textarea>
+  <div class="controls">
+    <label>temperature <input type="number" id="temp" value="0" step="0.1" min="0" max="2"></label>
+    <label><input type="checkbox" id="think"> think</label>
+    <label>model <input type="text" id="model" value="hf.co/HauhauCS/Qwen3.5-9B-Uncensored-HauhauCS-Aggressive:Q8_0" style="width:340px"></label>
+    <label>num_ctx <input type="number" id="numCtx" value="32768" step="1024" style="width:80px"></label>
+    <label>num_predict <input type="number" id="numPredict" value="1024" step="128" style="width:80px"></label>
+    <button class="primary" id="sendBtn">Отправить →</button>
+  </div>
+  <div class="status" id="status"></div>
+  <div class="meta" id="ctxLenHint"></div>
+</div>
+
+<div class="panel">
+  <h2>Ответ модели</h2>
+  <div id="resp">—</div>
+  <div class="stats" id="stats"></div>
+</div>
+
+<script>
+let DATA = null;
+let currentParagraph = null;
+let mode = "paragraph";
+
+async function init() {
+  const r = await fetch("data.json");
+  DATA = await r.json();
+  document.getElementById("fullMeta").textContent =
+    `${DATA.paragraphs.length} абзацев, ${DATA.full_context.length} символов полного контекста`;
+  document.getElementById("ctxFull").textContent = DATA.full_context;
+  rerollParagraph();
+}
+
+function rerollParagraph() {
+  const list = DATA.paragraphs;
+  currentParagraph = list[Math.floor(Math.random() * list.length)];
+  document.getElementById("paraMeta").textContent = `${currentParagraph.page} / ${currentParagraph.section}`;
+  document.getElementById("ctxParagraph").textContent = currentParagraph.text;
+}
+
+function setMode(m) {
+  mode = m;
+  document.getElementById("modeParagraph").classList.toggle("active", m === "paragraph");
+  document.getElementById("modeFull").classList.toggle("active", m === "full");
+  document.getElementById("paragraphView").style.display = m === "paragraph" ? "" : "none";
+  document.getElementById("fullView").style.display = m === "full" ? "" : "none";
+}
+
+document.getElementById("modeParagraph").onclick = () => setMode("paragraph");
+document.getElementById("modeFull").onclick = () => setMode("full");
+document.getElementById("rerollBtn").onclick = rerollParagraph;
+
+document.getElementById("sendBtn").onclick = async () => {
+  const context = mode === "paragraph" ? currentParagraph.text : DATA.full_context;
+  const userPrompt = document.getElementById("promptBox").value.trim();
+  const fullPrompt = context + "\n\n" + userPrompt;
+  const temperature = parseFloat(document.getElementById("temp").value) || 0;
+  const think = document.getElementById("think").checked;
+  const model = document.getElementById("model").value.trim() || "qwen3.5:9b";
+  const numCtx = parseInt(document.getElementById("numCtx").value) || 32768;
+  const numPredict = parseInt(document.getElementById("numPredict").value) || 1024;
+
+  const btn = document.getElementById("sendBtn");
+  const status = document.getElementById("status");
+  const respEl = document.getElementById("resp");
+  const statsEl = document.getElementById("stats");
+  btn.disabled = true;
+  status.textContent = `Модель думает... (контекст ~${Math.round(fullPrompt.length / 4)} токенов оценочно, num_ctx=${numCtx})`;
+  respEl.textContent = "";
+  statsEl.textContent = "";
+  const t0 = performance.now();
+
+  try {
+    const r = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model, stream: false, think,
+        messages: [{ role: "user", content: fullPrompt }],
+        options: { temperature, num_ctx: numCtx, num_predict: numPredict },
+      }),
+    });
+    const data = await r.json();
+    const elapsed = ((performance.now() - t0) / 1000).toFixed(1);
+    if (!r.ok || data.error) {
+      respEl.textContent = `Ошибка (HTTP ${r.status}): ` + (data.error || JSON.stringify(data));
+    } else {
+      const content = data.message?.content ?? "";
+      const thinking = data.message?.thinking ?? "";
+      const cutByLength = data.done_reason === "length";
+      if (content === "" && thinking) {
+        // think=true and num_predict ran out during the reasoning trace, before any final answer.
+        respEl.innerHTML = (cutByLength
+            ? `<div style="color:#f87171;margin-bottom:8px">⚠ content пустой: num_predict (${document.getElementById("numPredict").value}) `
+              + `закончился ещё во время think-рассуждений (done_reason=length). Увеличьте num_predict или снимите think.</div>`
+            : "") +
+          `<div style="color:var(--dim);margin-bottom:4px">— это содержимое message.thinking, а не финальный ответ —</div>` +
+          thinking.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+      } else if (content === "") {
+        respEl.textContent = "(модель вернула пустой ответ) done_reason=" + (data.done_reason || "?") +
+          "\n\nполный ответ сервера:\n" + JSON.stringify(data, null, 2);
+      } else {
+        respEl.textContent = content;
+      }
+      const pe = data.prompt_eval_count ?? "?";
+      const peMs = data.prompt_eval_duration ? (data.prompt_eval_duration / 1e6).toFixed(0) : "?";
+      const ev = data.eval_count ?? "?";
+      const evMs = data.eval_duration ? (data.eval_duration / 1e6).toFixed(0) : "?";
+      const estimatedTokens = Math.round(fullPrompt.length / 4);
+      const truncated = typeof pe === "number" && pe < estimatedTokens * 0.8;
+      statsEl.innerHTML =
+        `<span>prompt_eval: <b>${pe}</b> tok / <b>${peMs}</b> ms</span>` +
+        `<span>gen: <b>${ev}</b> tok / <b>${evMs}</b> ms</span>` +
+        `<span>done_reason: <b>${data.done_reason ?? "?"}</b></span>` +
+        `<span>total: <b>${elapsed}</b> s</span>` +
+        (truncated ? `<span style="color:#f87171">⚠ похоже на обрезку контекста: prompt_eval_count (${pe}) `
+          + `much less than context sent (~${estimatedTokens} tok est.) — увеличьте num_ctx</span>` : "");
+    }
+    status.textContent = "";
+  } catch (e) {
+    status.textContent = "";
+    respEl.textContent = "Ошибка запроса: " + e;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+init();
+</script>
+</body>
+</html>

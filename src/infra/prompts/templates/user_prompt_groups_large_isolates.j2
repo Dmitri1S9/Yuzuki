@@ -1,0 +1,34 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+{% if location %}Location: {{ location }}{% endif %}
+
+You are asked to identify TWO independent things about this cast in one pass — judge each on its own terms, a character can be in a large group AND be an isolate at the same time (belonging to a faction says nothing about whether they have personal ties within it).
+
+=== TASK 1: large groups (return in `groups`, with group_type "large") ===
+Definition: members do not personally know each other, or only superficially — a nation, a faction, an institution, a cause, a criminal organisation. Membership itself, not personal ties, is what places a character relative to everyone else.
+Test: could two members of this group be strangers to each other and still both genuinely belong?
+Exclude: any unit where members actually know each other — a class, a squad, a team, a crew, a family — that is a medium group, not this one (medium groups are collected separately, not part of this task).
+Size does not matter. A conspiracy of five that opposes an institution of thousands is still a side, and both are returned.
+Non-overlap: a character belongs to at most one large-group side. Where two candidates cover the same people, return the one that better divides the cast.
+Coverage: account for the entire cast. Do not invent membership.
+
+=== TASK 2: isolates (return in `isolates`) ===
+Definition: characters who have no one. The narrative shows them with no companions, no confidant, no partner, no one they seek out or who seeks them out. They act alone, and when others are around, they remain apart by choice.
+Test: try to name one person this character voluntarily spends time with, confides in, or relies on. If you can name even one, the character is not an isolate.
+Belonging to a large group (task 1 above) does not matter — a member of a faction of thousands can still be an isolate if they have no personal ties within it. Only actual personal ties disqualify.
+Do not use self-description or attitude. A character who calls themselves a loner, acts aloof or claims to want no one is NOT an isolate if the narrative shows them with real companions anyway. Judge by who is actually beside them, not by what they say about themselves.
+Exclude characters who simply appear rarely or whose relationships are never shown. Absence of information is not isolation. Return only characters the narrative has clearly established as being alone.
+
+{% if characters %}
+Known cast (whole franchise, not scoped to this time period, may be incomplete): match spelling against it when you include a name. Being on this list is not evidence of membership/isolation now — you still need real knowledge. Leave a name off entirely if you don't have enough information, rather than guess.
+{% for c in characters %}- {{ c }}
+{% endfor %}
+{% else %}
+No character list is provided for this task.
+{% endif %}

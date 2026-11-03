@@ -26,11 +26,18 @@ from src.shared.decorators import announce
 def prepare_and_collect(client) -> FeatureCollection:
     universe = get_universe()
     roster = [c.get_name() for c in universe.get_roster()]
+    # A well-known character can go unrecognized by bare name alone (a
+    # civilian identity vs. a codename, a native-language name) — collected
+    # here from the same aliases cast/steps/aliases.py already populates
+    # for free from AniList, and fed into rank()/flag()'s "characters" list
+    # as "Name (aka Alias)" so the model has a real shot at placing them
+    # correctly instead of guessing blind. See naming.display_name().
+    alias_map = {c.get_name(): c.get_aliases() for c in universe.get_roster()}
     low_info_set = load_low_info_set(universe, roster)
     collect_roster = [n for n in roster if n not in low_info_set]
     ordinal_names, flag_names = list(ORDINAL_PARAMS), list(FLAG_PARAMS)
 
-    per_pass = collect_or_load_passes(client, universe.get_id(), collect_roster, ordinal_names, flag_names)
+    per_pass = collect_or_load_passes(client, universe.get_id(), collect_roster, ordinal_names, flag_names, alias_map)
 
     return FeatureCollection(
         roster=roster, low_info_set=low_info_set, collect_roster=collect_roster,

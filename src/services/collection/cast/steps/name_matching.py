@@ -9,9 +9,7 @@ from collections import Counter, defaultdict
 from itertools import combinations
 
 from src.services.collection.cast.steps.constants import ROMANIZATION_MAP, SPECIAL_CHAR_MAP
-from src.shared.decorators import announce, report
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import announce, logged, report
 
 
 def normalize_name(name: str) -> str:
@@ -125,6 +123,11 @@ def find_spelling_pairs(canon: dict) -> list[tuple]:
     return pairs
 
 
+@logged(lambda _, a, b: f"SPELLING MERGE: {a!r} <-> {b!r}")
+def _log_spelling_merge(a: str, b: str) -> None:
+    pass
+
+
 @announce("merging spelling variants (safe, unscoped — shared token + edit distance <=2)")
 @report(lambda r: f"spelling_merges={r[4]}")
 def merge_spelling_variants(canon: dict, presence: dict, mentions: Counter):
@@ -134,8 +137,7 @@ def merge_spelling_variants(canon: dict, presence: dict, mentions: Counter):
         uf.union(a, b)
     new_canon, new_presence, new_mentions, key_map, _ = consolidate(uf, canon, presence, mentions)
     for a, b in spelling_pairs:
-        log.info("SPELLING MERGE: %r <-> %r",
-                  new_canon.get(key_map.get(a, a), a), new_canon.get(key_map.get(b, b), b))
+        _log_spelling_merge(new_canon.get(key_map.get(a, a), a), new_canon.get(key_map.get(b, b), b))
     return new_canon, new_presence, new_mentions, key_map, len(spelling_pairs)
 
 
@@ -147,13 +149,18 @@ def find_ambiguous_pairs(canon: dict) -> list[dict]:
     return ambiguous
 
 
+@logged(lambda _, pair: f"AMBIGUOUS NAME MATCH (manual review, not merged): {pair['a']!r} vs {pair['b']!r}, shared={pair['shared']}",
+        level=logging.WARNING)
+def _log_ambiguous_match(pair: dict) -> None:
+    pass
+
+
 @announce("flagging ambiguous same-token name pairs for manual review (not merged)")
 @report(lambda r: f"ambiguous_matches={len(r)}")
 def flag_ambiguous_matches(canon: dict) -> list[dict]:
     ambiguous = find_ambiguous_pairs(canon)
     for pair in ambiguous:
-        log.warning("AMBIGUOUS NAME MATCH (manual review, not merged): %r vs %r, shared=%s",
-                    pair["a"], pair["b"], pair["shared"])
+        _log_ambiguous_match(pair)
     return ambiguous
 
 

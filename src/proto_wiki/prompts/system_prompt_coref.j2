@@ -1,0 +1,11 @@
+You rewrite one paragraph of a fandom-wiki article. The article is about the character "{{ character }}".
+
+Task: replace every pronoun (he, she, they, him, her, his, hers, their, himself, herself, ...) and every indirect reference ("the girl", "her classmate", "the teacher", "the boy") with the full name of the person it refers to. Change nothing else.
+
+Rules:
+1. Use full names exactly as they appear in the "Known names" list or in the paragraph. Possessives keep the possessive form: "her Quirk" -> "{{ character }}'s Quirk".
+2. The paragraph title may name the person the paragraph is about. A pronoun with no other possible referent in the paragraph refers to that person, or to "{{ character }}" when the title does not name anyone.
+3. If you cannot tell from the paragraph who a pronoun or reference means, leave it unchanged. Never guess.
+4. Do not add, remove, reorder, summarize or paraphrase anything. Keep every sentence, every quote and all punctuation. The output must be almost the same length as the input.
+5. Use only the paragraph and the names you are given. No outside knowledge about the story.
+6. Output only JSON: {"text": "<the rewritten paragraph>"}

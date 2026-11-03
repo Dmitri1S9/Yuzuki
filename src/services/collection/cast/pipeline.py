@@ -10,8 +10,8 @@ belongs one level deeper instead. State carried between chapters lives in
 state.py, not here.
 """
 from src.services.collection.cast.state import CastCollection
-from src.services.collection.cast.steps.aliases import resolve_aliases
-from src.services.collection.cast.steps.anime_db import fetch_cast_names
+from src.services.collection.cast.steps.aliases import merge_anilist_aliases
+from src.services.collection.cast.steps.anime_db import fetch_cast_aliases, fetch_cast_names
 from src.services.collection.cast.steps.constants import ANILIST_TITLE
 from src.services.collection.cast.steps.groups import (
     collect_raw_groups, consolidate_groups, format_groups_for_output,
@@ -41,20 +41,19 @@ def collect_candidates(client) -> CastCollection:
 
 
 @announce("reconciling names: spelling, ambiguity, aliases, AniList backstop")
-def reconcile_names(client, collection: CastCollection) -> CastCollection:
+def reconcile_names(collection: CastCollection) -> CastCollection:
     canon, presence, mentions, spelling_key_map, spelling_merge_count = merge_spelling_variants(
         collection.canon, collection.presence, collection.mentions)
     ambiguous_matches = flag_ambiguous_matches(canon)
-    canon, presence, mentions, alias_key_map, aliases_of, alias_pairs = resolve_aliases(
-        client, canon, presence, mentions)
+    resolve = build_name_resolver(spelling_key_map, {})
+    aliases_of = merge_anilist_aliases(canon, resolve, fetch_cast_aliases(ANILIST_TITLE))
     canon, presence, mentions, anilist_added = merge_anilist_names(
         canon, presence, mentions, collection.anilist_names)
-    resolve = build_name_resolver(spelling_key_map, alias_key_map)
 
     collection.canon, collection.presence, collection.mentions = canon, presence, mentions
     collection.spelling_merge_count = spelling_merge_count
     collection.ambiguous_matches = ambiguous_matches
-    collection.aliases_of, collection.alias_pairs = aliases_of, alias_pairs
+    collection.aliases_of = aliases_of
     collection.anilist_added = anilist_added
     collection.resolve = resolve
     return collection
@@ -80,7 +79,7 @@ def build_roster_and_groups(collection: CastCollection) -> CastCollection:
 def assemble_and_publish(collection: CastCollection) -> dict:
     output = assemble_output(
         collection.roster, collection.groups_out, collection.raw_cluster_count,
-        collection.spelling_merge_count, collection.alias_pairs, collection.canon,
+        collection.spelling_merge_count, collection.aliases_of, collection.canon,
         collection.ambiguous_matches, collection.presence)
 
     universe_id = persist_to_database(output)

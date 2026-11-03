@@ -1,4 +1,4 @@
-"""Config for extract_v3. Standalone, own folder -- v2 (graph_extract/) is untouched."""
+"""Config for extract_v3. Fully standalone -- no dependency on any earlier prototype."""
 import os
 from dataclasses import dataclass
 from pathlib import Path
@@ -18,7 +18,7 @@ class RosterEntry:
 class Settings:
     universe: str
     target_character: str
-    page: str
+    pages: tuple[str, ...]
     dump_path: Path
     drop_sections: tuple[str, ...]
     model: str
@@ -33,7 +33,6 @@ class Settings:
     neo4j_uri: str
     neo4j_user: str
     neo4j_password: str
-    spacy_model: str
     characters: tuple[RosterEntry, ...]
     groups: tuple[RosterEntry, ...]
 
@@ -42,7 +41,7 @@ class Settings:
         raw = yaml.safe_load(Path(path or PACKAGE_DIR / "config.yaml").read_text(encoding="utf-8"))
         env = _prefixed_env("NEO4J_")
         return cls(
-            universe=raw["universe"], target_character=raw["target_character"], page=raw["page"],
+            universe=raw["universe"], target_character=raw["target_character"], pages=tuple(raw["pages"]),
             dump_path=Path(raw["dump_path"]).expanduser(),
             drop_sections=tuple(s.lower() for s in raw["drop_sections"]),
             model=raw["llm"]["model"], temperature=raw["llm"]["temperature"], think=raw["llm"]["think"],
@@ -52,7 +51,6 @@ class Settings:
             neo4j_uri=env.get("NEO4J_URI", raw["neo4j"]["default_uri"]),
             neo4j_user=env.get("NEO4J_USER", raw["neo4j"]["default_user"]),
             neo4j_password=env.get("NEO4J_PASSWORD", ""),
-            spacy_model=raw["spacy_model"],
             characters=tuple(RosterEntry(c["name"], tuple(c.get("aliases", []))) for c in raw["roster"]["characters"]),
             groups=tuple(RosterEntry(g["name"], tuple(g.get("aliases", []))) for g in raw["roster"]["groups"]),
         )

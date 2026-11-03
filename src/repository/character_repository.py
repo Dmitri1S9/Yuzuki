@@ -8,22 +8,21 @@ sort order, NULL = unknown/unconfirmed) are now loaded here too and
 written via save_feature_position — the "Observe Beauty" ranking view is
 the first real writer, see src/api/routes/confirm.py.
 """
-import logging
-
+import psycopg2
 from psycopg2.extras import Json
 
 from src.domain.character import Character
 from src.domain.parameters import FLAG_PARAMS, ORDINAL_PARAMS, PROFILE_PARAMS
+from src.infra.exceptions import CharacterException
 from src.repository.connection import read_only, transactional, validate_column
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import logged
 
 _PROFILE_COLUMNS = tuple(PROFILE_PARAMS)               # ("body_age", "soul_age", "gender", "species")
 _FEATURE_COLUMNS = tuple(ORDINAL_PARAMS) + tuple(FLAG_PARAMS)  # one INT column per ordinal/flag
 _ALL_COLUMNS = _PROFILE_COLUMNS + _FEATURE_COLUMNS
 
 
-def _character_from_row(universe_id: int, name: str, aliases, image_url, existence_hits,
+def _character_from_row(universe_id: int, name: str, aliases, has_portrait, existence_hits,
                          is_isolated, *values) -> Character:
     profile = dict(zip(_PROFILE_COLUMNS, values))
     features = dict(zip(_FEATURE_COLUMNS, values[len(_PROFILE_COLUMNS):]))
@@ -31,7 +30,7 @@ def _character_from_row(universe_id: int, name: str, aliases, image_url, existen
     flags = {k: v for k, v in features.items() if k in FLAG_PARAMS}
     return Character(name=name, universe_id=universe_id, aliases=aliases or [],
                       profile=profile, ordinals=ordinals, flags=flags,
-                      image_url=image_url, existence_hits=existence_hits,
+                      has_portrait=has_portrait, existence_hits=existence_hits,
                       is_isolated=is_isolated)
 
 
@@ -39,7 +38,7 @@ def _load_roster(conn, universe_id: int) -> list[Character]:
     cols = ", ".join(_ALL_COLUMNS)
     with conn.cursor() as cur:
         cur.execute(
-            f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+            f"SELECT name, aliases, (image_bytes IS NOT NULL) AS has_portrait, existence_hits, is_isolated, {cols} "
             f"FROM characters WHERE universe_id = %s ORDER BY name",
             (universe_id,),
         )
@@ -54,12 +53,21 @@ class CharacterRepository:
         cols = ", ".join(_ALL_COLUMNS)
         with conn.cursor() as cur:
             cur.execute(
-                f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+                f"SELECT name, aliases, (image_bytes IS NOT NULL) AS has_portrait, existence_hits, is_isolated, {cols} "
                 f"FROM characters WHERE universe_id = %s AND name = %s",
                 (universe_id, name),
             )
             row = cur.fetchone()
         return None if row is None else _character_from_row(universe_id, *row)
+
+    def get_character_or_raise(self, universe_id: int, name: str) -> Character:
+        """Like get_character, but raises instead of returning None — the
+        accessor routes should use when a missing character is a client
+        error (404), not a value to check for by hand."""
+        character = self.get_character(universe_id, name)
+        if character is None:
+            raise CharacterException(universe_id, name)
+        return character
 
     @read_only
     def get_characters(self, conn, universe_id: int, names: list[str]) -> list[Character]:
@@ -69,7 +77,7 @@ class CharacterRepository:
         cols = ", ".join(_ALL_COLUMNS)
         with conn.cursor() as cur:
             cur.execute(
-                f"SELECT name, aliases, image_url, existence_hits, is_isolated, {cols} "
+                f"SELECT name, aliases, (image_bytes IS NOT NULL) AS has_portrait, existence_hits, is_isolated, {cols} "
                 f"FROM characters WHERE universe_id = %s AND name = ANY(%s)",
                 (universe_id, names),
             )
@@ -88,6 +96,8 @@ class CharacterRepository:
             roster = [c for c in roster if c[key] == value]
         return roster
 
+    @logged(lambda _, self, universe_id, name, aliases:
+            f"saved {len(aliases)} alias(es) for {name!r} (universe {universe_id})")
     @transactional
     def save_character_aliases(self, conn, universe_id: int, name: str, aliases: list[str]) -> None:
         with conn.cursor() as cur:
@@ -95,7 +105,6 @@ class CharacterRepository:
                 "UPDATE characters SET aliases = %s WHERE universe_id = %s AND name = %s",
                 (Json(aliases) if aliases else None, universe_id, name),
             )
-        log.info("saved %d alias(es) for %r (universe %d)", len(aliases), name, universe_id)
 
     @transactional
     def save_character_isolation(self, conn, universe_id: int, name: str, is_isolated: bool) -> None:
@@ -105,8 +114,11 @@ class CharacterRepository:
                 (is_isolated, universe_id, name),
             )
 
+    @logged(lambda removed, self, universe_id, names:
+            f"removed {len(removed)} character(s) no longer in the confirmed roster for universe {universe_id}: {removed}"
+            if removed else None)
     @transactional
-    def sync_roster(self, conn, universe_id: int, names: list[str]) -> None:
+    def sync_roster(self, conn, universe_id: int, names: list[str]) -> list[str]:
         """Roster confirmation is authoritative, not additive: deletes any
         character row for this universe that isn't in the confirmed list.
         create_universe's own upsert only ever adds rows (INSERT ... ON
@@ -120,21 +132,45 @@ class CharacterRepository:
                 (universe_id, names),
             )
             removed = [row[0] for row in cur.fetchall()]
-        if removed:
-            log.info("removed %d character(s) no longer in the confirmed roster for universe %d: %s",
-                      len(removed), universe_id, removed)
+        return removed
 
+    @logged(lambda _, self, universe_id, name, image_bytes, content_type="image/jpeg":
+            f"saved portrait ({len(image_bytes)} byte(s)) for {name!r} (universe {universe_id})")
     @transactional
-    def save_character_image(self, conn, universe_id: int, name: str,
-                              image_url: str | None, existence_hits: int | None) -> None:
+    def save_character_portrait(self, conn, universe_id: int, name: str,
+                                 image_bytes: bytes, content_type: str = "image/jpeg") -> None:
         with conn.cursor() as cur:
             cur.execute(
-                "UPDATE characters SET image_url = %s, existence_hits = %s "
+                "UPDATE characters SET image_bytes = %s, image_content_type = %s "
                 "WHERE universe_id = %s AND name = %s",
-                (image_url, existence_hits, universe_id, name),
+                (psycopg2.Binary(image_bytes), content_type, universe_id, name),
             )
-        log.info("saved image (%s hit(s)) for %r (universe %d)", existence_hits, name, universe_id)
 
+    @logged(lambda _, self, universe_id, name, existence_hits:
+            f"saved existence_hits={existence_hits} for {name!r} (universe {universe_id})")
+    @transactional
+    def save_character_existence_hits(self, conn, universe_id: int, name: str,
+                                       existence_hits: int | None) -> None:
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE characters SET existence_hits = %s WHERE universe_id = %s AND name = %s",
+                (existence_hits, universe_id, name),
+            )
+
+    @read_only
+    def get_character_portrait(self, conn, universe_id: int, name: str) -> tuple[bytes, str] | None:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT image_bytes, image_content_type FROM characters WHERE universe_id = %s AND name = %s",
+                (universe_id, name),
+            )
+            row = cur.fetchone()
+        if row is None or row[0] is None:
+            return None
+        return bytes(row[0]), row[1] or "image/jpeg"
+
+    @logged(lambda _, self, universe_id, old_name, new_name:
+            f"renamed {old_name!r} -> {new_name!r} in universe {universe_id} (cascaded to groups/relations)")
     @transactional
     def rename_character(self, conn, universe_id: int, old_name: str, new_name: str) -> None:
         """Renames a confirmed character — post-approval, so it's not the
@@ -180,9 +216,9 @@ class CharacterRepository:
                     "UPDATE relations SET source = %s, target = %s, members = %s WHERE id = %s",
                     (new_source, new_target, Json(new_members) if new_members is not None else None, rid),
                 )
-        log.info("renamed %r -> %r in universe %d (cascaded to groups/relations)",
-                  old_name, new_name, universe_id)
 
+    @logged(lambda _, self, universe_id, name, fields:
+            f"updated profile field(s) {sorted(fields)} for {name!r} (universe {universe_id})" if fields else None)
     @transactional
     def update_character_profile(self, conn, universe_id: int, name: str, fields: dict) -> None:
         """Partial update of aliases + the 4 profile columns — only keys
@@ -207,7 +243,6 @@ class CharacterRepository:
                 f"UPDATE characters SET {', '.join(assignments)} WHERE universe_id = %s AND name = %s",
                 values,
             )
-        log.info("updated profile field(s) %s for %r (universe %d)", sorted(fields), name, universe_id)
 
     @read_only
     def get_feature_positions(self, conn, universe_id: int, param_name: str) -> dict[str, int | None]:
@@ -222,6 +257,8 @@ class CharacterRepository:
             rows = cur.fetchall()
         return dict(rows)
 
+    @logged(lambda _, self, universe_id, param_name, positions:
+            f"saved {param_name} positions for {len(positions)} character(s) (universe {universe_id})")
     @transactional
     def save_feature_positions(self, conn, universe_id: int, param_name: str,
                                 positions: dict[str, int | None]) -> None:
@@ -236,5 +273,3 @@ class CharacterRepository:
                     f"UPDATE characters SET {param_name} = %s WHERE universe_id = %s AND name = %s",
                     (position, universe_id, name),
                 )
-        log.info("saved %s positions for %d character(s) (universe %d)",
-                  param_name, len(positions), universe_id)

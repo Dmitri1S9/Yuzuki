@@ -1,4 +1,4 @@
-"""Batch UNWIND + MERGE writer, called once per simple sentence's fact (for both variants).
+"""Batch UNWIND + MERGE writer, called once per simple sentence's fact.
 
 Node identity does NOT bake the universe into a composite id string (no "Universe::Name" -- flagged as
 wrong mid-session: a node's universe is a fact represented by a real graph edge, not string concatenation).
@@ -10,8 +10,8 @@ was already plain `name`, unaffected."""
 import hashlib
 from datetime import datetime, timezone
 
-from yuzuki_local.external.embedder import Embedder
-from yuzuki_local.external.neo4j_client import Neo4jClient
+from .external.embedder import Embedder
+from .external.neo4j_client import Neo4jClient
 
 from .resolve import build_lookup
 from .schemas import ParseReply

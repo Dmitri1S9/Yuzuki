@@ -1,0 +1,21 @@
+{% if context %}
+=== UNIVERSE CONTEXT ===
+{{ context }}
+=== END CONTEXT ===
+{% endif %}
+
+Universe: {{ universe }}
+Time period: {{ time_period }}
+
+Trait: {{ flag_name }}
+Definition: {{ flag_definition }}
+Sorting axis: {{ flag_sort_axis }}
+
+Return JSON, unknown first:
+{"unknown": [...], "sorted": ["T1", ..., "T3"]}
+
+All 3 markers T1, T2, T3 must appear in sorted, in order.
+
+Characters:
+{% for c in characters %}- {{ c }}
+{% endfor %}

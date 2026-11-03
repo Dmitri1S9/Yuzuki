@@ -1,33 +1,34 @@
-"""Builds extract_v3/REPORT.md. Fact tallies come from Neo4j (both variants, full accumulated state);
-pass-1 stats come from the local pass1 cache (has its own created_at per entry, so it's resumption-safe)."""
+"""Builds extract_v3/REPORT.md. Fact tallies come from Neo4j (full accumulated state, correct across
+resumed/multi-invocation runs); pass-1 stats come from the local pass1 cache (has its own created_at per
+entry, so it's resumption-safe too)."""
 import random
 import statistics
-from collections import Counter, defaultdict
+from collections import Counter
 from datetime import datetime
 
-from yuzuki_local.external.neo4j_client import Neo4jClient
+from .external.neo4j_client import Neo4jClient
 
 
 def _fmt_s(x: float) -> str:
     return f"{x:.1f}s" if x < 120 else f"{x / 60:.1f}min"
 
 
-def _fetch_facts(client: Neo4jClient, run_id: str, variant: str) -> list[dict]:
-    q = ("MATCH (s)-[r:EDGE {run_id:$run_id, variant:$variant}]->(o) RETURN 'edge' AS kind, s.name AS subject, "
+def _fetch_facts(client: Neo4jClient, run_id: str) -> list[dict]:
+    q = ("MATCH (s)-[r:EDGE {run_id:$run_id}]->(o) RETURN 'edge' AS kind, s.name AS subject, "
         "r.predicate AS predicate, r.predicate_raw AS predicate_raw, r.via AS via, o.name AS target, "
         "r.description AS description, r.modality AS modality, r.negated AS negated, r.mutual AS mutual, "
         "r.frequency AS frequency, r.degree AS degree, r.certainty AS certainty, r.former AS former, "
         "r.simple_sentence_id AS simple_sentence_id, r.source_sentence_id AS source_sentence_id, "
         "r.source_sentence AS source_sentence "
         "UNION "
-        "MATCH (s)-[r:HAS_PROPERTY {run_id:$run_id, variant:$variant}]->(p) RETURN 'property' AS kind, "
+        "MATCH (s)-[r:HAS_PROPERTY {run_id:$run_id}]->(p) RETURN 'property' AS kind, "
         "s.name AS subject, null AS predicate, null AS predicate_raw, null AS via, p.name AS target, "
         "r.description AS description, r.modality AS modality, r.negated AS negated, false AS mutual, "
         "r.frequency AS frequency, r.degree AS degree, r.certainty AS certainty, r.former AS former, "
         "r.simple_sentence_id AS simple_sentence_id, r.source_sentence_id AS source_sentence_id, "
         "r.source_sentence AS source_sentence")
     with client.session() as session:
-        return [dict(rec) for rec in session.run(q, run_id=run_id, variant=variant)]
+        return [dict(rec) for rec in session.run(q, run_id=run_id)]
 
 
 def _fact_summary(f: dict) -> str:
@@ -38,10 +39,10 @@ def _fact_summary(f: dict) -> str:
            (" [mutual]" if f["mutual"] else ""))
 
 
-def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_this_run, llm_seconds_this_run,
-                 spacy_seconds, per_call_metrics, spacy_failed) -> str:
+def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_this_run,
+                 pass2_seconds_this_run, per_call_metrics) -> str:
     lines = [f"# extract_v3 — Kyoka Jiro's own page ({s.universe})", "",
-            f"run_id={run_id}, model={s.model}, temperature={s.temperature}, think=false, page={s.page!r}.",
+            f"run_id={run_id}, model={s.model}, temperature={s.temperature}, think=false, pages={s.pages!r}.",
             ""]
 
     ok_entries = [e for e in pass1.values() if e["status"] == "ok"]
@@ -56,14 +57,11 @@ def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_thi
     if len(p1_timestamps) >= 2:
         p1_span = (datetime.fromisoformat(p1_timestamps[-1]) - datetime.fromisoformat(p1_timestamps[0])).total_seconds()
     lines.append(f"- Pass 1 (rewrite): {len(pass1)}/{len(sentences)} source sentences done, "
-                 f"{len(hypothetical)} HYPOTHETICAL ({len(hypothetical) / len(pass1):.0%}), {len(errored)} "
-                 f"errored. Wall-clock span across all invocations: " +
+                 f"{len(hypothetical)} HYPOTHETICAL ({len(hypothetical) / max(1, len(pass1)):.0%}), "
+                 f"{len(errored)} errored. Wall-clock span across all invocations: " +
                  (_fmt_s(p1_span) if p1_span else f"{_fmt_s(pass1_seconds_this_run)} (this invocation only)"))
-    lines.append(f"- Pass 2a (spaCy, no LLM): {len(simple_items)} simple sentences, {spacy_failed} failed to "
-                 f"parse, {_fmt_s(spacy_seconds)} (this invocation; spaCy is deterministic and re-run in "
-                 f"full every invocation, not checkpointed).")
-    lines.append(f"- Pass 2b (LLM): {len(simple_items)} simple sentences to parse, "
-                 f"{_fmt_s(llm_seconds_this_run)} this invocation ({len(per_call_metrics)} calls this "
+    lines.append(f"- Pass 2 (LLM parse): {len(simple_items)} simple sentences to parse, "
+                 f"{_fmt_s(pass2_seconds_this_run)} this invocation ({len(per_call_metrics)} calls this "
                  f"invocation).")
     lines.append("")
     lines.append(f"{len(sentences)} source sentences -> {len(simple_items)} simple sentences "
@@ -72,12 +70,12 @@ def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_thi
     lines.append("")
     if per_call_metrics:
         counts = [m.prompt_eval_count for m in per_call_metrics]
-        lines.append(f"Pass 2b prompt_eval_count: first call {counts[0]}, median of the rest "
+        lines.append(f"Pass 2 prompt_eval_count: first call {counts[0]}, median of the rest "
                      f"{statistics.median(counts[1:]):.0f}" if len(counts) > 1 else
-                     f"Pass 2b prompt_eval_count: {counts[0]} (one call)")
+                     f"Pass 2 prompt_eval_count: {counts[0]} (one call)")
         lines.append("")
 
-    total_span = (p1_span or pass1_seconds_this_run) + spacy_seconds + llm_seconds_this_run
+    total_span = (p1_span or pass1_seconds_this_run) + pass2_seconds_this_run
     lines.append(f"### Projection for one average character page ({total_span:.0f}s measured for Jiro's "
                  f"page, {len(sentences)} sentences, this specific page's length)")
     lines.append(f"Scales roughly linearly with sentence count -- no per-character number is claimed here "
@@ -87,17 +85,15 @@ def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_thi
 
     # ================= connect to Neo4j =================
     client = Neo4jClient(s.neo4j_uri, s.neo4j_user, s.neo4j_password)
-    spacy_facts = _fetch_facts(client, run_id, "spacy")
-    llm_facts = _fetch_facts(client, run_id, "llm")
+    facts = _fetch_facts(client, run_id)
     client.close()
-    by_simple_spacy = {f["simple_sentence_id"]: f for f in spacy_facts}
-    by_simple_llm = {f["simple_sentence_id"]: f for f in llm_facts}
+    by_simple = {f["simple_sentence_id"]: f for f in facts}
 
     # ================= B. source -> simple sentences table =================
     lines.append("## B. Source sentence -> simple sentences (rewriting check)")
     lines.append("")
-    lines.append("| id | section | source | simple sentences |")
-    lines.append("|---:|---|---|---|")
+    lines.append("| id | page | section | source | simple sentences |")
+    lines.append("|---:|---|---|---|---|")
     for sent in sentences:
         e = pass1.get(str(sent.id))
         if not e:
@@ -108,42 +104,29 @@ def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_thi
             simple_s = f"*{e['status']}*"
         else:
             simple_s = "<br>".join(e["simple_sentences"]) or "*(none)*"
-        lines.append(f"| {sent.id} | {e['section']} | {sent.text[:100].replace('|','/')} | "
-                     f"{simple_s[:300].replace(chr(10),' ')} |")
+        lines.append(f"| {sent.id} | {e.get('page','')} | {e['section']} | "
+                     f"{sent.text[:100].replace('|','/')} | {simple_s[:300].replace(chr(10),' ')} |")
     lines.append("")
 
-    # ================= C. simple sentence -> fact, spaCy vs LLM =================
-    lines.append("## C. Simple sentence -> fact: spaCy vs LLM")
+    # ================= C. simple sentence -> fact =================
+    lines.append("## C. Simple sentence -> fact")
     lines.append("")
-    disagreements = 0
-    rows = []
+    lines.append(f"{len(simple_items)} simple sentences, {len(facts)} facts written "
+                 f"({len(facts) / max(1, len(simple_items)):.0%} yield -- the rest failed to parse or the "
+                 f"call errored).")
+    lines.append("")
+    lines.append("| simple sentence | fact |")
+    lines.append("|---|---|")
     for item in simple_items:
-        sid = item["simple_id"]
-        sp = by_simple_spacy.get(sid)
-        lm = by_simple_llm.get(sid)
-        sp_s = _fact_summary(sp) if sp else "(no fact)"
-        lm_s = _fact_summary(lm) if lm else "(no fact)"
-        agree = sp is not None and lm is not None and sp["kind"] == lm["kind"] and \
-               sp["subject"] == lm["subject"] and sp["target"] == lm["target"]
-        if not agree:
-            disagreements += 1
-        rows.append((item, sp_s, lm_s, agree))
-    lines.append(f"{len(rows)} simple sentences compared, {disagreements} where subject/target/kind "
-                 f"disagree between spaCy and LLM ({disagreements / len(rows):.0%}).")
-    lines.append("")
-    lines.append("### Disagreements only")
-    lines.append("")
-    lines.append("| simple sentence | spaCy | LLM |")
-    lines.append("|---|---|---|")
-    for item, sp_s, lm_s, agree in rows:
-        if not agree:
-            lines.append(f"| {item['simple_text'][:100].replace('|','/')} | {sp_s} | {lm_s} |")
+        f = by_simple.get(item["simple_id"])
+        lines.append(f"| {item['simple_text'][:120].replace('|','/')} | "
+                     f"{_fact_summary(f) if f else '(no fact)'} |")
     lines.append("")
 
-    # ================= D. predicate_raw -> predicate (LLM only -- spaCy doesn't generalize) =================
-    lines.append("## D. predicate_raw -> predicate generalization (LLM variant)")
+    # ================= D. predicate_raw -> predicate =================
+    lines.append("## D. predicate_raw -> predicate generalization")
     lines.append("")
-    pairs = Counter((f["predicate_raw"], f["predicate"]) for f in llm_facts if f["kind"] == "edge")
+    pairs = Counter((f["predicate_raw"], f["predicate"]) for f in facts if f["kind"] == "edge")
     lines.append("| predicate_raw | predicate | count |")
     lines.append("|---|---|---:|")
     for (raw, gen), n in sorted(pairs.items(), key=lambda kv: -kv[1]):
@@ -155,13 +138,11 @@ def build_report(*, s, run_id, sentences, pass1, simple_items, pass1_seconds_thi
     lines.append("")
     sample = random.sample(simple_items, min(20, len(simple_items)))
     for item in sample:
-        sp = by_simple_spacy.get(item["simple_id"])
-        lm = by_simple_llm.get(item["simple_id"])
-        lines.append(f"- **source** (#{item['source_id']}, {item['section']}): "
+        f = by_simple.get(item["simple_id"])
+        lines.append(f"- **source** (#{item['source_id']}, {item.get('page','')}/{item['section']}): "
                      f"{item['source_text'][:130]}")
         lines.append(f"  **simple**: {item['simple_text']}")
-        lines.append(f"  **spaCy**: {_fact_summary(sp) if sp else '(none)'}")
-        lines.append(f"  **LLM**: {_fact_summary(lm) if lm else '(none)'}")
+        lines.append(f"  **fact**: {_fact_summary(f) if f else '(none)'}")
     lines.append("")
 
     # ================= F. cypher =================
@@ -173,8 +154,6 @@ WHERE (n.name = "{s.target_character}" OR m.name = "{s.target_character}")
   AND r.run_id = "{run_id}"
 RETURN n, r, m""")
     lines.append("```")
-    lines.append("")
-    lines.append("Filter to one variant by adding `AND r.variant = \"llm\"` (or `\"spacy\"`) to the WHERE clause.")
     lines.append("")
 
     return "\n".join(lines)

@@ -42,16 +42,12 @@ detected face (face.py's crop_to_face) or it's discarded and the next
 candidate is tried. An AniList image skips that rejection (center-cropped
 if a face isn't found — the source already guarantees identity, so a
 missed face detection isn't a reason to throw away a known-correct
-image). Either way the accepted image is re-hosted locally (see
-src/api/main.py's /media mount), not linked from the original URL, since
-what's stored is a derived (cropped) image.
+image). Either way the accepted (cropped) bytes are stored straight in
+Postgres (characters.image_bytes, see CharacterRepository.save_character_
+portrait), not linked from the original URL and not written to disk.
 """
 import functools
-import hashlib
-import logging
-import os
 import time
-from pathlib import Path
 
 import httpx
 from ddgs import DDGS
@@ -60,9 +56,7 @@ from src.repository import CharacterRepository
 from src.services.collection.cast.steps import anime_db
 from src.services.collection.cast.steps.constants import ANILIST_TITLE, UNIVERSE_NAME
 from src.services.collection.cast.steps.face import center_crop_square, crop_to_face
-from src.shared.decorators import announce, report
-
-log = logging.getLogger(__name__)
+from src.shared.decorators import announce, logged, report
 
 _character_repo = CharacterRepository()
 
@@ -70,9 +64,6 @@ _MAX_ATTEMPTS = 4
 _RETRY_BASE_DELAY_SECONDS = 2.0
 _MAX_IMAGE_CANDIDATES = 6
 _PER_CHARACTER_DELAY_SECONDS = 2.0
-
-MEDIA_DIR = Path("media/characters")
-YUZUKI_PUBLIC_URL = os.environ.get("YUZUKI_PUBLIC_URL", "http://localhost:8044")
 
 
 def _search_with_retry(fn, *args, **kwargs) -> list[dict] | None:
@@ -105,31 +96,20 @@ def _download(url: str) -> bytes | None:
         return None
 
 
-def _save_portrait(universe_name: str, name: str, cropped: bytes) -> str:
-    MEDIA_DIR.mkdir(parents=True, exist_ok=True)
-    slug = hashlib.sha1(f"{universe_name}|{name}".encode()).hexdigest()[:16]
-    (MEDIA_DIR / f"{slug}.jpg").write_bytes(cropped)
-    # ?v= busts both the browser's HTTP cache and React's "src didn't
-    # change, don't refetch" — the filename is stable (hashed from
-    # universe+name) so a re-fetched image would otherwise silently keep
-    # showing the old cached file after a manual refresh.
-    return f"{YUZUKI_PUBLIC_URL}/media/characters/{slug}.jpg?v={int(time.time())}"
-
-
-def _portrait_from_anilist(name: str, universe_name: str, anilist_images: dict[str, str]) -> str | None:
+def _portrait_from_anilist(name: str, universe_name: str, anilist_images: dict[str, str]) -> bytes | None:
     url = anime_db.lookup(name, anilist_images)
     if url is None:
         return None
     image_bytes = _download(url)
     if image_bytes is None:
         return None
-    cropped = crop_to_face(image_bytes) or center_crop_square(image_bytes)
-    if cropped is None:
-        return None
-    return _save_portrait(universe_name, name, cropped)
+    return crop_to_face(image_bytes) or center_crop_square(image_bytes)
 
 
-def _portrait_from_ddgs(ddgs: DDGS, name: str, universe_name: str) -> str | None:
+@logged(lambda result, ddgs, name, universe_name:
+        None if result is not None else
+        f"no single-face ddgs candidate found for {name!r} (of {_MAX_IMAGE_CANDIDATES} searched)")
+def _portrait_from_ddgs(ddgs: DDGS, name: str, universe_name: str) -> bytes | None:
     # Quoted name + quoted title (not a loose unquoted query) — see module
     # docstring. Trades coverage for correctness on purpose: a character
     # this narrows to zero candidates for gets no image rather than a
@@ -146,20 +126,19 @@ def _portrait_from_ddgs(ddgs: DDGS, name: str, universe_name: str) -> str | None
         cropped = crop_to_face(image_bytes)
         if cropped is None:
             continue
-        return _save_portrait(universe_name, name, cropped)
+        return cropped
 
-    log.info("no single-face ddgs candidate found for %r (of %d searched)", name, _MAX_IMAGE_CANDIDATES)
     return None
 
 
-def find_portrait(name: str, universe_name: str, ddgs: DDGS, anilist_images: dict[str, str]) -> str | None:
+def find_portrait(name: str, universe_name: str, ddgs: DDGS, anilist_images: dict[str, str]) -> bytes | None:
     return (_portrait_from_anilist(name, universe_name, anilist_images)
             or _portrait_from_ddgs(ddgs, name, universe_name))
 
 
 def lookup_character_image(
     ddgs: DDGS, name: str, universe_name: str, anilist_images: dict[str, str] | None = None,
-) -> tuple[str | None, int | None]:
+) -> tuple[bytes | None, int | None]:
     if anilist_images is None:
         anilist_images = anime_db.fetch_character_images(universe_name)
 
@@ -173,13 +152,13 @@ def lookup_character_image(
             1 for r in results if name_lower in (r.get("title", "") + " " + r.get("body", "")).lower()
         )
 
-    image_url = find_portrait(name, universe_name, ddgs, anilist_images)
+    image_bytes = find_portrait(name, universe_name, ddgs, anilist_images)
 
-    return image_url, existence_hits
+    return image_bytes, existence_hits
 
 
 @announce("fetching character images + existence signal (AniList primary, ddgs fallback)")
-@report(lambda r: f"images_found={sum(1 for e in r if e['image_url'])}/{len(r)}")
+@report(lambda r: f"images_found={sum(1 for e in r if e['image_bytes'])}/{len(r)}")
 def collect_character_images(roster: list[dict]) -> list[dict]:
     # AniList images come from ANILIST_TITLE (the specific season/movie,
     # when it differs from the universe's own display name — see
@@ -191,9 +170,9 @@ def collect_character_images(roster: list[dict]) -> list[dict]:
         for i, entry in enumerate(roster):
             if i > 0:
                 time.sleep(_PER_CHARACTER_DELAY_SECONDS)
-            image_url, existence_hits = lookup_character_image(
+            image_bytes, existence_hits = lookup_character_image(
                 ddgs, entry["name"], UNIVERSE_NAME, anilist_images)
-            entry["image_url"] = image_url
+            entry["image_bytes"] = image_bytes
             entry["existence_hits"] = existence_hits
     return roster
 
@@ -201,6 +180,6 @@ def collect_character_images(roster: list[dict]) -> list[dict]:
 @announce("saving character images + existence signal to database")
 def persist_character_images(universe_id: int, roster: list[dict]) -> None:
     for entry in roster:
-        _character_repo.save_character_image(
-            universe_id, entry["name"], entry.get("image_url"), entry.get("existence_hits"),
-        )
+        if entry.get("image_bytes"):
+            _character_repo.save_character_portrait(universe_id, entry["name"], entry["image_bytes"])
+        _character_repo.save_character_existence_hits(universe_id, entry["name"], entry.get("existence_hits"))

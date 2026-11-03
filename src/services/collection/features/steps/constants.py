@@ -12,13 +12,13 @@ if LEGACY_NULL:
 from src.shared.naming import parse_universe_args  # noqa: E402
 
 UNIVERSE_NAME, ARC, LOCATION, SLUG, _ANILIST_TITLE = parse_universe_args("Classroom of the Elite", "Year 1")
-# Both ordinals and flags now collect 2 passes — the 3rd pass's marginal
-# gain wasn't worth paying for (user's call). Both go through
-# consensus.flag_consensus's 2-pass algorithm now (build blocks from
-# agreement, drop the worst-disagreeing characters until kappa clears
-# target) instead of consensus.consensus_rank's 3-pass hill-climbing search,
-# which has hardcoded 3-pass assumptions (kappa_raw_12/13/23, etc.) and
-# isn't a drop-in fit for 2 passes. consensus_rank is left in place, tested,
-# unused — not deleted, in case 3-pass ordinals come back.
+# Ordinals: 2 passes, real reconciliation (consensus.ordinal_consensus —
+# Borda + hill-climbing search adapted from consensus.py, since ordinals
+# have 8-10 tiers and two passes landing one tier apart is normal).
+# Flags: 1 pass now (user's call) — a flag's own model call is expensive
+# enough per-parameter (51 flags) that a 2nd pass wasn't worth doubling the
+# cost for, and there's no reconciliation left to do with only one rater
+# (consensus.flag_consensus just reshapes that one pass's own placement
+# into the same block/tier output shape everything downstream expects).
 PASSES = (1, 2)
-FLAG_PASSES = (1, 2)
+FLAG_PASSES = (1,)

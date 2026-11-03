@@ -36,13 +36,12 @@ should fall back to whatever the caller's own fallback is (ddgs for
 images, "no backstop" for the roster), not silently give up on the whole
 universe.
 """
-import logging
 import re
 import time
 
 import httpx
 
-log = logging.getLogger(__name__)
+from src.shared.decorators import logged
 
 _ANILIST_URL = "https://graphql.anilist.co"
 _QUERY = """
@@ -75,6 +74,17 @@ _RETRY_DELAY_SECONDS = 3.0
 _MAX_PAGES = 8
 
 
+@logged(lambda _, universe_name, page:
+        f"AniList lookup failed for {universe_name!r} (page {page}) after {_MAX_ATTEMPTS} attempts")
+def _log_fetch_failed(universe_name: str, page: int) -> None:
+    pass
+
+
+@logged(lambda _, universe_name: f"AniList has no title matching {universe_name!r}")
+def _log_no_title_match(universe_name: str) -> None:
+    pass
+
+
 def _fetch_character_nodes(universe_name: str) -> list[dict]:
     """Raw AniList character nodes for this title (up to _MAX_PAGES worth,
     sorted main -> supporting -> background), or [] if the title isn't
@@ -94,15 +104,14 @@ def _fetch_character_nodes(universe_name: str) -> list[dict]:
                 break
             except Exception:
                 if attempt == _MAX_ATTEMPTS:
-                    log.info("AniList lookup failed for %r (page %d) after %d attempts",
-                              universe_name, page, _MAX_ATTEMPTS)
+                    _log_fetch_failed(universe_name, page)
                     return nodes
                 time.sleep(_RETRY_DELAY_SECONDS * attempt)
 
         media = (data.get("data") or {}).get("Media")
         if not media:
             if page == 1:
-                log.info("AniList has no title matching %r", universe_name)
+                _log_no_title_match(universe_name)
             return nodes
         characters = media["characters"]
         nodes.extend(characters["nodes"])
@@ -111,6 +120,7 @@ def _fetch_character_nodes(universe_name: str) -> list[dict]:
     return nodes
 
 
+@logged(lambda out, universe_name: f"AniList: {universe_name!r} -> {len(out)} character image(s)")
 def fetch_character_images(universe_name: str) -> dict[str, str]:
     """{lowercased character name: portrait URL} for every character
     AniList's cast list for this title has an image for — every known
@@ -126,10 +136,10 @@ def fetch_character_images(universe_name: str) -> dict[str, str]:
         for n in names:
             if n:
                 out[n.strip().lower()] = image_url
-    log.info("AniList: %r -> %d character image(s)", universe_name, len(out))
     return out
 
 
+@logged(lambda names, universe_name: f"AniList: {universe_name!r} -> {len(names)} cast name(s)")
 def fetch_cast_names(universe_name: str) -> list[str]:
     """Every character's canonical display name (name.full) from AniList's
     cast list for this title — no images, just the roster backstop list.
@@ -137,8 +147,29 @@ def fetch_cast_names(universe_name: str) -> list[str]:
     skipped, not guessed at."""
     names = [node["name"]["full"] for node in _fetch_character_nodes(universe_name)
              if (node.get("name") or {}).get("full")]
-    log.info("AniList: %r -> %d cast name(s)", universe_name, len(names))
     return names
+
+
+@logged(lambda out, universe_name: f"AniList: {universe_name!r} -> {len(out)} character(s) with alias data")
+def fetch_cast_aliases(universe_name: str) -> dict[str, list[str]]:
+    """{character full name: [native/alternative names]} from AniList's own
+    cast list — free replacement for the old dedicated alias_names() Gemini
+    call: AniList already returns a character's codename/nickname/native
+    spelling in the same nodes fetch_cast_names() reads, under `native` and
+    `alternative`, just discarded there. Keyed by the character's own full
+    name (unresolved against canon here — roster.py's merge_anilist_aliases
+    does that, the same way merge_anilist_names() resolves fetch_cast_names()
+    output)."""
+    out: dict[str, list[str]] = {}
+    for node in _fetch_character_nodes(universe_name):
+        name_field = node.get("name") or {}
+        full = name_field.get("full")
+        if not full:
+            continue
+        alts = [a for a in ([name_field.get("native")] + (name_field.get("alternative") or [])) if a and a != full]
+        if alts:
+            out[full] = alts
+    return out
 
 
 def fetch_character_descriptions(universe_name: str) -> dict[str, str]:

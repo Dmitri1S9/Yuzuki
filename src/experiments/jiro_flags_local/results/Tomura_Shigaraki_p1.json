@@ -1,0 +1,642 @@
+[
+ {
+  "flag": "lies_for_gain",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 0,
+  "prompt_eval": 27161,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "manipulates_others",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "All For One revealed that he manipulated his father into having him, fueled the latter's resentment of heroes, and secretly helped Tomura as a child but stole his Quirk Factor before it manifested and bestowed upon him Decay.",
+  "cached": 26649,
+  "prompt_eval": 27163,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tells_hard_truths",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Everything I witness in this world of ours... led to the existence of that house. As Tomura Shigaraki and Tenko Shimura, I've got just one hope. The destruction of everything stemming from that house.",
+  "cached": 26651,
+  "prompt_eval": 27196,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "belittles_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Now you're a useless, helpless, Quirkless wonder. All that hard work you put in! It's mine now!! Your life's gonna be a real nail-bitter now... not that you've got any nails left to bite.",
+  "cached": 26684,
+  "prompt_eval": 27162,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "harms_for_pleasure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He didn't care for his or almost anyone else's life, having no qualms about performing evil deeds like murdering innocent people.",
+  "cached": 26684,
+  "prompt_eval": 27161,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "sacrifices_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He didn't care for his or almost anyone else's life, having no qualms about performing evil deeds like murdering innocent people.",
+  "cached": 26684,
+  "prompt_eval": 27166,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "exploits_affection",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27178,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "envies_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27178,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "ingratiates_with_powerful",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27172,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "helps_without_gain",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "In his final moments, Tomura briefly mourned for Kurogiri and acknowledged Nana for saving him before he faced Izuku one last time in the vestige world... As a final request, Tomura tells Izuku to let Spinner know that he never gave up on his goal to destroy and even encouraged Izuku to do his best while genuinely smiling at him.",
+  "cached": 26684,
+  "prompt_eval": 27152,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "responds_to_feelings",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also cared about them enough to prioritize their comfort once he obtained the necessary finances, and became enraged when Overhaul killed Magne and destroyed Mr. Compress' arm.",
+  "cached": 26684,
+  "prompt_eval": 27150,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "self_sacrifice",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "As a final request, Tomura tells Izuku to let Spinner know that he never gave up on his goal to destroy and even encouraged Izuku to do his best while genuinely smiling at him.",
+  "cached": 26684,
+  "prompt_eval": 27151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "forgives",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "In the end, Tomura joins forces with the One For All users and Izuku to defeat All For One for good after Izuku reawakened them all through resonance with his final One For All ember.",
+  "cached": 26684,
+  "prompt_eval": 27152,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "disciplined_effort",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "During his first battle with Gigantomachia, Tomura could barely dodge any attacks from the behemoth, but over the course of his training while fighting him, his reflexes have sharpened, allowing him to subsequently evade around Re-Destro's Stress: 100%.",
+  "cached": 26684,
+  "prompt_eval": 27147,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fulfills_duties",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He was dutiful in carrying out objectives. During the Forest Training Camp, Mr. Compress captures not only Katsuki Bakugo but also Fumikage Tokoyami believing him to be beneficial to the group after seeing Dark Shadow's rampage take out Moonfish.",
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "acts_rashly",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tomura was initially perceived to be a \"man-child\": arrogant, selfish, dependent, and demanding, becoming irritated or downright angry if things didn't go according to plan.",
+  "cached": 26684,
+  "prompt_eval": 27147,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "plans_ahead",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tomura concocted the plan to go and face Re-Destro's army, knowing that Gigantomachia would soon awaken from his slumber and locate Tomura instantly, doing this as to have Gigantomachia plow through the MLA's warriors, which would serve to simultaneously chip away at the behemoth's immense stamina and take out their opposition.",
+  "cached": 26684,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_company",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27139,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "avoids_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "jokes_around",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27150,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "loses_control",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tenko's Quirk activated for the first time, causing the dog to crumble in his hands into a pile of blood. Seeing this caused Tenko to freak out in fear, trying to understand what had happened...",
+  "cached": 26684,
+  "prompt_eval": 27142,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "shows_insecurity",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tenko was initially amazed to learn that his grandmother was a Pro Hero.",
+  "cached": 26684,
+  "prompt_eval": 27143,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "endures_pressure",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even when being charred to a crisp by Endeavor's Plus Ultra Prominence Burn and barely remaining conscious, Tomura refused to yield and attempted to fight against the remaining heroes with whatever he had left, even in his poorly bad-shaped conditions.",
+  "cached": 26684,
+  "prompt_eval": 27138,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "seeks_novelty",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27137,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "creates",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27130,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "adapts_approach",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tomura concocted the plan to go and face Re-Destro's army, knowing that Gigantomachia would soon awaken from his slumber and locate Tomura instantly, doing this as to have Gigantomachia plow through the MLA's warriors, which would serve to simultaneously chip away at the behemoth's immense stamina and take out their opposition.",
+  "cached": 26684,
+  "prompt_eval": 27147,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "takes_command",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tomura is the leader of the League, following All For One's capture. While Tomura was initially very distant from the members of the League, mostly viewing them as disposable pawns, his feelings towards them evolved as he himself grew as a person.",
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "defers_to_others",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "provokes_others",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tomura responds by calling Dabi an ill-mannered brat and requests that Kurogiri warp him and Himiko away. Coupled with Tomura's sullen state from Stain's popularity over the League's, Dabi's refusal to give answers to Tomura's questions, and Dabi's admiration of Stain ideology, Tomura tries to kill him along with Himiko.",
+  "cached": 26684,
+  "prompt_eval": 27152,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "competes",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "I'll use everything I've got to obliterate the dregs All Might left behind... The next time we meet, I'll finish them off.",
+  "cached": 26684,
+  "prompt_eval": 27172,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "stays_loyal_under_pressure",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tomura was ultimately unaware of Twice's death at the hands of Hawks. However, he was shown to think about Twice when explaining to Izuku 'the villains need a hero of their own.'",
+  "cached": 26684,
+  "prompt_eval": 27157,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "betrays",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27161,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "hides_self",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tomura hides his own core deep within his own soul, and without All For One noticing, he was able to reclaim himself from the inside and out.",
+  "cached": 26684,
+  "prompt_eval": 27141,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_power",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Create a world without All Might. And cause enough destruction to show them all how fragile their justice really is. From this day forward... that's my conviction.",
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_achievement",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He was proud of the League of Villains, wanting to prove that his organization had the necessary power to shake society and taking pleasure in mocking those standing in his way.",
+  "cached": 26684,
+  "prompt_eval": 27140,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_hedonism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_stimulation",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He was even confident that he could take down Izuku, Shoto Todoroki, Katsuki, and Eijiro Kirishima, four extremely powerful U.A. High School students...",
+  "cached": 26684,
+  "prompt_eval": 27145,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_self_direction",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tomura even went as far as to try and attack All For One's vestige and later refused to be his master's \"pawn\" whilst trying to regain control of his body.",
+  "cached": 26684,
+  "prompt_eval": 27149,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_universalism",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27152,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_benevolence",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also cared about them enough to prioritize their comfort once he obtained the necessary finances, and became enraged when Overhaul killed Magne and destroyed Mr. Compress' arm.",
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_tradition",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27141,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_conformity",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27143,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "value_security",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27139,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_revenge",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Everything I witness in this world of ours... led to the existence of that house. As Tomura Shigaraki and Tenko Shimura, I've got just one hope. The destruction of everything stemming from that house.",
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "motive_romance",
+  "answer_raw": "no_data",
+  "answer": "no_data",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27141,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_freedom",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27177,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "favors_order",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27146,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "egalitarian",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "elitist",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "revolutionary",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Create a world without All Might. And cause enough destruction to show them all how fragile their justice really is.",
+  "cached": 26684,
+  "prompt_eval": 27137,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fanatical",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also claimed that he had no true interest in One For All, and that his previous obsession with stealing it was just a forced extension of his master's will, but was still willing to steal it and its accompanying Quirks in order to rid himself of Izuku, the only one capable of stopping him.",
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "principled_at_cost",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Even if this hero society comes crashing down... even if I rise to rule the underworld... that weight in my heart is never gonna go away. It's why I hate everything. Every living, breathing thing just rubs me the wrong way. So why not destroy it all? Why not destroy everything?",
+  "cached": 26684,
+  "prompt_eval": 27133,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "results_over_principles",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He explained that he couldn't hold back his feelings anymore, grabbing one of the hands and disintegrating it with his Decay. Satisfied with his protégé's response, All For One told him that he already knows what to do.",
+  "cached": 26684,
+  "prompt_eval": 27151,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "nihilistic",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tomura always had a desire to kill All Might, but out of an impulsive expression of anarchy towards a society that hurt him and caused his mental instability. By Tomura's own admission, he hated everything that breathes, displaying an extreme form of nihilism.",
+  "cached": 26684,
+  "prompt_eval": 27130,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "fatalistic",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27133,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "visible_scars",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He had messy, grayish-blue hair of varying lengths, the longest clumps reached to about his shoulders, left hanging over his face in uneven waves. His eyes and mouth were normally obscured, but when visible, they were usually stretched wide in a rather maniacal manner, their bright red irises looking very small.",
+  "cached": 26684,
+  "prompt_eval": 27124,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "muscular_build",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "He also lost his skinny figure in the process and gained a more muscular physique, and his left prosthetic fingers were replaced with a bio-mechanical device.",
+  "cached": 26684,
+  "prompt_eval": 27133,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "distinctive_feature",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "His eyes and mouth were normally obscured, but when visible, they were usually stretched wide in a rather maniacal manner, their bright red irises looking very small.",
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "cares_about_appearance",
+  "answer_raw": "no",
+  "answer": "no",
+  "downgraded": false,
+  "quote": null,
+  "cached": 26684,
+  "prompt_eval": 27136,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "intimidating",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "His aura was capable of instilling fear into others, and his mere gaze was enough to paralyze Trumpet's followers, who were under the influence of Incite and given orders to eliminate Tomura.",
+  "cached": 26684,
+  "prompt_eval": 27144,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "charismatic",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "He also cared about them enough to prioritize their comfort once he obtained the necessary finances, and became enraged when Overhaul killed Magne and destroyed Mr. Compress' arm.",
+  "cached": 26684,
+  "prompt_eval": 27172,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "tragic_past",
+  "answer_raw": "yes",
+  "answer": "yes",
+  "downgraded": false,
+  "quote": "Tenko Shimura was the youngest son of Nao and Kotaro Shimura, and had an older sister named Hana. He lived in a house built by his father for the whole family, including his maternal grandparents Chizuo and Mako Magi.",
+  "cached": 26684,
+  "prompt_eval": 27180,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "physical_weakness",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Because his modification was interrupted before completion, his new body has some drawbacks and will begin to tear if he overexerts himself.",
+  "cached": 26684,
+  "prompt_eval": 27132,
+  "done_reason": "stop"
+ },
+ {
+  "flag": "psychological_weakness",
+  "answer_raw": "yes",
+  "answer": "no_data",
+  "downgraded": true,
+  "quote": "Tenko was left to wander the streets, being left traumatized and unrecognizable from the incident. He remembered how nobody came to his aid and did their best to ignore him.",
+  "cached": 26684,
+  "prompt_eval": 27134,
+  "done_reason": "stop"
+ }
+]

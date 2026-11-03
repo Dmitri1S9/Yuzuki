@@ -10,8 +10,8 @@ Return only JSON matching the provided schema. No prose, no markdown, no explana
 
 Rules:
 - Use only names from the provided character list, spelled exactly as given. Never introduce a character who is not on the list, and never alter their spelling, romanization, or name order.
-- Never invent characters or groups. Returning an empty list is a valid and expected answer when the universe contains no group of the requested type.
-- Be exhaustive. Return every group that matches the definition, including minor and marginal ones. Do not stop after the prominent ones.
+- Never invent characters or groups. Returning an empty list for any one of the requested tasks is a valid and expected answer when the universe contains no group/isolate matching that task's definition.
+- Be exhaustive. Return every group that matches a definition, including minor and marginal ones. Do not stop after the prominent ones.
 - Omit a field rather than guess it. leader may be null.
 - Do not report group size; it is derived from the member list.
 - A character may appear in several groups.

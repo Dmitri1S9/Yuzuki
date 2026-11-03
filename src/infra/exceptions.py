@@ -1,6 +1,9 @@
 class CharacterException(Exception):
-    def __init__(self):
-        self.message = "💢💢💢💢💢 Character Exception, because the character is not found"
+    def __init__(self, universe_id: int | None = None, name: str | None = None):
+        self.universe_id = universe_id
+        self.name = name
+        detail = f" ({name!r} in universe {universe_id})" if name is not None else ""
+        self.message = f"💢💢💢💢💢 Character Exception, because the character is not found{detail}"
     def __str__(self):
         return repr(self.message)
 

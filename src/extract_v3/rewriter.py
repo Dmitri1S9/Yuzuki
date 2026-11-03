@@ -3,19 +3,20 @@ HYPOTHETICAL marker). One LLM call per sentence."""
 import time
 from dataclasses import dataclass
 
-from yuzuki_local.external.ollama import LLMError, OllamaClient, PromptTooLong
+from .external.ollama import LLMError, OllamaClient, PromptTooLong
 
 from .prompt_renderer import PromptRenderer
 from .schemas import RewriteReply
 from .settings import RosterEntry
 from .text_prep import Sentence
 
-WINDOW = 3  # up to 3 sentences before/after, capped by section boundaries
+WINDOW = 3  # up to 3 sentences before/after, capped by page+section boundaries
 
 
 @dataclass(frozen=True)
 class RewriteResult:
     source_id: int
+    page: str
     section: str
     source_text: str
     simple_sentences: tuple[str, ...]
@@ -44,7 +45,7 @@ class Rewriter:
 
     def rewrite(self, sentences: list[Sentence], index: int, temperature: float = 0.0) -> RewriteResult:
         target = sentences[index]
-        same_section = [s for s in sentences if s.section == target.section]
+        same_section = [s for s in sentences if s.page == target.page and s.section == target.section]
         pos = same_section.index(target)
         before = " ".join(s.text for s in same_section[max(0, pos - WINDOW):pos])
         after = " ".join(s.text for s in same_section[pos + 1:pos + 1 + WINDOW])
@@ -59,14 +60,14 @@ class Rewriter:
         except PromptTooLong:
             raise
         except LLMError as e:
-            return RewriteResult(target.id, target.section, target.text, (), False, e.raw, "error", str(e),
-                                 e.metrics.prompt_eval_count, e.metrics.prompt_eval_ms, e.metrics.eval_count,
-                                 e.metrics.eval_ms, time.monotonic() - t0)
+            return RewriteResult(target.id, target.page, target.section, target.text, (), False, e.raw,
+                                 "error", str(e), e.metrics.prompt_eval_count, e.metrics.prompt_eval_ms,
+                                 e.metrics.eval_count, e.metrics.eval_ms, time.monotonic() - t0)
 
         raw_list = [s.strip() for s in result.parsed.simple_sentences if s.strip()]
         hypothetical = raw_list == ["HYPOTHETICAL"]
         simple = () if hypothetical else tuple(raw_list)
         m = result.metrics
-        return RewriteResult(target.id, target.section, target.text, simple, hypothetical, result.raw, "ok",
-                             None, m.prompt_eval_count, m.prompt_eval_ms, m.eval_count, m.eval_ms,
-                             time.monotonic() - t0)
+        return RewriteResult(target.id, target.page, target.section, target.text, simple, hypothetical,
+                             result.raw, "ok", None, m.prompt_eval_count, m.prompt_eval_ms, m.eval_count,
+                             m.eval_ms, time.monotonic() - t0)
