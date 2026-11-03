@@ -1,0 +1,345 @@
+# Эталонная разметка отношений Kyoka Jiro (вручную, учитель — Claude, 2026-11).
+# Источник текста: research/samples/pages/Kyoka_Jiro.txt (формат "=== PAGE ===" / "== section ==" / абзац на строку).
+#
+# Правила разметки (см. research/REPORT.md, раздел "Эталон"):
+#   links    — X, с которым в ЭТОМ абзаце у Jiro прямо заявлено действие/отношение/позиция
+#              (она делает что-то X, X делает что-то ей, или текст называет их отношение).
+#              affinity — список допустимых значений (positive / neutral / negative).
+#   optional — упомянут рядом, но связь только косвенная (co-presence, "the two along with...",
+#              местоимение без однозначного антецедента). Предсказание не штрафуется и не требуется.
+#   Всё остальное, что модель назовёт в этом абзаце, — false positive.
+#   "Classmate" как тип НЕ размечается: это следствие членства в Class 1-A (факт группы, не ребро).
+#
+# targets — эталон уровня страницы: тип связи (одно слово из research/exp/taxonomy.py) и итоговый affinity.
+#   types   — что должно быть найдено (recall); also_ok — что не считается ошибкой (precision).
+#   Направленные типы читаются от Jiro: mentor = "Jiro — наставник X", student = "Jiro — ученица X".
+
+page_owner: Kyoka Jiro
+
+targets:
+  Kyotoku Jiro:      {types: [family],       also_ok: [],                       affinity: positive}
+  Mika Jiro:         {types: [family],       also_ok: [],                       affinity: positive}
+  Denki Kaminari:    {types: [friend],       also_ok: [teammate],               affinity: positive}
+  Momo Yaoyorozu:    {types: [friend],       also_ok: [teammate, student],      affinity: positive}
+  Mina Ashido:       {types: [acquaintance], also_ok: [friend],                 affinity: positive}
+  Eijiro Kirishima:  {types: [acquaintance], also_ok: [],                       affinity: positive}
+  Koji Koda:         {types: [teammate],     also_ok: [acquaintance],           affinity: positive}
+  Toru Hagakure:     {types: [friend],       also_ok: [acquaintance, teammate], affinity: positive}
+  Hanta Sero:        {types: [acquaintance], also_ok: [teammate],               affinity: positive}
+  Fumikage Tokoyami: {types: [acquaintance], also_ok: [teammate],               affinity: positive}
+  Izuku Midoriya:    {types: [friend],       also_ok: [acquaintance],           affinity: positive}
+  Minoru Mineta:     {types: [acquaintance], also_ok: [],                       affinity: negative}
+  Mashirao Ojiro:    {types: [acquaintance], also_ok: [teammate],               affinity: positive}
+  Katsuki Bakugo:    {types: [teammate],     also_ok: [friend, acquaintance],   affinity: positive}
+  Ochaco Uraraka:    {types: [friend],       also_ok: [acquaintance],           affinity: positive}
+  Rikido Sato:       {types: [teammate],     also_ok: [acquaintance],           affinity: neutral}
+  Yuga Aoyama:       {types: [friend],       also_ok: [acquaintance],           affinity: positive}
+  All For One:       {types: [enemy],        also_ok: [],                       affinity: negative}
+  Eri:               {types: [mentor],       also_ok: [],                       affinity: positive}
+
+paragraphs:
+  # ---------------- Main page ----------------
+  - id: "Kyoka Jiro|Introduction|0"
+    links: {Class 1-A: {affinity: [neutral, positive]}}
+    optional: [U.A. High School]
+  - id: "Kyoka Jiro|Introduction|1"
+    links: {Eri: {affinity: [positive, neutral]}}
+    optional: [U.A. High School]
+  - id: "Kyoka Jiro|Personality|0"
+    links:
+      Denki Kaminari: {affinity: [negative]}
+      Momo Yaoyorozu: {affinity: [positive]}
+  - id: "Kyoka Jiro|Personality|1"
+    links:
+      Denki Kaminari: {affinity: [negative]}
+      Minoru Mineta: {affinity: [negative]}
+  - id: "Kyoka Jiro|Personality|2"
+    links:
+      Minoru Mineta: {affinity: [negative]}
+      Denki Kaminari: {affinity: [negative]}
+      Yuga Aoyama: {affinity: [negative]}
+  - id: "Kyoka Jiro|Personality|3"
+    links: {}
+
+  # ---------------- Relationships ----------------
+  - id: "Kyoka Jiro/Relationships|Kyotoku and Mika Jiro|0"
+    links:
+      Kyotoku Jiro: {affinity: [positive]}
+      Mika Jiro: {affinity: [positive]}
+  - id: "Kyoka Jiro/Relationships|Kyotoku and Mika Jiro|1"
+    links:
+      Kyotoku Jiro: {affinity: [positive]}
+      Mika Jiro: {affinity: [positive]}
+    optional: [Mustard]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|0"
+    links: {Denki Kaminari: {affinity: [positive]}}
+    optional: [Momo Yaoyorozu]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|1"
+    links: {Denki Kaminari: {affinity: [positive, negative]}}
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|2"
+    links: {Denki Kaminari: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|3"
+    links:
+      Denki Kaminari: {affinity: [negative]}
+      Minoru Mineta: {affinity: [negative]}
+    optional: [Wolfram]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|4"
+    links: {Denki Kaminari: {affinity: [positive, neutral]}}
+    optional: [Momo Yaoyorozu, Wolfram]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|5"
+    links: {Denki Kaminari: {affinity: [positive]}}
+    optional: [Tenya Ida, Momo Yaoyorozu, Ochaco Uraraka, Izuku Midoriya, Toshinori Yagi, Wolfram]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|6"
+    links: {Denki Kaminari: {affinity: [positive, neutral]}}
+    optional: [Momo Yaoyorozu, Nine, Hoyo Makihara, Katsuma Shimano, Class 1-A]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|7"
+    links: {Denki Kaminari: {affinity: [positive]}}
+    optional: [Nemuri Kayama]
+  - id: "Kyoka Jiro/Relationships|Denki Kaminari|8"
+    links: {Denki Kaminari: {affinity: [positive, neutral]}}
+    optional: [Hanta Sero, Toru Hagakure, Shoto Todoroki, Class 1-A]
+
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|0"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+      League of Villains: {affinity: [negative]}
+    optional: [Denki Kaminari]
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|1"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+      Hanta Sero: {affinity: [negative]}
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|2"
+    links: {Momo Yaoyorozu: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|3"
+    links: {Momo Yaoyorozu: {affinity: [positive]}}
+    optional: [Class 1-A]
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|4"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+      Izuku Midoriya: {affinity: [positive]}
+      Toshinori Yagi: {affinity: [positive]}
+    optional: [Ochaco Uraraka, Wolfram]
+  - id: "Kyoka Jiro/Relationships|Momo Yaoyorozu|5"
+    links: {Momo Yaoyorozu: {affinity: [positive, neutral]}}
+    optional: [Denki Kaminari, Nine, Katsuma Shimano]
+
+  - id: "Kyoka Jiro/Relationships|Mina Ashido|0"
+    links: {Mina Ashido: {affinity: [positive]}}
+    optional: [Ochaco Uraraka, Izuku Midoriya]
+  - id: "Kyoka Jiro/Relationships|Mina Ashido|1"
+    links: {Mina Ashido: {affinity: [positive]}}
+    optional: [Yuga Aoyama]
+  - id: "Kyoka Jiro/Relationships|Eijiro Kirishima|0"
+    links: {Eijiro Kirishima: {affinity: [positive]}}
+    optional: [Mina Ashido, Hanta Sero]
+  - id: "Kyoka Jiro/Relationships|Koji Koda|0"
+    links:
+      Koji Koda: {affinity: [positive, negative]}
+      Hizashi Yamada: {affinity: [neutral, negative]}
+  - id: "Kyoka Jiro/Relationships|Koji Koda|1"
+    links: {Koji Koda: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Toru Hagakure|0"
+    links: {Toru Hagakure: {affinity: [positive, negative]}}
+    optional: [Denki Kaminari, Minoru Mineta]
+  - id: "Kyoka Jiro/Relationships|Toru Hagakure|1"
+    links:
+      Toru Hagakure: {affinity: [positive]}
+      Minoru Mineta: {affinity: [negative]}
+      Ochaco Uraraka: {affinity: [positive]}
+    optional: [Mina Ashido]
+  - id: "Kyoka Jiro/Relationships|Hanta Sero|0"
+    links: {Hanta Sero: {affinity: [positive, negative]}}
+    optional: [Momo Yaoyorozu]
+  - id: "Kyoka Jiro/Relationships|Hanta Sero|1"
+    links: {Hanta Sero: {affinity: [positive]}}
+    optional: [Katsuki Bakugo, Rikido Sato]
+  - id: "Kyoka Jiro/Relationships|Fumikage Tokoyami|0"
+    links: {Fumikage Tokoyami: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Fumikage Tokoyami|1"
+    links: {Fumikage Tokoyami: {affinity: [positive]}}
+    optional: [Denki Kaminari]
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|0"
+    links: {Izuku Midoriya: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|1"
+    links: {Izuku Midoriya: {affinity: [positive]}}
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|2"
+    links: {Izuku Midoriya: {affinity: [neutral, positive]}}
+    optional: [Melissa Shield]
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|3"
+    links: {Izuku Midoriya: {affinity: [positive]}}
+    optional: [Gentle Criminal]
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|4"
+    links:
+      Izuku Midoriya: {affinity: [positive]}
+      Ochaco Uraraka: {affinity: [neutral, positive]}
+    optional: [Tomura Shigaraki]
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|5"
+    links: {Izuku Midoriya: {affinity: [positive]}}
+    optional: [Class 1-A]
+  - id: "Kyoka Jiro/Relationships|Izuku Midoriya|6"
+    links:
+      Izuku Midoriya: {affinity: [positive]}
+      All For One: {affinity: [negative]}
+  - id: "Kyoka Jiro/Relationships|Minoru Mineta|0"
+    links:
+      Minoru Mineta: {affinity: [negative]}
+      Denki Kaminari: {affinity: [negative]}
+    optional: [Yuga Aoyama, Mina Ashido, Class 1-A]
+  - id: "Kyoka Jiro/Relationships|Minoru Mineta|1"
+    links: {Minoru Mineta: {affinity: [negative]}}
+  - id: "Kyoka Jiro/Relationships|Minoru Mineta|2"
+    links:
+      Minoru Mineta: {affinity: [positive, negative, neutral]}
+      Denki Kaminari: {affinity: [negative, positive, neutral]}
+    optional: [Melissa Shield]
+  - id: "Kyoka Jiro/Relationships|Mashirao Ojiro|0"
+    links:
+      Mashirao Ojiro: {affinity: [positive]}
+      Nine: {affinity: [negative]}
+    optional: [Toru Hagakure, Fumikage Tokoyami]
+  - id: "Kyoka Jiro/Relationships|Katsuki Bakugo|0"
+    links: {Katsuki Bakugo: {affinity: [negative, neutral]}}
+    optional: [Denki Kaminari]
+  - id: "Kyoka Jiro/Relationships|Katsuki Bakugo|1"
+    links: {Katsuki Bakugo: {affinity: [positive, neutral]}}
+  - id: "Kyoka Jiro/Relationships|Katsuki Bakugo|2"
+    links: {Katsuki Bakugo: {affinity: [positive]}}
+    optional: [Class 1-B]
+  - id: "Kyoka Jiro/Relationships|Ochaco Uraraka|0"
+    links: {Ochaco Uraraka: {affinity: [positive]}}
+    optional: [Mina Ashido, Toru Hagakure, Class 1-A]
+  - id: "Kyoka Jiro/Relationships|Ochaco Uraraka|1"
+    links:
+      Ochaco Uraraka: {affinity: [positive]}
+      Melissa Shield: {affinity: [neutral, positive]}
+    optional: [Momo Yaoyorozu]
+  - id: "Kyoka Jiro/Relationships|Rikido Sato|0"
+    links: {Rikido Sato: {affinity: [positive, neutral]}}
+    optional: [Tsuyu Asui]
+  - id: "Kyoka Jiro/Relationships|Yuga Aoyama|0"
+    links:
+      Yuga Aoyama: {affinity: [negative, neutral]}
+      Denki Kaminari: {affinity: [negative]}
+  - id: "Kyoka Jiro/Relationships|Yuga Aoyama|1"
+    links:
+      Yuga Aoyama: {affinity: [positive]}
+      All For One: {affinity: [negative]}
+  - id: "Kyoka Jiro/Relationships|Yuga Aoyama|2"
+    links:
+      Yuga Aoyama: {affinity: [positive]}
+      Izuku Midoriya: {affinity: [positive]}
+      All For One: {affinity: [negative]}
+  - id: "Kyoka Jiro/Relationships|All For One|0"
+    links:
+      All For One: {affinity: [negative]}
+      Keigo Takami: {affinity: [positive]}
+      Fumikage Tokoyami: {affinity: [positive]}
+    optional: [Enji Todoroki]
+  - id: "Kyoka Jiro/Relationships|All For One|1"
+    links:
+      All For One: {affinity: [negative]}
+      Izuku Midoriya: {affinity: [positive]}
+      Yuga Aoyama: {affinity: [positive]}
+  - id: "Kyoka Jiro/Relationships|All For One|2"
+    links: {All For One: {affinity: [negative]}}
+    optional: [Keigo Takami, Enji Todoroki]
+  - id: "Kyoka Jiro/Relationships|All For One|3"
+    links: {All For One: {affinity: [negative]}}
+
+  # ---------------- Synopsis (4 арки) ----------------
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|0"
+    links: {}
+    optional: [Shota Aizawa, Class 1-A, Thirteen, League of Villains]
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|1"
+    links:
+      Kurogiri: {affinity: [negative, neutral]}
+      Momo Yaoyorozu: {affinity: [neutral, positive]}
+      Denki Kaminari: {affinity: [neutral, positive]}
+    optional: [Shota Aizawa, Thirteen, Katsuki Bakugo, Eijiro Kirishima]
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|2"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+      Denki Kaminari: {affinity: [neutral, negative, positive]}
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|3"
+    links: {Denki Kaminari: {affinity: [negative, positive]}}
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|4"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+    optional: [Denki Kaminari]
+  - id: "Kyoka Jiro/Synopsis|U.S.J. Arc|5"
+    links:
+      Denki Kaminari: {affinity: [positive, neutral]}
+    optional: [Momo Yaoyorozu, Snipe, League of Villains]
+
+  - id: "Kyoka Jiro/Synopsis|U.A. Sports Festival Arc|0"
+    links: {Denki Kaminari: {affinity: [negative]}}
+    optional: [Shota Aizawa]
+  - id: "Kyoka Jiro/Synopsis|U.A. Sports Festival Arc|1"
+    links:
+      Rikido Sato: {affinity: [positive, neutral]}
+      Koji Koda: {affinity: [positive, neutral]}
+      Toru Hagakure: {affinity: [positive, neutral]}
+      Izuku Midoriya: {affinity: [negative, neutral]}
+      Fumikage Tokoyami: {affinity: [negative, neutral]}
+      Shoto Todoroki: {affinity: [negative, neutral]}
+      Denki Kaminari: {affinity: [negative, neutral]}
+    optional: [Tetsutetsu Tetsutetsu]
+  - id: "Kyoka Jiro/Synopsis|U.A. Sports Festival Arc|2"
+    links:
+      Denki Kaminari: {affinity: [negative]}
+      Minoru Mineta: {affinity: [negative]}
+    optional: [Class 1-A, Mina Ashido, Ochaco Uraraka, Tsuyu Asui, Toru Hagakure]
+  - id: "Kyoka Jiro/Synopsis|U.A. Sports Festival Arc|3"
+    links: {}
+    optional: [Ochaco Uraraka, Katsuki Bakugo]
+
+  - id: "Kyoka Jiro/Synopsis|Vs. Hero Killer Arc|0"
+    links: {Denki Kaminari: {affinity: [negative]}}
+    optional: [Class 1-A]
+  - id: "Kyoka Jiro/Synopsis|Vs. Hero Killer Arc|1"
+    links: {}
+    optional: [Class 1-A]
+  - id: "Kyoka Jiro/Synopsis|Vs. Hero Killer Arc|2"
+    links: {Death Arms: {affinity: [neutral, positive]}}
+  - id: "Kyoka Jiro/Synopsis|Vs. Hero Killer Arc|3"
+    links:
+      Tsuyu Asui: {affinity: [positive]}
+      Mina Ashido: {affinity: [positive]}
+      Izuku Midoriya: {affinity: [positive, neutral]}
+    optional: [Momo Yaoyorozu]
+  - id: "Kyoka Jiro/Synopsis|Vs. Hero Killer Arc|4"
+    links: {Minoru Mineta: {affinity: [negative]}}
+
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|0"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}
+      Koji Koda: {affinity: [neutral, positive]}
+      Hizashi Yamada: {affinity: [neutral, negative]}
+    optional: [Denki Kaminari, Mina Ashido, Mashirao Ojiro, Hanta Sero, Class 1-A, Nezu]
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|1"
+    links:
+      Hizashi Yamada: {affinity: [negative, neutral]}
+    optional: [Koji Koda, Class 1-A]
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|2"
+    links:
+      Hizashi Yamada: {affinity: [negative]}
+      Koji Koda: {affinity: [neutral, positive]}
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|3"
+    links:
+      Hizashi Yamada: {affinity: [negative]}
+      Koji Koda: {affinity: [neutral, positive]}
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|4"
+    links:
+      Koji Koda: {affinity: [positive]}
+    optional: [Hizashi Yamada]
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|5"
+    links:
+      Koji Koda: {affinity: [negative, neutral]}
+    optional: [Hizashi Yamada]
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|6"
+    links:
+      Koji Koda: {affinity: [positive]}
+    optional: [Hizashi Yamada]
+  - id: "Kyoka Jiro/Synopsis|Final Exams Arc|7"
+    links:
+      Momo Yaoyorozu: {affinity: [positive]}

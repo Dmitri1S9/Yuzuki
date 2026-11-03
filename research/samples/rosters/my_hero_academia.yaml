@@ -1,0 +1,70 @@
+# Ростер MHA для экспериментов (руками; на реальном прогоне строится из дампа: samples/build_roster.py).
+# База — roster из src/extract_v3/config.yaml + имена, встречающиеся в страницах samples/pages/.
+characters:
+  - {name: "Kyoka Jiro", aliases: ["Jiro Kyoka", "Earphone Jack"]}
+  - {name: "Izuku Midoriya", aliases: ["Midoriya Izuku", "Deku"]}
+  - {name: "Katsuki Bakugo", aliases: ["Bakugo Katsuki", "Kacchan", "Dynamight"]}
+  - {name: "Ochaco Uraraka", aliases: ["Uraraka Ochaco", "Uravity"]}
+  - {name: "Yuga Aoyama", aliases: ["Aoyama Yuga"]}
+  - {name: "Tenya Ida", aliases: ["Ida Tenya", "Tenya Iida", "Iida"]}
+  - {name: "Tsuyu Asui", aliases: ["Asui Tsuyu", "Froppy"]}
+  - {name: "Eijiro Kirishima", aliases: ["Kirishima Eijiro", "Red Riot"]}
+  - {name: "Mina Ashido", aliases: ["Ashido Mina", "Pinky"]}
+  - {name: "Shoto Todoroki", aliases: ["Todoroki Shoto"]}
+  - {name: "Denki Kaminari", aliases: ["Kaminari Denki", "Chargebolt"]}
+  - {name: "Momo Yaoyorozu", aliases: ["Yaoyorozu Momo", "Creati"]}
+  - {name: "Mashirao Ojiro", aliases: ["Ojiro Mashirao", "Tailman"]}
+  - {name: "Minoru Mineta", aliases: ["Mineta Minoru", "Grape Juice"]}
+  - {name: "Mezo Shoji", aliases: ["Shoji Mezo", "Tentacole"]}
+  - {name: "Rikido Sato", aliases: ["Sato Rikido", "Sugarman"]}
+  - {name: "Koji Koda", aliases: ["Koda Koji", "Anima"]}
+  - {name: "Hanta Sero", aliases: ["Sero Hanta", "Cellophane"]}
+  - {name: "Fumikage Tokoyami", aliases: ["Tokoyami Fumikage", "Tsukuyomi"]}
+  - {name: "Toru Hagakure", aliases: ["Hagakure Toru", "Invisible Girl"]}
+  - {name: "Kyotoku Jiro", aliases: ["Jiro Kyotoku"]}
+  - {name: "Mika Jiro", aliases: ["Jiro Mika"]}
+  - {name: "Hizashi Yamada", aliases: ["Present Mic", "Yamada Hizashi"]}
+  - {name: "Enji Todoroki", aliases: ["Endeavor", "Todoroki Enji"]}
+  - {name: "Keigo Takami", aliases: ["Hawks", "Takami Keigo"]}
+  - {name: "Tomura Shigaraki", aliases: ["Shigaraki Tomura", "Tenko Shimura", "Tenko", "Tomura", "Shigaraki"]}
+  - {name: "All For One", aliases: ["AFO"]}
+  - {name: "Shota Aizawa", aliases: ["Eraserhead", "Eraser Head", "Aizawa Shota"]}
+  - {name: "Toshinori Yagi", aliases: ["All Might"]}
+  - {name: "Eri", aliases: []}
+  - {name: "Melissa Shield", aliases: []}
+  - {name: "Wolfram", aliases: []}
+  - {name: "Nine", aliases: []}
+  - {name: "Mustard", aliases: []}
+  - {name: "Nemuri Kayama", aliases: ["Midnight"]}
+  - {name: "Gentle Criminal", aliases: []}
+  - {name: "Katsuma Shimano", aliases: []}
+  - {name: "Hoyo Makihara", aliases: []}
+  - {name: "Kurogiri", aliases: []}
+  - {name: "Thirteen", aliases: []}
+  - {name: "Snipe", aliases: []}
+  - {name: "Death Arms", aliases: []}
+  - {name: "Nezu", aliases: ["Mr. Principal", "Principal Nezu"]}
+  - {name: "Tetsutetsu Tetsutetsu", aliases: ["Tetsutetsu"]}
+  - {name: "Shihai Kuroiro", aliases: ["Shihai"]}
+  - {name: "Kinoko Komori", aliases: ["Kinoko"]}
+  - {name: "Mirio Togata", aliases: []}
+  - {name: "Himiko Toga", aliases: []}
+  - {name: "Dabi", aliases: []}
+  - {name: "Spinner", aliases: []}
+  - {name: "Twice", aliases: []}
+  - {name: "Stain", aliases: ["Hero Killer"]}
+  - {name: "Kai Chisaki", aliases: ["Overhaul"]}
+  - {name: "Kyudai Garaki", aliases: []}
+  - {name: "Nana Shimura", aliases: []}
+  - {name: "Kotaro Shimura", aliases: []}
+  - {name: "Magne", aliases: []}
+  - {name: "Mr. Compress", aliases: []}
+  - {name: "Re-Destro", aliases: []}
+  - {name: "Gigantomachia", aliases: []}
+groups:
+  - {name: "Class 1-A", aliases: ["Class A", "1-A"]}
+  - {name: "Class 1-B", aliases: []}
+  - {name: "U.A. High School", aliases: []}
+  - {name: "League of Villains", aliases: []}
+  - {name: "Shie Hassaikai", aliases: []}
+  - {name: "Meta Liberation Army", aliases: []}

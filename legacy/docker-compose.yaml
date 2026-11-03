@@ -1,0 +1,117 @@
+services:
+  db:
+    image: postgres:14
+    ports:
+      - "5439:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 6713
+      POSTGRES_DB: archangel
+    volumes:
+      - postgres_data_archangel:/var/lib/postgresql/data
+      - ./src/repository/schema/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - backend
+
+  neo4j:
+    image: neo4j:5-community
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:-yuzuki_graph}
+    volumes:
+      - neo4j_data_yuzuki:/data
+    networks:
+      - backend
+
+  analyse_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: analyse_service
+    ports:
+      - "8044:8044"
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CELERY=redis://redis:6379/0
+      - REDIS_URL_CACHE=redis://redis:6379/1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=archangel
+      - DB_USER=postgres
+      - DB_PASSWORD=6713
+      - API_KEY_X=${API_KEY_X}
+      - API_KEY=${API_KEY}
+      - API_KEY_GIMINI=${API_KEY_GIMINI}
+      - DEBUG=False
+      - DCS_URL=${DCS_URL:-http://host.docker.internal:8100}
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_worker
+    command: conda run --no-capture-output -n analyse_service celery -A src.infra.celery_app worker --loglevel=info
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL_CELERY=redis://redis:6379/0
+      - REDIS_URL_CACHE=redis://redis:6379/1
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=archangel
+      - DB_USER=postgres
+      - DB_PASSWORD=6713
+      - API_KEY_X=${API_KEY_X}
+      - API_KEY=${API_KEY}
+      - API_KEY_GIMINI=${API_KEY_GIMINI}
+      - DEBUG=False
+      - DCS_URL=${DCS_URL:-http://host.docker.internal:8100}
+      - CEREBRAS_API_KEY=${CEREBRAS_API_KEY:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - backend
+
+  r_analysis:
+    image: r-base:latest
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: Rscript kappa_analysis.R
+
+volumes:
+  postgres_data_archangel:
+  redis_data:
+  static:
+  media:
+  neo4j_data_yuzuki:
+
+networks:
+  backend:

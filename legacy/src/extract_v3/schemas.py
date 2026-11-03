@@ -16,7 +16,7 @@ class ParseReply(BaseModel):
     predicate_raw: str
     property: str
     target: str
-    target_type: str
+    target_type: Literal["character", "group", "people", "concept"]
     via: str
     description: str
     modality: Literal["none", "want", "can", "must"]

@@ -1,0 +1,106 @@
+# Эталон черт характера из разделов Personality (вручную, учитель — Claude, 2026-11).
+#
+# Ось — полюса Big Five + Honesty-Humility из HEXACO (research/exp/taxonomy.py: TRAIT_POLES):
+#   E+/E- extraversion, A+/A- agreeableness, C+/C- conscientiousness,
+#   N+/N- neuroticism (N- = emotional stability), O+/O- openness, H+/H- honesty-humility.
+# span     — дословный фрагмент текста (короткий, 1–4 слова), по которому черта видна.
+# pole     — основной полюс; also_ok — полюса, которые тоже не считаются ошибкой.
+# not_traits — то, что модель НЕ должна выдавать как черту персонажа (видимость, отрицание,
+#              чужая черта, интерес/хобби). Проверка "буквальности".
+# Абзацы адресуются так же, как в relations: "page|section|idx".
+
+characters:
+  Kyoka Jiro:
+    paragraphs: ["Kyoka Jiro|Personality|0", "Kyoka Jiro|Personality|1",
+                 "Kyoka Jiro|Personality|2", "Kyoka Jiro|Personality|3"]
+    traits:
+      - {span: pragmatic,              pole: C+, also_ok: [O-]}
+      - {span: unenthusiastic,         pole: E-, also_ok: []}
+      - {span: blunt,                  pole: A-, also_ok: [H+]}
+      - {span: teasing,                pole: A-, also_ok: [E+]}
+      - {span: snarky,                 pole: A-, also_ok: []}
+      - {span: nice and friendly,      pole: A+, also_ok: [E+]}
+      - {span: enjoy socializing,      pole: E+, also_ok: []}
+      - {span: aggressive,             pole: A-, also_ok: []}
+      - {span: smarter approaches,     pole: C+, also_ok: [O+]}
+      - {span: organized,              pole: C+, also_ok: []}
+      - {span: sensitive side,         pole: N+, also_ok: [A+]}
+      - {span: defensive towards her friends, pole: A+, also_ok: []}
+      - {span: empathetic,             pole: A+, also_ok: []}
+      - {span: getting flustered,      pole: N+, also_ok: [H+]}
+      - {span: hard to unnerve,        pole: N-, also_ok: []}
+      - {span: afraid of horror,       pole: N+, also_ok: []}
+      - {span: self-conscious,         pole: N+, also_ok: []}
+      - {span: embarrassed about her interests, pole: N+, also_ok: []}
+    not_traits:
+      - "cold"          # "comes off as cold and indifferent" — видимость, текст тут же опровергает
+      - "indifferent"
+      - "rock music"    # интерес, не черта
+      - "cluelessness"  # черта Denki, не Jiro
+
+  Minoru Mineta:
+    paragraphs: ["Minoru Mineta|Personality|0", "Minoru Mineta|Personality|1", "Minoru Mineta|Personality|2",
+                 "Minoru Mineta|Personality|3", "Minoru Mineta|Personality|4", "Minoru Mineta|Personality|5",
+                 "Minoru Mineta|Personality|6", "Minoru Mineta|Personality|7", "Minoru Mineta|Personality|8",
+                 "Minoru Mineta|Personality|9"]
+    traits:
+      - {span: timid,                  pole: E-, also_ok: [N+]}
+      - {span: perverted,              pole: H-, also_ok: [A-]}
+      - {span: lewd thoughts,          pole: H-, also_ok: []}
+      - {span: unashamed,              pole: H-, also_ok: []}
+      - {span: jealous streak,         pole: N+, also_ok: [H-, A-]}
+      - {span: envying,                pole: N+, also_ok: [H-, A-]}
+      - {span: obnoxious,              pole: A-, also_ok: []}
+      - {span: hypocritical,           pole: H-, also_ok: []}
+      - {span: speaks his mind,        pole: E+, also_ok: [A-, H+]}
+      - {span: harsh and insulting,    pole: A-, also_ok: []}
+      - {span: cynical,                pole: A-, also_ok: []}
+      - {span: teasing and goading,    pole: A-, also_ok: []}
+      - {span: jeering at others,      pole: A-, also_ok: []}
+      - {span: kind and friendly,      pole: A+, also_ok: []}
+      - {span: concern when others are hurt, pole: A+, also_ok: []}
+      - {span: apologized,             pole: A+, also_ok: [H+]}
+      - {span: freaks out,             pole: N+, also_ok: []}
+      - {span: acting impulsively,     pole: C-, also_ok: [N+]}
+      - {span: crying,                 pole: N+, also_ok: []}
+      - {span: abusing his Quirk recklessly, pole: C-, also_ok: []}
+      - {span: flee,                   pole: N+, also_ok: []}
+      - {span: braver,                 pole: N-, also_ok: []}
+      - {span: denial,                 pole: N+, also_ok: []}
+      - {span: intelligent,            pole: O+, also_ok: []}
+      - {span: slacker,                pole: C-, also_ok: []}
+      - {span: smug and complacent,    pole: H-, also_ok: [C-]}
+      - {span: overconfident,          pole: H-, also_ok: []}
+      - {span: doubting himself,       pole: N+, also_ok: []}
+      - {span: creative,               pole: O+, also_ok: []}
+      - {span: to be popular,          pole: H-, also_ok: [E+]}
+      - {span: oblivious,              pole: O-, also_ok: []}
+      - {span: nervousness,            pole: N+, also_ok: []}
+      - {span: courage,                pole: N-, also_ok: []}
+      - {span: heroic and selfless,    pole: A+, also_ok: [H+]}
+    not_traits:
+      - "not a bully"   # отрицание: не A-
+
+  Tomura Shigaraki:
+    paragraphs: ["Tomura Shigaraki|Personality|0", "Tomura Shigaraki|Personality|1"]
+    traits:
+      - {span: twisted,                pole: A-, also_ok: [H-]}
+      - {span: malevolent,             pole: A-, also_ok: [H-]}
+      - {span: maliciously warped,     pole: A-, also_ok: [H-]}
+      - {span: arrogant,               pole: H-, also_ok: [A-]}
+      - {span: selfish,                pole: H-, also_ok: [A-]}
+      - {span: dependent,              pole: N+, also_ok: []}
+      - {span: demanding,              pole: A-, also_ok: []}
+      - {span: irritated,              pole: N+, also_ok: [A-]}
+      - {span: childish mentality,     pole: C-, also_ok: [N+]}
+      - {span: lacked subtlety,        pole: C-, also_ok: []}
+      - {span: lashing out,            pole: N+, also_ok: [A-]}
+      - {span: irritable,              pole: N+, also_ok: []}
+      - {span: patient and self-controlled, pole: C+, also_ok: [N-]}
+      - {span: proud,                  pole: H-, also_ok: []}
+      - {span: mocking,                pole: A-, also_ok: []}
+      - {span: didn't tolerate,        pole: A-, also_ok: []}
+      - {span: looked down on,         pole: H-, also_ok: [A-]}
+      - {span: set his pride aside,    pole: H+, also_ok: [C+]}
+      - {span: adapt,                  pole: O+, also_ok: [C+]}
+    not_traits: ["polar opposite"]  # сравнение, не черта
