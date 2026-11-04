@@ -2,4 +2,4 @@
 
 | method | P (lenient/strict) | R | F1 | affinity | halluc.names | type_P | type_R | pole_acc | not_trait | speed |
 |---|---|---|---|---|---|---|---|---|---|---|
-| rel_anchored | 1.00 / 0.77 | 0.90 | 0.95 | 0.89 | 0.0% | 0.71 | 0.75 |  |  | 64.4s/para, 158 calls |
+| traits_anchored | 0.63 | 0.71 | 0.67 |  | 0.0% (not in text) |  |  | 0.85 | 0 | 97.0s/para, 32 calls |
