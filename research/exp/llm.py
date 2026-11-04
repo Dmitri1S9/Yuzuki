@@ -84,10 +84,12 @@ class LlamaCppLLM:
     поэтому постоянная часть промпта стоит первой.
     """
 
-    def __init__(self, gguf: str, num_ctx: int = 8192, threads: int | None = None, temperature: float = 0.0):
+    def __init__(self, gguf: str, num_ctx: int = 8192, threads: int | None = None, temperature: float = 0.0,
+                 seed: int = 0):
         from llama_cpp import Llama  # noqa: PLC0415 — опциональная зависимость
-        self._llama = Llama(model_path=gguf, n_ctx=num_ctx, n_threads=threads, verbose=False)
+        self._llama = Llama(model_path=gguf, n_ctx=num_ctx, n_threads=threads, verbose=False, seed=seed)
         self.temperature = temperature
+        self.seed = seed
         self.stats = CallStats()
         self._grammars: dict[str, object] = {}
 
@@ -105,7 +107,7 @@ class LlamaCppLLM:
         self.stats.calls += 1
         try:
             out = self._llama.create_completion(prompt, max_tokens=num_predict, temperature=self.temperature,
-                                                grammar=self._grammar(schema))
+                                                grammar=self._grammar(schema), seed=self.seed + self.stats.calls)
         except Exception:  # noqa: BLE001
             self.stats.errors += 1
             return None

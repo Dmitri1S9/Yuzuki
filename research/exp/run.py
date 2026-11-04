@@ -75,6 +75,8 @@ def main() -> None:
     ap.add_argument("--model", default="qwen3.5:9b")
     ap.add_argument("--num-ctx", type=int, default=8192)
     ap.add_argument("--gguf", default=None, help="путь к GGUF: llama.cpp в процессе вместо Ollama (--model = имя для отчёта)")
+    ap.add_argument("--temperature", type=float, default=0.0, help=">0 — повторные замеры со случайностью")
+    ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--limit", type=int, default=None, help="первые N размеченных абзацев (быстрый прогон)")
     ap.add_argument("--oracle", action="store_true", help="без LLM: эталон как предсказание (должно дать 1.0)")
     ap.add_argument("--score-only", action="store_true")
@@ -82,6 +84,8 @@ def main() -> None:
 
     methods = REL_METHODS + TRAIT_METHODS if args.methods == "all" else args.methods.split(",")
     tag = "oracle" if args.oracle else re.sub(r"[^\w.-]+", "_", args.model)
+    if args.temperature > 0 and not args.oracle:
+        tag += f"-t{args.temperature}-s{args.seed}"
     out_dir = ROOT / "runs" / tag
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -98,9 +102,9 @@ def main() -> None:
             if args.oracle:
                 llm = FakeLLM(lambda *a: {})
             elif args.gguf and m not in ("rel_cooccur", "traits_lexicon"):
-                llm = LlamaCppLLM(args.gguf, num_ctx=args.num_ctx)
+                llm = LlamaCppLLM(args.gguf, num_ctx=args.num_ctx, temperature=args.temperature, seed=args.seed)
             else:
-                llm = OllamaLLM(args.model, num_ctx=args.num_ctx)
+                llm = OllamaLLM(args.model, num_ctx=args.num_ctx, temperature=args.temperature)
             t0 = time.monotonic()
             # resumable: каждый абзац дописывается сразу; уже посчитанные (с прошлого запуска) пропускаются
             done = {}
