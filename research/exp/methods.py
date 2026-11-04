@@ -274,3 +274,29 @@ def traits_anchored(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
 
 
 METHODS["traits_anchored"] = traits_anchored
+
+
+# ---------------------------------------------------------------- T3
+def traits_verify(paragraphs, roster: Roster, llm, owner: str, drafts: dict[str, dict] | None = None) -> list[dict]:
+    """T3: T2 + вопрос да/нет на каждую найденную черту (верификатор видит только абзац и утверждение)."""
+    todo = [p for p in paragraphs if not drafts or p.id not in drafts]
+    draft = {**(drafts or {}), **{r["id"]: r for r in traits_anchored(todo, roster, llm, owner)}}
+    system = ("Answer strictly from the paragraph. A personality trait is a lasting quality of character, temperament "
+              "or typical behaviour (e.g. shy, kind, reckless) - not an action, event, goal or object. "
+              "If unsure, answer no.")
+    out = []
+    for p in paragraphs:
+        kept = []
+        for t in draft[p.id]["traits"]:
+            if t.get("status") != "actual":
+                kept.append(t)
+                continue
+            q = (f"Paragraph:\n{p.text}\n\nStatement: In this paragraph, \"{t['span']}\" describes a personality trait "
+                 f"or typical behaviour of {owner}.\nIs the statement true?")
+            if (llm.chat(system, q, _YESNO, 10) or {}).get("answer") == "yes":
+                kept.append(t)
+        out.append({"id": p.id, "traits": kept})
+    return out
+
+
+METHODS["traits_verify"] = traits_verify

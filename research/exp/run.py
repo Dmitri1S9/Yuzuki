@@ -22,7 +22,7 @@ from .score import load_gold, score_relations, score_traits
 
 ROOT = Path(__file__).resolve().parent.parent
 REL_METHODS = ["rel_cooccur", "rel_free", "rel_anchored", "rel_pairwise", "rel_verify"]
-TRAIT_METHODS = ["traits_lexicon", "traits_llm", "traits_anchored"]
+TRAIT_METHODS = ["traits_lexicon", "traits_llm", "traits_anchored", "traits_verify"]
 REL_GOLD, TRAIT_GOLD = "kyoka_jiro.relations.yaml", "traits.yaml"
 ROSTER = ROOT / "samples" / "rosters" / "my_hero_academia.yaml"
 
@@ -108,6 +108,10 @@ def main() -> None:
                 jobs = [(p, roster, rel_gold["page_owner"]) for p in ps]
             else:
                 fn = _oracle_traits(trait_gold) if args.oracle else METHODS[m]
+                t2 = out_dir / "traits_anchored.jsonl"
+                if m == "traits_verify" and t2.exists():  # проверяем готовые ответы T2, а не считаем их заново
+                    drafts = {r["id"]: r for r in (json.loads(x) for x in t2.read_text(encoding="utf-8").splitlines() if x)}
+                    fn = functools.partial(METHODS[m], drafts=drafts)
                 for name, ch in trait_gold["characters"].items():
                     roster = Roster.load(ROSTER, owner=name)
                     jobs += [(p, roster, name) for p in _select(trait_pages[name], set(ch["paragraphs"]), args.limit)]

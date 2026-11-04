@@ -32,6 +32,8 @@ characters:
       - {span: afraid of horror,       pole: N+, also_ok: []}
       - {span: self-conscious,         pole: N+, also_ok: []}
       - {span: embarrassed about her interests, pole: N+, also_ok: []}
+      # добавлено после разбора ответов T2 (2026-11-04)
+      - {span: noticeably upset,       pole: N+, also_ok: []}
     not_traits:
       - "cold"          # "comes off as cold and indifferent" — видимость, текст тут же опровергает
       - "indifferent"
@@ -78,6 +80,16 @@ characters:
       - {span: nervousness,            pole: N+, also_ok: []}
       - {span: courage,                pole: N-, also_ok: []}
       - {span: heroic and selfless,    pole: A+, also_ok: [H+]}
+      # добавлено после разбора ответов T2 (2026-11-04): реальные черты, пропущенные при первой разметке
+      - {span: depraved,               pole: H-, also_ok: [A-]}
+      - {span: rude,                   pole: A-, also_ok: []}
+      - {span: act charming,           pole: E+, also_ok: [H-]}
+      - {span: traumatized,            pole: N+, also_ok: []}
+      - {span: competent,              pole: C+, also_ok: [O+]}
+      - {span: capable,                pole: C+, also_ok: []}
+      - {span: bravery,                pole: N-, also_ok: []}
+      - {span: intuition,              pole: O+, also_ok: []}
+      - {span: unbalanced,             pole: N+, also_ok: []}
     not_traits:
       - "not a bully"   # отрицание: не A-
 
@@ -103,4 +115,6 @@ characters:
       - {span: looked down on,         pole: H-, also_ok: [A-]}
       - {span: set his pride aside,    pole: H+, also_ok: [C+]}
       - {span: adapt,                  pole: O+, also_ok: [C+]}
+      # добавлено после разбора ответов T2 (2026-11-04)
+      - {span: loathed,                pole: A-, also_ok: []}
     not_traits: ["polar opposite"]  # сравнение, не черта
