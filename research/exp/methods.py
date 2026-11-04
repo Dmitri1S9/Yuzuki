@@ -218,3 +218,57 @@ def comparisons(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
         res = [r for r in ans.get("results") or [] if r.get("winner") != r.get("loser")]
         out.append({"id": p.id, "comparisons": res})
     return out
+
+
+# ---------------------------------------------------------------- T2
+_TRAIT_STOP = set("""a an the and or but of to in on at for with by from as is was were be been being are it its he she him
+her his hers they them their this that these those who whom which what when where while also very quite so too not no
+has have had do does did can could would should will may might must than then there here into onto over under after
+before during about up down out off again further once all any both each few more most other some such only own same
+just even still often usually sometimes later much many one two""".split())
+
+
+def span_candidates(text: str) -> list[str]:
+    """Слова и пары соседних слов абзаца (без стоп-слов на краях) — единственные допустимые span'ы."""
+    words = re.findall(r"[A-Za-z][A-Za-z'-]*", text)
+    out: list[str] = []
+    for i, w in enumerate(words):
+        if w.lower() not in _TRAIT_STOP and len(w) > 2:
+            out.append(w.lower())
+        if i + 1 < len(words):
+            a, b = words[i], words[i + 1]
+            if a.lower() not in _TRAIT_STOP and b.lower() not in _TRAIT_STOP:
+                out.append(f"{a.lower()} {b.lower()}")
+    return list(dict.fromkeys(out))
+
+
+def traits_anchored(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
+    """T2: как T1, но span — enum из слов/биграмм абзаца (выдумать фрагмент нельзя); дубликаты убирает код."""
+    guide = "\n".join(f"- {k}: {v}" for k, v in TRAIT_POLES.items())
+    system = (f"You read the wiki page about {owner}.\nExtract the personality traits, habits of behaviour and "
+              f"emotional tendencies the paragraph attributes to a person. Each trait ONCE. span: the word or two-word "
+              f"phrase from the paragraph that names the trait (an adjective or short noun phrase).\n"
+              f"pole (Big Five + HEXACO honesty-humility):\n{guide}\n"
+              f"status: actual = {owner} really has it; apparent = only seems so / others think so; "
+              f"negated = the text says {owner} does NOT have it; other_character = it describes someone else.\n"
+              f"If the paragraph describes no traits, return an empty list.")
+    out = []
+    for p in paragraphs:
+        cands = span_candidates(p.text)
+        schema = {"type": "object", "properties": {"traits": {"type": "array", "maxItems": 15, "items": {
+            "type": "object", "properties": {
+                "span": {"type": "string", "enum": cands},
+                "pole": {"type": "string", "enum": list(TRAIT_POLES)},
+                "status": {"type": "string", "enum": TRAIT_STATUS}},
+            "required": ["span", "pole", "status"]}}}, "required": ["traits"]}
+        ans = llm.chat(system, f"{_header(owner, p)}\n\n{p.text}", schema, num_predict=500) or {}
+        seen, traits = set(), []
+        for t in ans.get("traits") or []:
+            if t.get("span") not in seen:
+                seen.add(t.get("span"))
+                traits.append(t)
+        out.append({"id": p.id, "traits": traits})
+    return out
+
+
+METHODS["traits_anchored"] = traits_anchored

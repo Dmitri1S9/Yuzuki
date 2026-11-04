@@ -21,7 +21,7 @@ from .score import load_gold, score_relations, score_traits
 
 ROOT = Path(__file__).resolve().parent.parent
 REL_METHODS = ["rel_cooccur", "rel_free", "rel_anchored", "rel_pairwise", "rel_verify"]
-TRAIT_METHODS = ["traits_lexicon", "traits_llm"]
+TRAIT_METHODS = ["traits_lexicon", "traits_llm", "traits_anchored"]
 REL_GOLD, TRAIT_GOLD = "kyoka_jiro.relations.yaml", "traits.yaml"
 ROSTER = ROOT / "samples" / "rosters" / "my_hero_academia.yaml"
 
@@ -137,24 +137,28 @@ def main() -> None:
                          f"{s['affinity_acc']:.2f}", f"{s['hallucinated']:.1%}", f"{s['type_P']:.2f}",
                          f"{s['type_R']:.2f}", "", "", _speed(stats)))
         else:
-            agg = {"tp": 0.0, "pred": 0, "gold": 0, "pole": 0.0, "bad": 0}
+            agg = {"tp": 0.0, "pred": 0, "gold": 0, "pole": 0.0, "bad": 0, "nit": 0, "all": 0}
             notes = []
             for name, ch in trait_gold["characters"].items():
                 ids = set(ch["paragraphs"])
-                s = score_traits([r for r in records if r["id"] in ids], ch)
+                texts = {p.id: p.text for p in trait_pages[name]}
+                s = score_traits([r for r in records if r["id"] in ids], ch, texts)
                 tp = s["trait_P"] * s["predicted"]
                 agg["tp"] += tp
                 agg["pred"] += s["predicted"]
                 agg["gold"] += len(ch["traits"])
                 agg["pole"] += s["pole_acc"] * tp
                 agg["bad"] += s["not_trait_hits"]
+                agg["nit"] += len(s["not_in_text"])
+                agg["all"] += sum(len(r.get("traits", [])) for r in records if r["id"] in ids)
                 notes.append(f"## {name}\nmissed: {s['missed']}\nunmatched (проверить руками — эталон может быть неполон): "
-                             f"{s['unmatched']}\n")
+                             f"{s['unmatched']}\nnot in text (выдуманные фрагменты): {s['not_in_text']}\n")
             (out_dir / f"{m}.errors.txt").write_text("\n".join(notes), encoding="utf-8")
             p = agg["tp"] / agg["pred"] if agg["pred"] else 0.0
             r = agg["tp"] / agg["gold"] if agg["gold"] else 0.0
             f = 2 * p * r / (p + r) if p + r else 0.0
-            rows.append((m, f"{p:.2f}", f"{r:.2f}", f"{f:.2f}", "", "", "", "",
+            nit = f"{agg['nit'] / agg['all']:.1%} (not in text)" if agg["all"] else ""
+            rows.append((m, f"{p:.2f}", f"{r:.2f}", f"{f:.2f}", "", nit, "", "",
                          f"{agg['pole'] / agg['tp']:.2f}" if agg["tp"] else "-", str(agg["bad"]), _speed(stats)))
 
     header = ("method", "P (lenient/strict)", "R", "F1", "affinity", "halluc.names", "type_P", "type_R", "pole_acc",

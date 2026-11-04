@@ -89,8 +89,11 @@ def _content(s: str) -> set[str]:
     return {w for w in re.findall(r"[a-z][a-z'-]+", s.lower()) if len(w) > 3 and w not in _STOP}
 
 
-def score_traits(records: list[dict], gold_char: dict) -> dict:
+def score_traits(records: list[dict], gold_char: dict, texts: dict[str, str] | None = None) -> dict:
+    """texts: id -> текст абзаца; если дан, считается not_in_text — фрагменты (любого статуса), которых нет в абзаце."""
     wanted = set(gold_char["paragraphs"])
+    not_in_text = [t.get("span") for rec in records if rec["id"] in wanted and texts for t in rec.get("traits", [])
+                   if str(t.get("span", "")).lower() not in texts.get(rec["id"], "").lower()]
     preds = [t for rec in records if rec["id"] in wanted for t in rec.get("traits", [])
              if t.get("status", "actual") == "actual"]
     gold = list(gold_char["traits"])
@@ -110,7 +113,7 @@ def score_traits(records: list[dict], gold_char: dict) -> dict:
               for t in preds)
     p, r = _div(tp, len(preds)), _div(tp, len(gold))
     return {"trait_P": p, "trait_R": r, "trait_F1": _f1(p, r), "pole_acc": _div(pole_ok, tp),
-            "not_trait_hits": bad, "predicted": len(preds),
+            "not_trait_hits": bad, "predicted": len(preds), "not_in_text": not_in_text,
             "missed": [g["span"] for i, g in enumerate(gold) if not used[i]], "unmatched": unmatched}
 
 

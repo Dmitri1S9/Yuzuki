@@ -135,3 +135,17 @@ def test_bradley_terry_recovers_order_and_ties():
 def test_components_split_universes():
     games = [("A", "B", False), ("C", "D", False)]
     assert sorted(map(sorted, components({"A", "B", "C", "D"}, games))) == [["A", "B"], ["C", "D"]]
+
+
+def test_traits_anchored_span_enum_and_dedupe():
+    seen = {}
+
+    def responder(system, user, schema):
+        seen["enum"] = schema["properties"]["traits"]["items"]["properties"]["span"]["enum"]
+        t = {"span": "blunt", "pole": "A-", "status": "actual"}
+        return {"traits": [t, t]}
+
+    p = Paragraph("Kyoka Jiro", "Personality", 0, "She is blunt and very organized.")
+    rec = methods.traits_anchored([p], roster(), FakeLLM(responder), OWNER)[0]
+    assert "blunt" in seen["enum"] and "organized" in seen["enum"] and "very" not in seen["enum"]
+    assert rec["traits"] == [{"span": "blunt", "pole": "A-", "status": "actual"}]
