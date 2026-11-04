@@ -7,6 +7,7 @@ NB (ресёрч): есть сообщения, что на части верс�
 """
 import json
 import os
+import sys
 import time
 import urllib.request
 from dataclasses import dataclass, field
@@ -73,3 +74,51 @@ class FakeLLM:
     def chat(self, system: str, user: str, schema: dict, num_predict: int = 512) -> dict | None:
         self.stats.calls += 1
         return self.responder(system, user, schema)  # type: ignore[operator]
+
+
+class LlamaCppLLM:
+    """Тот же интерфейс, но llama.cpp в процессе (pip install llama-cpp-python): GGUF-файл напрямую, без Ollama.
+
+    JSON Schema -> грамматика тем же конвертером llama.cpp, что использует Ollama. Шаблон Qwen с пустым
+    <think></think> = аналог think=false. Общий префикс с предыдущим вызовом переиспользуется (KV-кэш),
+    поэтому постоянная часть промпта стоит первой.
+    """
+
+    def __init__(self, gguf: str, num_ctx: int = 8192, threads: int | None = None, temperature: float = 0.0):
+        from llama_cpp import Llama  # noqa: PLC0415 — опциональная зависимость
+        self._llama = Llama(model_path=gguf, n_ctx=num_ctx, n_threads=threads, verbose=False)
+        self.temperature = temperature
+        self.stats = CallStats()
+        self._grammars: dict[str, object] = {}
+
+    def _grammar(self, schema: dict):
+        from llama_cpp import LlamaGrammar  # noqa: PLC0415
+        key = json.dumps(schema, sort_keys=True)
+        if key not in self._grammars:
+            self._grammars[key] = LlamaGrammar.from_json_schema(key, verbose=False)
+        return self._grammars[key]
+
+    def chat(self, system: str, user: str, schema: dict, num_predict: int = 512) -> dict | None:
+        prompt = (f"<|im_start|>system\n{system}<|im_end|>\n<|im_start|>user\n{user}<|im_end|>\n"
+                  f"<|im_start|>assistant\n<think>\n\n</think>\n\n")
+        t0 = time.monotonic()
+        self.stats.calls += 1
+        try:
+            out = self._llama.create_completion(prompt, max_tokens=num_predict, temperature=self.temperature,
+                                                grammar=self._grammar(schema))
+        except Exception:  # noqa: BLE001
+            self.stats.errors += 1
+            return None
+        finally:
+            self.stats.seconds += time.monotonic() - t0
+            if self.stats.calls % 10 == 0:
+                print(f"[llama.cpp] calls={self.stats.calls} {self.stats.seconds / self.stats.calls:.1f}s/call",
+                      file=sys.stderr, flush=True)
+        usage = out.get("usage") or {}
+        self.stats.prompt_tokens += int(usage.get("prompt_tokens") or 0)
+        self.stats.gen_tokens += int(usage.get("completion_tokens") or 0)
+        try:
+            return json.loads(out["choices"][0]["text"])
+        except (json.JSONDecodeError, KeyError, IndexError):
+            self.stats.schema_violations += 1
+            return None

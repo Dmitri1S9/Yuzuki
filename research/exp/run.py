@@ -13,7 +13,7 @@ import re
 import time
 from pathlib import Path
 
-from .llm import FakeLLM, OllamaLLM
+from .llm import FakeLLM, LlamaCppLLM, OllamaLLM
 from .methods import METHODS
 from .pages import load_pages
 from .roster import Roster
@@ -58,6 +58,7 @@ def main() -> None:
     ap.add_argument("--methods", default="all", help="comma list or 'all': " + ",".join(REL_METHODS + TRAIT_METHODS))
     ap.add_argument("--model", default="qwen3.5:9b")
     ap.add_argument("--num-ctx", type=int, default=8192)
+    ap.add_argument("--gguf", default=None, help="путь к GGUF: llama.cpp в процессе вместо Ollama (--model = имя для отчёта)")
     ap.add_argument("--limit", type=int, default=None, help="первые N размеченных абзацев (быстрый прогон)")
     ap.add_argument("--oracle", action="store_true", help="без LLM: эталон как предсказание (должно дать 1.0)")
     ap.add_argument("--score-only", action="store_true")
@@ -78,7 +79,12 @@ def main() -> None:
         is_rel = m in REL_METHODS
         stats = {}
         if not args.score_only:
-            llm = FakeLLM(lambda *a: {}) if args.oracle else OllamaLLM(args.model, num_ctx=args.num_ctx)
+            if args.oracle:
+                llm = FakeLLM(lambda *a: {})
+            elif args.gguf and m not in ("rel_cooccur", "traits_lexicon"):
+                llm = LlamaCppLLM(args.gguf, num_ctx=args.num_ctx)
+            else:
+                llm = OllamaLLM(args.model, num_ctx=args.num_ctx)
             t0 = time.monotonic()
             records = []
             if is_rel:

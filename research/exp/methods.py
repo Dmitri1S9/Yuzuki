@@ -42,9 +42,10 @@ def rel_free(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
         "required": ["name", "relation"]}}}, "required": ["relations"]}
     out = []
     for p in paragraphs:
-        system = (f"{_header(owner, p)}\nList every person or group that {owner} has a connection with in the "
-                  f"paragraph. For each give the full name and ONE neutral word for the kind of connection.")
-        ans = llm.chat(system, p.text, schema) or {}
+        system = (f"You read paragraphs of the wiki page about {owner}. List every person or group that {owner} "
+                  f"has a connection with in the paragraph. For each give the full name and ONE neutral word for "
+                  f"the kind of connection.")
+        ans = llm.chat(system, f"{_header(owner, p)}\n\n{p.text}", schema) or {}
         rels = []
         for r in ans.get("relations") or []:
             word = str(r.get("relation", "")).strip().lower()
@@ -69,8 +70,10 @@ def _pair_props() -> dict:
             "type": {"type": "string", "enum": REL_TYPE_ENUM}, "affinity": {"type": "string", "enum": AFFINITY}}
 
 
-def _rel_system(owner: str, p: Paragraph) -> str:
-    return (f"{_header(owner, p)}\nNames in the paragraph are marked as [mention](Canonical Name).\n"
+def _rel_system(owner: str) -> str:
+    """Постоянная часть промпта (одинакова для всех абзацев страницы) -> идёт первой и кэшируется."""
+    return (f"You read paragraphs of the wiki page about {owner}. "
+            f"Names in the paragraph are marked as [mention](Canonical Name).\n"
             f"Decide, using ONLY this paragraph, whether {owner} personally interacts with or has a stated "
             f"relationship with the given entity. Being mentioned in the same sentence is not enough.\n"
             f"evidence: copy the shortest exact phrase from the paragraph that shows it (empty if none).\n"
@@ -96,8 +99,9 @@ def rel_anchored(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
             props = {"type": "object", "properties": _pair_props(), "required": list(_pair_props())}
             schema = {"type": "object", "properties": {c: props for c in cands}, "required": cands,
                       "additionalProperties": False}
-            ans = llm.chat(_rel_system(owner, p) + "\nAnswer for EVERY entity listed in the schema.",
-                           f"Entities: {', '.join(cands)}\n\nParagraph:\n{roster.mark(p.text)}", schema,
+            ans = llm.chat(_rel_system(owner) + "\nAnswer for EVERY entity listed in the schema.",
+                           f"{_header(owner, p)}\nParagraph:\n{roster.mark(p.text)}\n\nEntities: {', '.join(cands)}",
+                           schema,
                            num_predict=120 * len(cands) + 50) or {}
             for c in cands:
                 a = ans.get(c) or {}
@@ -114,10 +118,11 @@ def rel_pairwise(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
     out = []
     for p in paragraphs:
         cands = candidates(p, roster, owner)
-        system = f"{_rel_system(owner, p)}\n\nParagraph:\n{roster.mark(p.text)}"  # общий префикс -> KV-кэш
+        system = _rel_system(owner)
+        para = f"{_header(owner, p)}\nParagraph:\n{roster.mark(p.text)}"  # общий префикс между кандидатами -> KV-кэш
         rels = []
         for c in cands:
-            a = llm.chat(system, f"Entity: {c}", schema, num_predict=150) or {}
+            a = llm.chat(system, f"{para}\n\nEntity: {c}", schema, num_predict=150) or {}
             if a.get("linked"):
                 rels.append({"name": c, "canonical": c, "type": a.get("type", UNSPECIFIED),
                              "affinity": a.get("affinity"), "evidence": a.get("evidence")})
@@ -135,16 +140,17 @@ def rel_verify(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
     out = []
     for p in paragraphs:
         rec = draft[p.id]
-        system = (f"Answer strictly from the paragraph below. If the paragraph does not clearly say it, answer no."
-                  f"\n\nParagraph:\n{roster.mark(p.text)}")
+        system = "Answer strictly from the paragraph. If the paragraph does not clearly say it, answer no."
+        para = f"Paragraph:\n{roster.mark(p.text)}"
         kept = []
         for r in rec["relations"]:
             stmt = f"The paragraph shows {owner} directly interacting with, acting on, or relating to {r['canonical']}."
-            if (llm.chat(system, f"Statement: {stmt}\nIs the statement true?", _YESNO, 10) or {}).get("answer") != "yes":
+            if (llm.chat(system, f"{para}\n\nStatement: {stmt}\nIs the statement true?", _YESNO, 10) or {}).get(
+                    "answer") != "yes":
                 continue
             if r["type"] in REL_TYPES:
                 stmt = REL_TYPES[r["type"]][2].format(a=owner, b=r["canonical"])
-                if (llm.chat(system, f"Statement: {stmt}\nIs the statement true?", _YESNO, 10) or {}).get(
+                if (llm.chat(system, f"{para}\n\nStatement: {stmt}\nIs the statement true?", _YESNO, 10) or {}).get(
                         "answer") != "yes":
                     r = {**r, "type": UNSPECIFIED}
             kept.append(r)
@@ -176,12 +182,12 @@ def traits_llm(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
     guide = "\n".join(f"- {k}: {v}" for k, v in TRAIT_POLES.items())
     out = []
     for p in paragraphs:
-        system = (f"{_header(owner, p)}\nExtract every personality trait, habit of behaviour or emotional tendency "
+        system = (f"You read the wiki page about {owner}.\nExtract every personality trait, habit of behaviour or emotional tendency "
                   f"the paragraph attributes to a person. span: copy 1-4 words EXACTLY from the paragraph.\n"
                   f"pole (Big Five + HEXACO honesty-humility):\n{guide}\n"
                   f"status: actual = {owner} really has it; apparent = only seems so / others think so; "
                   f"negated = the text says {owner} does NOT have it; other_character = it describes someone else.")
-        ans = llm.chat(system, p.text, schema, num_predict=900) or {}
+        ans = llm.chat(system, f"{_header(owner, p)}\n\n{p.text}", schema, num_predict=900) or {}
         out.append({"id": p.id, "traits": list(ans.get("traits") or [])})
     return out
 
