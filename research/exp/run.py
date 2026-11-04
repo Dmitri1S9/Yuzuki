@@ -86,19 +86,39 @@ def main() -> None:
             else:
                 llm = OllamaLLM(args.model, num_ctx=args.num_ctx)
             t0 = time.monotonic()
-            records = []
+            # resumable: каждый абзац дописывается сразу; уже посчитанные (с прошлого запуска) пропускаются
+            done = {}
+            if path.exists() and not args.oracle:
+                for line in path.read_text(encoding="utf-8").splitlines():
+                    if line:
+                        r = json.loads(line)
+                        done[r["id"]] = r
+            prev = json.loads((out_dir / f"{m}.stats.json").read_text()) if done and (
+                out_dir / f"{m}.stats.json").exists() else {}
+            jobs = []
             if is_rel:
                 fn = _oracle_relations(rel_gold) if args.oracle else METHODS[m]
-                ps = _select(rel_pages, {g["id"] for g in rel_gold["paragraphs"]}, args.limit)
                 roster = Roster.load(ROSTER, owner=rel_gold["page_owner"])
-                records = fn(ps, roster, llm, rel_gold["page_owner"])
+                ps = _select(rel_pages, {g["id"] for g in rel_gold["paragraphs"]}, args.limit)
+                jobs = [(p, roster, rel_gold["page_owner"]) for p in ps]
             else:
                 fn = _oracle_traits(trait_gold) if args.oracle else METHODS[m]
                 for name, ch in trait_gold["characters"].items():
-                    ps = _select(trait_pages[name], set(ch["paragraphs"]), args.limit)
-                    records += fn(ps, Roster.load(ROSTER, owner=name), llm, name)
+                    roster = Roster.load(ROSTER, owner=name)
+                    jobs += [(p, roster, name) for p in _select(trait_pages[name], set(ch["paragraphs"]), args.limit)]
+            mode = "a" if done else "w"
+            with path.open(mode, encoding="utf-8") as fh:
+                for p, roster, owner in jobs:
+                    if p.id in done:
+                        continue
+                    for r in fn([p], roster, llm, owner):
+                        done[r["id"]] = r
+                        fh.write(json.dumps(r, ensure_ascii=False) + "\n")
+                        fh.flush()
+            records = [done[p.id] for p, _, _ in jobs if p.id in done]
             stats = {**vars(llm.stats), "wall_s": round(time.monotonic() - t0, 1), "paragraphs": len(records)}
-            path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in records), encoding="utf-8")
+            for k in ("calls", "prompt_tokens", "gen_tokens", "seconds", "schema_violations", "errors", "wall_s"):
+                stats[k] = round(stats.get(k, 0) + prev.get(k, 0), 1)
             (out_dir / f"{m}.stats.json").write_text(json.dumps(stats, indent=1), encoding="utf-8")
         elif path.exists():
             records = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
