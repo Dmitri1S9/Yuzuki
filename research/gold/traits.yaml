@@ -118,3 +118,120 @@ characters:
       # добавлено после разбора ответов T2 (2026-11-04)
       - {span: loathed,                pole: A-, also_ok: []}
     not_traits: ["polar opposite"]  # сравнение, не черта
+
+  # ---- добавлено 2026-11-04: ещё 4 персонажа (Claude, вручную) ----
+  Izuku Midoriya:
+    paragraphs: ["Izuku Midoriya|Personality|0", "Izuku Midoriya|Personality|1", "Izuku Midoriya|Personality|2"]
+    traits:
+      - {span: timid,                  pole: E-, also_ok: [N+]}
+      - {span: reserved,               pole: E-, also_ok: []}
+      - {span: polite,                 pole: A+, also_ok: []}
+      - {span: overreacting,           pole: N+, also_ok: []}
+      - {span: insecure,               pole: N+, also_ok: []}
+      - {span: tearful,                pole: N+, also_ok: []}
+      - {span: vulnerable,             pole: N+, also_ok: []}
+      - {span: non-expressive,         pole: E-, also_ok: []}
+      - {span: confident,              pole: N-, also_ok: [E+]}
+      - {span: braver,                 pole: N-, also_ok: []}
+      - {span: eager to prove,         pole: C+, also_ok: [E+]}
+      - {span: leadership skills,      pole: E+, also_ok: [C+]}
+      - {span: passion,                pole: E+, also_ok: [O+]}
+      - {span: strategic abilities,    pole: O+, also_ok: [C+]}
+      - {span: diligent,               pole: C+, also_ok: []}
+      - {span: strong-willed,          pole: C+, also_ok: [N-]}
+      - {span: enthusiastic,           pole: E+, also_ok: [O+]}
+      - {span: analytical mind,        pole: O+, also_ok: []}
+      - {span: mumbling,               pole: E-, also_ok: [N+]}
+    not_traits: ["looked down on"]   # чужое действие (Katsuki), не черта Izuku
+
+  All For One:
+    paragraphs: ["All For One|Personality|0", "All For One|Personality|1", "All For One|Personality|2"]
+    traits:
+      - {span: subtle,                 pole: C+, also_ok: [H-]}
+      - {span: sadistic,               pole: A-, also_ok: [H-]}
+      - {span: malevolent,             pole: A-, also_ok: [H-]}
+      - {span: rule from the shadows,  pole: H-, also_ok: []}
+      - {span: callously,              pole: A-, also_ok: []}
+      - {span: masked his true intentions, pole: H-, also_ok: []}
+      - {span: megalomania,            pole: H-, also_ok: []}
+      - {span: god complex,            pole: H-, also_ok: []}
+      - {span: higher being,           pole: H-, also_ok: []}
+      - {span: kleptomania,            pole: H-, also_ok: [C-]}
+      - {span: condescending,          pole: H-, also_ok: [A-]}
+      - {span: exasperated,            pole: N+, also_ok: [A-]}
+      - {span: contempt,               pole: A-, also_ok: [H-]}
+    not_traits: ["frail"]            # черта Yoichi, не All For One
+
+  Mai Sakurajima:
+    paragraphs: ["Mai Sakurajima|Personality|0", "Mai Sakurajima|Personality|1", "Mai Sakurajima|Personality|2",
+                 "Mai Sakurajima|Personality|3", "Mai Sakurajima|Personality|4", "Mai Sakurajima|Personality|5"]
+    traits:
+      - {span: kind,                   pole: A+, also_ok: []}
+      - {span: serious,                pole: C+, also_ok: [E-]}
+      - {span: aloof,                  pole: E-, also_ok: [A-]}
+      - {span: bitter,                 pole: N+, also_ok: [A-]}
+      - {span: maturity,               pole: C+, also_ok: [N-]}
+      - {span: professionalism,        pole: C+, also_ok: []}
+      - {span: composed,               pole: N-, also_ok: []}
+      - {span: polite,                 pole: A+, also_ok: []}
+      - {span: approachable,           pole: E+, also_ok: [A+]}
+      - {span: friendly,               pole: A+, also_ok: [E+]}
+      - {span: high achiever,          pole: C+, also_ok: [O+]}
+      - {span: reserved,               pole: E-, also_ok: []}
+      - {span: warm-hearted,           pole: A+, also_ok: []}
+      - {span: teasing,                pole: A-, also_ok: [E+]}
+      - {span: nonchalant,             pole: N-, also_ok: [E-]}
+      - {span: anxiety,                pole: N+, also_ok: []}
+      - {span: sarcastic,              pole: A-, also_ok: []}
+      - {span: innocent,               pole: H+, also_ok: []}
+      - {span: shy,                    pole: E-, also_ok: []}
+      - {span: flustered,              pole: N+, also_ok: []}
+      - {span: genuine,                pole: H+, also_ok: []}
+      - {span: levelheaded,            pole: N-, also_ok: [C+]}
+      - {span: helpful,                pole: A+, also_ok: []}
+      - {span: altruistic,             pole: A+, also_ok: [H+]}
+      - {span: sweet,                  pole: A+, also_ok: []}
+      - {span: loving,                 pole: A+, also_ok: []}
+      - {span: reliable,               pole: C+, also_ok: []}
+      - {span: empathetic,             pole: A+, also_ok: []}
+      - {span: emotionally mature,     pole: N-, also_ok: [C+]}
+      - {span: harsh,                  pole: A-, also_ok: []}
+      - {span: strict,                 pole: C+, also_ok: [A-]}
+      - {span: affectionate,           pole: A+, also_ok: [E+]}
+      - {span: cheerful,               pole: E+, also_ok: []}
+      - {span: quick wit,              pole: O+, also_ok: []}
+      - {span: good-hearted,           pole: A+, also_ok: []}
+      - {span: loyal,                  pole: H+, also_ok: [A+]}
+      - {span: virtuous,               pole: H+, also_ok: []}
+      - {span: selflessness,           pole: A+, also_ok: [H+]}
+      - {span: resent,                 pole: A-, also_ok: [N+]}
+    not_traits: ["cold", "pervert"]  # "She isn't cold" — отрицание; "pervert" — так она называет Sakuta
+
+  Sakuta Azusagawa:
+    paragraphs: ["Sakuta Azusagawa|Personality|0", "Sakuta Azusagawa|Personality|1",
+                 "Sakuta Azusagawa|Personality|2", "Sakuta Azusagawa|Personality|3"]
+    traits:
+      - {span: deadpan,                pole: E-, also_ok: [N-]}
+      - {span: stoic,                  pole: N-, also_ok: [E-]}
+      - {span: calm,                   pole: N-, also_ok: []}
+      - {span: socially isolated,      pole: E-, also_ok: []}
+      - {span: indifference,           pole: E-, also_ok: [N-]}
+      - {span: defying social norms,   pole: O+, also_ok: [A-]}
+      - {span: reserved nature,        pole: E-, also_ok: []}
+      - {span: anti-social,            pole: E-, also_ok: []}
+      - {span: kind,                   pole: A+, also_ok: []}
+      - {span: compassion,             pole: A+, also_ok: []}
+      - {span: playful,                pole: E+, also_ok: []}
+      - {span: lecherous,              pole: H-, also_ok: []}
+      - {span: lewd remarks,           pole: H-, also_ok: [A-]}
+      - {span: selfless,               pole: A+, also_ok: [H+]}
+      - {span: helpful,                pole: A+, also_ok: []}
+      - {span: snarky,                 pole: A-, also_ok: []}
+      - {span: blunt,                  pole: A-, also_ok: [H+]}
+      - {span: honest,                 pole: H+, also_ok: []}
+      - {span: straightforward,        pole: H+, also_ok: []}
+      - {span: tease,                  pole: A-, also_ok: [E+]}
+      - {span: quick-witted,           pole: O+, also_ok: []}
+      - {span: sarcastic,              pole: A-, also_ok: []}
+      - {span: good heart,             pole: A+, also_ok: []}
+    not_traits: ["ill-intended"]     # "by no means ill-intended" — отрицание

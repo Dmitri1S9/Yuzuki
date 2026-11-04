@@ -1,6 +1,32 @@
 # Ростер MHA для экспериментов (руками; на реальном прогоне строится из дампа: samples/build_roster.py).
 # База — roster из src/extract_v3/config.yaml + имена, встречающиеся в страницах samples/pages/.
 characters:
+  # добавлено для выборки Relationships Izuku / All For One / Mineta / Shigaraki
+  - {name: "Inko Midoriya", aliases: ["Inko"]}
+  - {name: "Hisashi Midoriya", aliases: ["Hisashi"]}
+  - {name: "Chiyo Shuzenji", aliases: ["Recovery Girl"]}
+  - {name: "Mei Hatsume", aliases: ["Mei"]}
+  - {name: "Giulio Gandini", aliases: ["Giulio"]}
+  - {name: "Anna Scervino", aliases: ["Anna"]}
+  - {name: "Ginji Kurau", aliases: ["Ginji"]}
+  - {name: "Valdo Gollini", aliases: ["Dark Might", "Valdo"]}
+  - {name: "Bruce Lee", aliases: ["Bruce"]}
+  - {name: "Yoichi Shigaraki", aliases: ["Yoichi"]}
+  - {name: "Toshitsugu Kudo", aliases: ["Kudo"]}
+  - {name: "Hikage Shinomori", aliases: ["Hikage"]}
+  - {name: "En Tayutai", aliases: ["En"]}
+  - {name: "Daigoro Banjo", aliases: ["Banjo"]}
+  - {name: "Oboro Shirakumo", aliases: ["Oboro"]}
+  - {name: "Kaina Tsutsumi", aliases: ["Lady Nagant", "Nagant"]}
+  - {name: "Cathleen Bate", aliases: ["Star and Stripe"]}
+  - {name: "Nao Shimura", aliases: ["Nao"]}
+  - {name: "Moonfish", aliases: []}
+  - {name: "Yu Takeyama", aliases: ["Mt. Lady"]}
+  - {name: "Neito Monoma", aliases: []}
+  - {name: "Hitoshi Shinso", aliases: []}
+  - {name: "Kota Izumi", aliases: ["Kota"]}
+  - {name: "Skeptic", aliases: []}
+  - {name: "Destro", aliases: []}
   - {name: "Kyoka Jiro", aliases: ["Jiro Kyoka", "Earphone Jack"]}
   - {name: "Izuku Midoriya", aliases: ["Midoriya Izuku", "Deku"]}
   - {name: "Katsuki Bakugo", aliases: ["Bakugo Katsuki", "Kacchan", "Dynamight"]}
@@ -27,8 +53,8 @@ characters:
   - {name: "Enji Todoroki", aliases: ["Endeavor", "Todoroki Enji"]}
   - {name: "Keigo Takami", aliases: ["Hawks", "Takami Keigo"]}
   - {name: "Tomura Shigaraki", aliases: ["Shigaraki Tomura", "Tenko Shimura", "Tenko", "Tomura", "Shigaraki"]}
-  - {name: "All For One", aliases: ["AFO"]}
-  - {name: "Shota Aizawa", aliases: ["Eraserhead", "Eraser Head", "Aizawa Shota"]}
+  - {name: "All For One", aliases: ["AFO", "All for One", "Zen"]}
+  - {name: "Shota Aizawa", aliases: ["Eraserhead", "Eraser Head", "Aizawa Shota", "Aizawa"]}
   - {name: "Toshinori Yagi", aliases: ["All Might"]}
   - {name: "Eri", aliases: []}
   - {name: "Melissa Shield", aliases: []}
@@ -48,23 +74,26 @@ characters:
   - {name: "Shihai Kuroiro", aliases: ["Shihai"]}
   - {name: "Kinoko Komori", aliases: ["Kinoko"]}
   - {name: "Mirio Togata", aliases: []}
-  - {name: "Himiko Toga", aliases: []}
-  - {name: "Dabi", aliases: []}
+  - {name: "Himiko Toga", aliases: ["Himiko", "Toga"]}
+  - {name: "Dabi", aliases: ["Toya"]}
   - {name: "Spinner", aliases: []}
-  - {name: "Twice", aliases: []}
+  - {name: "Twice", aliases: ["Jin Bubaigawa"]}
   - {name: "Stain", aliases: ["Hero Killer"]}
   - {name: "Kai Chisaki", aliases: ["Overhaul"]}
-  - {name: "Kyudai Garaki", aliases: []}
+  - {name: "Kyudai Garaki", aliases: ["Daruma Ujiko", "Daruma"]}
   - {name: "Nana Shimura", aliases: []}
-  - {name: "Kotaro Shimura", aliases: []}
+  - {name: "Kotaro Shimura", aliases: ["Kotaro"]}
   - {name: "Magne", aliases: []}
-  - {name: "Mr. Compress", aliases: []}
+  - {name: "Mr. Compress", aliases: ["Compress"]}
   - {name: "Re-Destro", aliases: []}
   - {name: "Gigantomachia", aliases: []}
 groups:
   - {name: "Class 1-A", aliases: ["Class A", "1-A"]}
   - {name: "Class 1-B", aliases: []}
   - {name: "U.A. High School", aliases: []}
-  - {name: "League of Villains", aliases: []}
-  - {name: "Shie Hassaikai", aliases: []}
+  - {name: "League of Villains", aliases: ["League", "League of Villains/Paranormal Liberation Front", "Paranormal Liberation Front"]}
+  - {name: "Shie Hassaikai", aliases: ["Yakuza"]}
+  - {name: "Shimura Family", aliases: []}
+  - {name: "Gollini Family", aliases: []}
+  - {name: "One For All Users", aliases: []}
   - {name: "Meta Liberation Army", aliases: []}

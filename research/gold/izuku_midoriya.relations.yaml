@@ -1,0 +1,71 @@
+# Эталон связей Izuku Midoriya — 15 абзацев /Relationships (research/exp/sample.py: первый абзац секции, равномерно).
+# Правила — как в kyoka_jiro.relations.yaml. Учитель — Claude, вручную, 2026-11-04.
+page_owner: Izuku Midoriya
+page_file: Izuku_Midoriya
+roster: my_hero_academia
+targets:
+  Inko Midoriya:     {types: [family],       also_ok: [],                      affinity: positive}
+  Shota Aizawa:      {types: [student],      also_ok: [acquaintance],          affinity: positive}
+  Tenya Ida:         {types: [acquaintance], also_ok: [friend, rival],         affinity: positive}
+  Yuga Aoyama:       {types: [acquaintance], also_ok: [teammate],              affinity: neutral}
+  Denki Kaminari:    {types: [friend],       also_ok: [acquaintance],          affinity: positive}
+  Momo Yaoyorozu:    {types: [acquaintance], also_ok: [teammate],              affinity: neutral}
+  Mei Hatsume:       {types: [acquaintance], also_ok: [friend, teammate],      affinity: positive}
+  Melissa Shield:    {types: [friend],       also_ok: [acquaintance],          affinity: positive}
+  Giulio Gandini:    {types: [enemy],        also_ok: [acquaintance],          affinity: negative}
+  Enji Todoroki:     {types: [acquaintance], also_ok: [rival, enemy],          affinity: negative}
+  Tomura Shigaraki:  {types: [enemy],        also_ok: [rival],                 affinity: negative}
+  All For One:       {types: [enemy],        also_ok: [],                      affinity: negative}
+  Valdo Gollini:     {types: [enemy],        also_ok: [],                      affinity: negative}
+  Bruce Lee:         {types: [acquaintance], also_ok: [student, mentor],       affinity: neutral}
+  Nana Shimura:      {types: [acquaintance], also_ok: [student],               affinity: positive}
+paragraphs:
+  - id: "Izuku Midoriya/Relationships|Inko Midoriya|0"
+    links: {Inko Midoriya: {affinity: [positive]}}
+  - id: "Izuku Midoriya/Relationships|Shota Aizawa|0"
+    links: {Shota Aizawa: {affinity: [positive, negative, neutral]}}
+  - id: "Izuku Midoriya/Relationships|Tenya Ida|0"
+    links:
+      Tenya Ida: {affinity: [negative, positive, neutral]}
+      Ochaco Uraraka: {affinity: [positive]}
+  - id: "Izuku Midoriya/Relationships|Yuga Aoyama|0"
+    links: {Yuga Aoyama: {affinity: [positive, negative, neutral]}}
+    optional: [Ochaco Uraraka]
+  - id: "Izuku Midoriya/Relationships|Denki Kaminari|0"
+    links:
+      Denki Kaminari: {affinity: [positive]}
+      Toshinori Yagi: {affinity: [positive]}
+    optional: [Minoru Mineta, Himiko Toga, Ochaco Uraraka]
+  - id: "Izuku Midoriya/Relationships|Momo Yaoyorozu|0"
+    links: {Momo Yaoyorozu: {affinity: [neutral, positive]}}
+    optional: [Class 1-A, Tenya Ida]
+  - id: "Izuku Midoriya/Relationships|Mei Hatsume|0"
+    links: {Mei Hatsume: {affinity: [positive, neutral]}}
+  - id: "Izuku Midoriya/Relationships|Melissa Shield|0"
+    links: {Melissa Shield: {affinity: [positive]}}
+  - id: "Izuku Midoriya/Relationships|Giulio Gandini|0"
+    links: {Giulio Gandini: {affinity: [negative, neutral]}}
+    optional: [Anna Scervino, Ginji Kurau]
+  - id: "Izuku Midoriya/Relationships|Endeavor|0"
+    links: {Enji Todoroki: {affinity: [negative, neutral]}}
+    optional: [Shoto Todoroki, Toshinori Yagi]
+  - id: "Izuku Midoriya/Relationships|Tomura Shigaraki|0"
+    links:
+      Tomura Shigaraki: {affinity: [negative]}
+      Toshinori Yagi: {affinity: [positive]}
+  - id: "Izuku Midoriya/Relationships|All For One|0"
+    links: {All For One: {affinity: [negative]}}
+    optional: [Tomura Shigaraki, Toshinori Yagi]
+  - id: "Izuku Midoriya/Relationships|Dark Might|0"
+    links: {Valdo Gollini: {affinity: [negative, neutral]}}
+    optional: [Gollini Family, Anna Scervino, Ginji Kurau, Toshinori Yagi]
+  - id: "Izuku Midoriya/Relationships|Bruce Lee|0"
+    links: {Bruce Lee: {affinity: [negative, positive, neutral]}}
+    optional: [Yoichi Shigaraki, Toshitsugu Kudo, All For One]
+  - id: "Izuku Midoriya/Relationships|Nana Shimura|0"
+    links:
+      Nana Shimura: {affinity: [positive, neutral]}
+      Toshinori Yagi: {affinity: [positive, neutral]}
+      All For One: {affinity: [negative]}
+      Tomura Shigaraki: {affinity: [negative]}
+    optional: [Yoichi Shigaraki]

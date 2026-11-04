@@ -79,7 +79,9 @@ def score_relations(records: list[dict], gold: dict, roster: Roster, para_text: 
         tR_hit += len(pred & set(t["types"]))
         tR_all += len(t["types"])
     p, r = _div(tp, tp + fp), _div(tp, tp + fn)
-    return {"link_P": p, "link_P_strict": _div(tp, tp + fp + opt), "link_R": r, "link_F1": _f1(p, r), "affinity_acc": _div(aff_ok, tp),
+    return {"counts": {"tp": tp, "fp": fp, "opt": opt, "fn": fn, "aff_ok": aff_ok, "halluc": halluc,
+                       "names_out": names_out, "tP": tP, "tP_all": tP_all, "tR_hit": tR_hit, "tR_all": tR_all},
+            "link_P": p, "link_P_strict": _div(tp, tp + fp + opt), "link_R": r, "link_F1": _f1(p, r), "affinity_acc": _div(aff_ok, tp),
             "hallucinated": _div(halluc, names_out), "names_out": names_out,
             "type_P": _div(tP, tP_all), "type_R": _div(tR_hit, tR_all),
             "fp": fp_list, "fn": fn_list}
@@ -112,7 +114,9 @@ def score_traits(records: list[dict], gold_char: dict, texts: dict[str, str] | N
     bad = sum(any(nt.lower() in str(t.get("span", "")).lower() for nt in gold_char.get("not_traits") or [])
               for t in preds)
     p, r = _div(tp, len(preds)), _div(tp, len(gold))
-    return {"trait_P": p, "trait_R": r, "trait_F1": _f1(p, r), "pole_acc": _div(pole_ok, tp),
+    return {"counts": {"tp": tp, "pred": len(preds), "gold": len(gold), "pole_ok": pole_ok, "bad": bad,
+                       "not_in_text": len(not_in_text)},
+            "trait_P": p, "trait_R": r, "trait_F1": _f1(p, r), "pole_acc": _div(pole_ok, tp),
             "not_trait_hits": bad, "predicted": len(preds), "not_in_text": not_in_text,
             "missed": [g["span"] for i, g in enumerate(gold) if not used[i]], "unmatched": unmatched}
 

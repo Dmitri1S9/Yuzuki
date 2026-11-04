@@ -5,14 +5,14 @@ from research.exp.llm import FakeLLM
 from research.exp.pages import Paragraph, load_pages, page_owner, parse_pages
 from research.exp.ratings import components, fit
 from research.exp.roster import Entity, Roster
-from research.exp.run import ROSTER
+from research.exp.run import ROSTERS, rel_golds
 from research.exp.score import load_gold, score_relations, score_traits
 
 OWNER = "Kyoka Jiro"
 
 
 def roster() -> Roster:
-    return Roster.load(ROSTER, owner=OWNER)
+    return Roster.load(ROSTERS / "my_hero_academia.yaml", owner=OWNER)
 
 
 def test_parse_pages_ids():
@@ -22,9 +22,10 @@ def test_parse_pages_ids():
 
 
 def test_gold_ids_exist_in_pages():
-    ids = {p.id for p in load_pages("Kyoka_Jiro")}
-    gold = load_gold("kyoka_jiro.relations.yaml")
-    assert [g["id"] for g in gold["paragraphs"] if g["id"] not in ids] == []
+    for gold in rel_golds():
+        ids = {p.id for p in load_pages(gold["page_file"])}
+        assert [g["id"] for g in gold["paragraphs"] if g["id"] not in ids] == []
+        assert set(gold["targets"]) <= {n for g in gold["paragraphs"] for n in g["links"]}, gold["page_owner"]
     traits = load_gold("traits.yaml")
     for name, ch in traits["characters"].items():
         tids = {p.id for p in load_pages(name.replace(" ", "_"))}
@@ -33,12 +34,14 @@ def test_gold_ids_exist_in_pages():
 
 def test_gold_names_are_detectable_by_roster():
     """Каждое имя эталона находится кодом в своём абзаце -> у anchored-методов нет потолка recall."""
-    r = roster()
-    ps = {p.id: p for p in load_pages("Kyoka_Jiro")}
-    for g in load_gold("kyoka_jiro.relations.yaml")["paragraphs"]:
-        p = ps[g["id"]]
-        cands = set(methods.candidates(p, r, OWNER))
-        assert set(g["links"]) <= cands, g["id"]
+    for gold in rel_golds():
+        owner = gold["page_owner"]
+        r = Roster.load(ROSTERS / f"{gold['roster']}.yaml", owner=owner)
+        ps = {p.id: p for p in load_pages(gold["page_file"])}
+        for g in gold["paragraphs"]:
+            cands = set(methods.candidates(ps[g["id"]], r, owner))
+            assert set(g["links"]) <= cands, g["id"]
+            assert set(g.get("optional") or []) <= cands | {owner}, g["id"]
 
 
 def test_roster_aliases_and_owner_tokens():

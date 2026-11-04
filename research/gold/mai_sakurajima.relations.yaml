@@ -1,0 +1,48 @@
+# Эталон связей Mai Sakurajima (aobuta.fandom.com) — все 15 абзацев раздела Relationships. Claude, вручную, 2026-11-04.
+page_owner: Mai Sakurajima
+page_file: Mai_Sakurajima
+roster: aobuta
+targets:
+  Sakuta Azusagawa:  {types: [romance],      also_ok: [],                      affinity: positive}
+  Nodoka Toyohama:   {types: [family],       also_ok: [rival],                 affinity: positive}
+  Kaede Azusagawa:   {types: [acquaintance], also_ok: [friend, mentor],        affinity: positive}
+  Shoko Makinohara:  {types: [rival],        also_ok: [acquaintance],          affinity: negative}
+  Ryoko Hanawa:      {types: [friend],       also_ok: [teammate, subordinate, superior], affinity: positive}
+paragraphs:
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|0"
+    links: {Sakuta Azusagawa: {affinity: [neutral, positive, negative]}}
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|1"
+    links: {Sakuta Azusagawa: {affinity: [positive, negative, neutral]}}
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|2"
+    links: {Sakuta Azusagawa: {affinity: [positive]}}
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|3"
+    links: {Sakuta Azusagawa: {affinity: [negative, positive]}}
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|4"
+    links: {Sakuta Azusagawa: {affinity: [positive, negative]}}
+    optional: [Tomoe Koga, Yosuke Maezawa]
+  - id: "Mai Sakurajima/Relationships|Sakuta Azusagawa|5"
+    links: {Sakuta Azusagawa: {affinity: [positive]}}
+  - id: "Mai Sakurajima/Relationships|Nodoka Toyohama|0"
+    links: {Nodoka Toyohama: {affinity: [negative, positive, neutral]}}
+  - id: "Mai Sakurajima/Relationships|Nodoka Toyohama|1"
+    links: {Nodoka Toyohama: {affinity: [positive]}}
+  - id: "Mai Sakurajima/Relationships|Kaede Azusagawa|0"
+    links: {Kaede Azusagawa: {affinity: [positive]}}
+    optional: [Sakuta Azusagawa]
+  - id: "Mai Sakurajima/Relationships|Kaede Azusagawa|1"
+    links: {Kaede Azusagawa: {affinity: [positive]}}
+  - id: "Mai Sakurajima/Relationships|Shoko Makinohara|0"
+    links: {Shoko Makinohara: {affinity: [negative]}}
+    optional: [Sakuta Azusagawa]
+  - id: "Mai Sakurajima/Relationships|Shoko Makinohara|1"
+    links: {Shoko Makinohara: {affinity: [negative]}}
+    optional: [Sakuta Azusagawa]
+  - id: "Mai Sakurajima/Relationships|Shoko Makinohara|2"
+    links: {Shoko Makinohara: {affinity: [positive, neutral]}}
+    optional: [Sakuta Azusagawa]
+  - id: "Mai Sakurajima/Relationships|Shoko Makinohara|3"
+    links:
+      Shoko Makinohara: {affinity: [positive]}
+      Sakuta Azusagawa: {affinity: [positive]}
+  - id: "Mai Sakurajima/Relationships|Ryoko Hanawa|0"
+    links: {Ryoko Hanawa: {affinity: [positive]}}

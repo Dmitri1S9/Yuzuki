@@ -1,0 +1,56 @@
+# Эталон связей Minoru Mineta — все 13 секций /Relationships (первый абзац). Учитель — Claude, вручную, 2026-11-04.
+page_owner: Minoru Mineta
+page_file: Minoru_Mineta
+roster: my_hero_academia
+targets:
+  Izuku Midoriya:    {types: [friend],       also_ok: [acquaintance],          affinity: positive}
+  Tsuyu Asui:        {types: [acquaintance], also_ok: [friend],                affinity: negative}
+  Momo Yaoyorozu:    {types: [romance],      also_ok: [acquaintance],          affinity: negative}
+  Denki Kaminari:    {types: [friend],       also_ok: [teammate],              affinity: positive}
+  Hanta Sero:        {types: [acquaintance], also_ok: [friend],                affinity: positive}
+  Katsuki Bakugo:    {types: [acquaintance], also_ok: [enemy, rival],          affinity: negative}
+  Kyoka Jiro:        {types: [acquaintance], also_ok: [],                      affinity: negative}
+  Mina Ashido:       {types: [acquaintance], also_ok: [romance],               affinity: negative}
+  Shota Aizawa:      {types: [student],      also_ok: [acquaintance],          affinity: negative}
+  Nemuri Kayama:     {types: [romance],      also_ok: [acquaintance, student], affinity: positive}
+  Toshinori Yagi:    {types: [acquaintance], also_ok: [student],               affinity: positive}
+  Yu Takeyama:       {types: [acquaintance], also_ok: [romance, student],      affinity: positive}
+paragraphs:
+  - id: "Minoru Mineta/Relationships|Class 1-A|0"
+    links: {Class 1-A: {affinity: [negative, neutral, positive]}}
+  - id: "Minoru Mineta/Relationships|Izuku Midoriya|0"
+    links: {Izuku Midoriya: {affinity: [positive, negative]}}
+    optional: [Class 1-A]
+  - id: "Minoru Mineta/Relationships|Tsuyu Asui|0"
+    links: {Tsuyu Asui: {affinity: [negative, positive, neutral]}}
+  - id: "Minoru Mineta/Relationships|Momo Yaoyorozu|0"
+    links: {Momo Yaoyorozu: {affinity: [positive, negative]}}
+    optional: [Class 1-A]
+  - id: "Minoru Mineta/Relationships|Denki Kaminari|0"
+    links:
+      Denki Kaminari: {affinity: [positive]}
+      Izuku Midoriya: {affinity: [negative, neutral]}
+      Shota Aizawa: {affinity: [neutral]}
+    optional: [Class 1-A]
+  - id: "Minoru Mineta/Relationships|Hanta Sero|0"
+    links: {Hanta Sero: {affinity: [positive, negative]}}
+    optional: [Shoto Todoroki]
+  - id: "Minoru Mineta/Relationships|Katsuki Bakugo|0"
+    links: {Katsuki Bakugo: {affinity: [negative]}}
+    optional: [Ochaco Uraraka]
+  - id: "Minoru Mineta/Relationships|Kyoka Jiro|0"
+    links: {Kyoka Jiro: {affinity: [negative]}}
+  - id: "Minoru Mineta/Relationships|Mina Ashido|0"
+    links: {Mina Ashido: {affinity: [negative, positive]}}
+    optional: [Class 1-A]
+  - id: "Minoru Mineta/Relationships|Eraser Head|0"
+    links: {Shota Aizawa: {affinity: [negative, neutral]}}
+  - id: "Minoru Mineta/Relationships|Midnight|0"
+    links: {Nemuri Kayama: {affinity: [positive]}}
+    optional: [Yu Takeyama]
+  - id: "Minoru Mineta/Relationships|All Might|0"
+    links: {Toshinori Yagi: {affinity: [positive]}}
+  - id: "Minoru Mineta/Relationships|Mt. Lady|0"
+    links:
+      Yu Takeyama: {affinity: [positive, neutral]}
+      Tsuyu Asui: {affinity: [negative, neutral]}
