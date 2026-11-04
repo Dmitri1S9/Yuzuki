@@ -2,4 +2,4 @@
 
 | method | P (lenient/strict) | R | F1 | affinity | halluc.names | type_P | type_R | pole_acc | not_trait | speed |
 |---|---|---|---|---|---|---|---|---|---|---|
-| traits_anchored | 0.68 | 0.63 | 0.65 |  | 0.0% (not in text) |  |  | 0.82 | 0 | 78.8s/para, 32 calls |
+| traits_verify | 0.79 | 0.51 | 0.62 |  | 0.0% (not in text) |  |  | 0.83 | 0 | 51.0s/para, 163 calls |
