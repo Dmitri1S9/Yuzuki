@@ -1,0 +1,114 @@
+{
+ "Kyoka Jiro": {
+  "counts": {
+   "tp": 10,
+   "pred": 14,
+   "gold": 19,
+   "pole_ok": 9,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.7142857142857143,
+  "trait_R": 0.5263157894736842,
+  "trait_F1": 0.6060606060606061,
+  "pole_acc": 0.9,
+  "not_trait_hits": 0,
+  "predicted": 14
+ },
+ "Minoru Mineta": {
+  "counts": {
+   "tp": 30,
+   "pred": 44,
+   "gold": 43,
+   "pole_ok": 25,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.6818181818181818,
+  "trait_R": 0.6976744186046512,
+  "trait_F1": 0.6896551724137931,
+  "pole_acc": 0.8333333333333334,
+  "not_trait_hits": 0,
+  "predicted": 44
+ },
+ "Tomura Shigaraki": {
+  "counts": {
+   "tp": 12,
+   "pred": 14,
+   "gold": 20,
+   "pole_ok": 10,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.8571428571428571,
+  "trait_R": 0.6,
+  "trait_F1": 0.7058823529411764,
+  "pole_acc": 0.8333333333333334,
+  "not_trait_hits": 0,
+  "predicted": 14
+ },
+ "Izuku Midoriya": {
+  "counts": {
+   "tp": 17,
+   "pred": 18,
+   "gold": 19,
+   "pole_ok": 10,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.9444444444444444,
+  "trait_R": 0.8947368421052632,
+  "trait_F1": 0.918918918918919,
+  "pole_acc": 0.5882352941176471,
+  "not_trait_hits": 0,
+  "predicted": 18
+ },
+ "All For One": {
+  "counts": {
+   "tp": 8,
+   "pred": 12,
+   "gold": 13,
+   "pole_ok": 7,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.6666666666666666,
+  "trait_R": 0.6153846153846154,
+  "trait_F1": 0.64,
+  "pole_acc": 0.875,
+  "not_trait_hits": 0,
+  "predicted": 12
+ },
+ "Mai Sakurajima": {
+  "counts": {
+   "tp": 25,
+   "pred": 38,
+   "gold": 39,
+   "pole_ok": 20,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.6578947368421053,
+  "trait_R": 0.6410256410256411,
+  "trait_F1": 0.6493506493506495,
+  "pole_acc": 0.8,
+  "not_trait_hits": 0,
+  "predicted": 38
+ },
+ "Sakuta Azusagawa": {
+  "counts": {
+   "tp": 15,
+   "pred": 21,
+   "gold": 23,
+   "pole_ok": 10,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.7142857142857143,
+  "trait_R": 0.6521739130434783,
+  "trait_F1": 0.6818181818181819,
+  "pole_acc": 0.6666666666666666,
+  "not_trait_hits": 0,
+  "predicted": 21
+ }
+}
