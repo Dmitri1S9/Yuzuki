@@ -152,3 +152,16 @@ def test_traits_anchored_span_enum_and_dedupe():
     rec = methods.traits_anchored([p], roster(), FakeLLM(responder), OWNER)[0]
     assert "blunt" in seen["enum"] and "organized" in seen["enum"] and "very" not in seen["enum"]
     assert rec["traits"] == [{"span": "blunt", "pole": "A-", "status": "actual"}]
+
+
+def test_stats_tests_and_bootstrap():
+    from research.exp import stats
+
+    assert "t-тест" in stats.paired_test([0.5, 0.6, 0.55, 0.7, 0.62], [0.7, 0.81, 0.74, 0.9, 0.83]) or \
+        "Wilcoxon" in stats.paired_test([0.5, 0.6, 0.55, 0.7, 0.62], [0.7, 0.81, 0.74, 0.9, 0.83])
+    da = {i: i % 2 == 0 for i in range(40)}
+    db = {i: True for i in range(40)}
+    assert "только B прав: 20, только A прав: 0" in stats.mcnemar(da, db)
+    rows = [("x", 1, 0, 0, 0), ("x", 0, 1, 0, 1)] * 10
+    ci = stats.bootstrap(rows, stats.rel_metrics)
+    assert 0.0 <= ci["P"][0] <= 0.5 <= ci["P"][1] <= 1.0
