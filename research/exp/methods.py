@@ -135,8 +135,10 @@ _YESNO = {"type": "object", "properties": {"answer": {"type": "string", "enum": 
           "required": ["answer"]}
 
 
-def rel_verify(paragraphs, roster: Roster, llm, owner: str) -> list[dict]:
-    draft = {r["id"]: r for r in rel_anchored(paragraphs, roster, llm, owner)}
+def rel_verify(paragraphs, roster: Roster, llm, owner: str, drafts: dict[str, dict] | None = None) -> list[dict]:
+    """drafts: готовые ответы M1 по id абзаца (из rel_anchored.jsonl) — чтобы не считать M1 второй раз."""
+    todo = [p for p in paragraphs if not drafts or p.id not in drafts]
+    draft = {**(drafts or {}), **{r["id"]: r for r in rel_anchored(todo, roster, llm, owner)}}
     out = []
     for p in paragraphs:
         rec = draft[p.id]

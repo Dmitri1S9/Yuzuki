@@ -8,6 +8,7 @@
 Ответы пишутся в research/runs/<model>/<method>.jsonl (+ stats), таблица — research/runs/<model>/summary.md.
 """
 import argparse
+import functools
 import json
 import re
 import time
@@ -98,6 +99,10 @@ def main() -> None:
             jobs = []
             if is_rel:
                 fn = _oracle_relations(rel_gold) if args.oracle else METHODS[m]
+                m1 = out_dir / "rel_anchored.jsonl"
+                if m == "rel_verify" and m1.exists():  # проверяем уже готовые ответы M1, а не считаем их заново
+                    drafts = {r["id"]: r for r in (json.loads(x) for x in m1.read_text(encoding="utf-8").splitlines() if x)}
+                    fn = functools.partial(METHODS[m], drafts=drafts)
                 roster = Roster.load(ROSTER, owner=rel_gold["page_owner"])
                 ps = _select(rel_pages, {g["id"] for g in rel_gold["paragraphs"]}, args.limit)
                 jobs = [(p, roster, rel_gold["page_owner"]) for p in ps]
