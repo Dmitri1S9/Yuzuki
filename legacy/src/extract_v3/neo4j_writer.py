@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from .external.embedder import Embedder
 from .external.neo4j_client import Neo4jClient
 
-from .resolve import build_lookup
+from .resolve import build_lookup, canonicalize
 from .schemas import ParseReply
 from .settings import RosterEntry
 
@@ -55,6 +55,11 @@ class FactWriter:
     def write_one(self, fact: ParseReply, variant: str, simple_sentence_id: str, source_sentence_id: int,
                  section: str, source_sentence: str) -> None:
         created_at = datetime.now(timezone.utc).isoformat()
+        # the lookup was built but never applied: "Jiro"/"Kyoka"/"Kyoka Jiro" became three Character nodes
+        fact = fact.model_copy(update={
+            "subject": canonicalize(fact.subject, self._lookup),
+            "target": canonicalize(fact.target, self._lookup) if fact.target_type in ("character", "group")
+            else fact.target})
         if fact.kind == "property":
             self._write_property(fact, variant, simple_sentence_id, source_sentence_id, section,
                                  source_sentence, created_at)

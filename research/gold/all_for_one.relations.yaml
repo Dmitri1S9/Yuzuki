@@ -1,0 +1,73 @@
+# Эталон связей All For One — 15 абзацев /Relationships. Учитель — Claude, вручную, 2026-11-04.
+page_owner: All For One
+page_file: All_For_One
+roster: my_hero_academia
+targets:
+  Yoichi Shigaraki:  {types: [family],       also_ok: [enemy],                 affinity: negative}
+  Toshitsugu Kudo:   {types: [enemy],        also_ok: [],                      affinity: negative}
+  En Tayutai:        {types: [enemy],        also_ok: [],                      affinity: negative}
+  Izuku Midoriya:    {types: [enemy],        also_ok: [],                      affinity: negative}
+  Kyudai Garaki:     {types: [friend],       also_ok: [superior, teammate],    affinity: positive}
+  Kurogiri:          {types: [superior],     also_ok: [],                      affinity: neutral}
+  Kaina Tsutsumi:    {types: [acquaintance], also_ok: [superior, teammate],    affinity: positive}
+  Keigo Takami:      {types: [enemy],        also_ok: [],                      affinity: negative}
+  Cathleen Bate:     {types: [enemy],        also_ok: [],                      affinity: negative}
+  Yuga Aoyama:       {types: [superior],     also_ok: [enemy],                 affinity: negative}
+  Kyoka Jiro:        {types: [enemy],        also_ok: [],                      affinity: negative}
+  Fumikage Tokoyami: {types: [enemy],        also_ok: [],                      affinity: negative}
+paragraphs:
+  - id: "All For One/Relationships|Yoichi Shigaraki|0"
+    links: {Yoichi Shigaraki: {affinity: [negative]}}
+  - id: "All For One/Relationships|Toshitsugu Kudo|0"
+    links:
+      Toshitsugu Kudo: {affinity: [negative]}
+      Yoichi Shigaraki: {affinity: [negative]}
+    optional: [Bruce Lee]
+  - id: "All For One/Relationships|Hikage Shinomori|0"
+    links: {}
+    optional: [Hikage Shinomori]
+  - id: "All For One/Relationships|En Tayutai|0"
+    links: {En Tayutai: {affinity: [negative]}}
+  - id: "All For One/Relationships|Nana Shimura|0"
+    links: {}
+    optional: [Nana Shimura, En Tayutai]
+  - id: "All For One/Relationships|Izuku Midoriya|0"
+    links: {Izuku Midoriya: {affinity: [negative]}}
+    optional: [Tomura Shigaraki, Toshinori Yagi]
+  - id: "All For One/Relationships|Kyudai Garaki|0"
+    links: {Kyudai Garaki: {affinity: [positive]}}
+  - id: "All For One/Relationships|Kurogiri|0"
+    links: {Kurogiri: {affinity: [neutral, positive]}}
+    optional: [Oboro Shirakumo]
+  - id: "All For One/Relationships|Lady Nagant|0"
+    links:
+      Kaina Tsutsumi: {affinity: [positive, neutral]}
+      Izuku Midoriya: {affinity: [negative]}
+    optional: [Kai Chisaki]
+  - id: "All For One/Relationships|Hawks|0"
+    links:
+      Keigo Takami: {affinity: [negative]}
+      Enji Todoroki: {affinity: [negative]}
+      Dabi: {affinity: [negative, neutral]}
+    optional: [Kyoka Jiro, Fumikage Tokoyami]
+  - id: "All For One/Relationships|Star and Stripe|0"
+    links: {Cathleen Bate: {affinity: [negative]}}
+    optional: [Tomura Shigaraki, Izuku Midoriya]
+  - id: "All For One/Relationships|Yuga Aoyama|0"
+    links: {Yuga Aoyama: {affinity: [negative, neutral]}}
+    optional: [U.A. High School]
+  - id: "All For One/Relationships|Kyoka Jiro|0"
+    links:
+      Kyoka Jiro: {affinity: [negative]}
+      Enji Todoroki: {affinity: [negative]}
+    optional: [Keigo Takami, Fumikage Tokoyami]
+  - id: "All For One/Relationships|Fumikage Tokoyami|0"
+    links: {Fumikage Tokoyami: {affinity: [negative]}}
+    optional: [Kyoka Jiro, Keigo Takami, Enji Todoroki, Izuku Midoriya, Tomura Shigaraki]
+  - id: "All For One/Relationships|Shimura Family|0"
+    links:
+      Shimura Family: {affinity: [negative]}
+      Toshinori Yagi: {affinity: [negative]}
+      Nana Shimura: {affinity: [negative]}
+      Kotaro Shimura: {affinity: [negative, neutral, positive]}
+      Nao Shimura: {affinity: [negative, neutral, positive]}

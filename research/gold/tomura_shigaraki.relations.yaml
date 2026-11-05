@@ -1,0 +1,85 @@
+# Эталон связей Tomura Shigaraki — 15 абзацев /Relationships. Учитель — Claude, вручную, 2026-11-04.
+page_owner: Tomura Shigaraki
+page_file: Tomura_Shigaraki
+roster: my_hero_academia
+targets:
+  League of Villains: {types: [superior],    also_ok: [],                      affinity: positive}
+  Kurogiri:          {types: [superior],     also_ok: [friend, student],       affinity: positive}
+  Kyudai Garaki:     {types: [acquaintance], also_ok: [student],               affinity: neutral}
+  Gigantomachia:     {types: [acquaintance], also_ok: [superior, enemy],       affinity: negative}
+  Dabi:              {types: [acquaintance], also_ok: [enemy, superior],       affinity: negative}
+  Twice:             {types: [superior],     also_ok: [friend],                affinity: positive}
+  Spinner:           {types: [superior],     also_ok: [friend],                affinity: positive}
+  Mr. Compress:      {types: [superior],     also_ok: [friend],                affinity: positive}
+  Skeptic:           {types: [superior],     also_ok: [acquaintance, enemy],   affinity: neutral}
+  Toshinori Yagi:    {types: [enemy],        also_ok: [],                      affinity: negative}
+  Shota Aizawa:      {types: [enemy],        also_ok: [],                      affinity: negative}
+  Izuku Midoriya:    {types: [enemy],        also_ok: [rival],                 affinity: negative}
+  Stain:             {types: [enemy],        also_ok: [rival, acquaintance],   affinity: negative}
+  Kai Chisaki:       {types: [acquaintance], also_ok: [enemy],                 affinity: neutral}
+paragraphs:
+  - id: "Tomura Shigaraki/Relationships|Biological Family|0"
+    links: {}
+  - id: "Tomura Shigaraki/Relationships|League of Villains/Paranormal Liberation Front|0"
+    links:
+      League of Villains: {affinity: [positive, neutral]}
+      Kai Chisaki: {affinity: [negative]}
+      Magne: {affinity: [positive]}
+      Mr. Compress: {affinity: [positive]}
+      Twice: {affinity: [positive]}
+      Himiko Toga: {affinity: [positive]}
+    optional: [All For One, Shie Hassaikai]
+  - id: "Tomura Shigaraki/Relationships|Kurogiri|0"
+    links:
+      Kurogiri: {affinity: [positive, neutral]}
+      Dabi: {affinity: [negative]}
+      Himiko Toga: {affinity: [negative]}
+    optional: [All For One, League of Villains, Kyudai Garaki]
+  - id: "Tomura Shigaraki/Relationships|Daruma Ujiko|0"
+    links:
+      Kyudai Garaki: {affinity: [neutral, positive]}
+      All For One: {affinity: [positive]}
+  - id: "Tomura Shigaraki/Relationships|Gigantomachia|0"
+    links: {Gigantomachia: {affinity: [positive, negative]}}
+    optional: [Kurogiri, League of Villains, All For One, Kyudai Garaki]
+  - id: "Tomura Shigaraki/Relationships|Dabi|0"
+    links:
+      Dabi: {affinity: [negative]}
+      Kurogiri: {affinity: [neutral]}
+      Himiko Toga: {affinity: [negative]}
+    optional: [Stain, League of Villains]
+  - id: "Tomura Shigaraki/Relationships|Twice|0"
+    links: {Twice: {affinity: [positive]}}
+    optional: [All For One, Shie Hassaikai, Magne, Mr. Compress, Kai Chisaki]
+  - id: "Tomura Shigaraki/Relationships|Spinner|0"
+    links: {Spinner: {affinity: [positive, neutral]}}
+    optional: [League of Villains, Stain]
+  - id: "Tomura Shigaraki/Relationships|Mr. Compress|0"
+    links:
+      Mr. Compress: {affinity: [positive]}
+      Kai Chisaki: {affinity: [negative]}
+    optional: [League of Villains, Katsuki Bakugo, Fumikage Tokoyami, Moonfish, Toshinori Yagi, All For One]
+  - id: "Tomura Shigaraki/Relationships|Skeptic|0"
+    links:
+      Skeptic: {affinity: [negative, positive, neutral]}
+      Re-Destro: {affinity: [positive, neutral]}
+    optional: [Destro]
+  - id: "Tomura Shigaraki/Relationships|All Might|0"
+    links:
+      Toshinori Yagi: {affinity: [negative]}
+      All For One: {affinity: [positive]}
+    optional: [U.A. High School]
+  - id: "Tomura Shigaraki/Relationships|Eraser Head|0"
+    links: {Shota Aizawa: {affinity: [negative, positive]}}
+  - id: "Tomura Shigaraki/Relationships|Izuku Midoriya|0"
+    links: {Izuku Midoriya: {affinity: [negative]}}
+    optional: [Toshinori Yagi]
+  - id: "Tomura Shigaraki/Relationships|Stain|0"
+    links:
+      Stain: {affinity: [negative]}
+      Toshinori Yagi: {affinity: [negative]}
+      Izuku Midoriya: {affinity: [negative]}
+    optional: [Kurogiri]
+  - id: "Tomura Shigaraki/Relationships|Overhaul|0"
+    links: {Kai Chisaki: {affinity: [neutral, negative]}}
+    optional: [All For One]

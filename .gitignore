@@ -63,7 +63,6 @@ dmypy.json
 .pyre/
 
 # Docker
-.dockerignore
 docker-compose.override.yaml
 .docker/
 
@@ -124,3 +123,10 @@ Thumbs.db
 # IDE specific
 .vscode/settings.json
 .vscode/launch.json
+
+# Experiment outputs and run caches (regenerated; commit only summary.md you want to keep)
+/research/runs/*/*.jsonl
+/research/runs/*/*.stats.json
+/research/runs/*/*.errors.txt
+.checkpoint_*.json
+.pass1_*.json

@@ -1,0 +1,9 @@
+# Текущий курс (src/wiki, research/). Legacy-стек: legacy/analyse.yml.
+pyyaml>=6
+mwparserfromhell>=0.6     # src/wiki/wikitext_cleaner.py, research/samples/*.py
+httpx>=0.27               # src/wiki/ollama.py
+pydantic>=2
+numpy>=1.26
+fastembed>=0.3            # src/wiki/embedder.py (bge-small)
+neo4j>=5                  # src/graph_store (когда будет реализован)
+pytest>=8

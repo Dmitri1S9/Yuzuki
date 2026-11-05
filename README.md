@@ -5,82 +5,40 @@
 >
 > To conclude, I want to thank all authors for their time and efforts, which make me a bit happier day by day
 
-![Mai Sakurajima](wp5522224-rascal-does-not-dream-wallpapers.png)
 
-Сервис для автоматической аналитики персонажей из аниме/манги/фантастических
-вселенных: ростер, группы, ординальные ранги, бинарные флаги и попарные
-отношения — через Gemini, с сохранением в PostgreSQL.
+Граф персонажей из многих вселенных (аниме, манга, Star Wars, …) → GNN, которая предсказывает отношения,
+в том числе между вселенными. Данные — из дампов Fandom-вики, извлечение — локальной моделью
+(`qwen3.5:9b` через Ollama, RTX 5060 8 GB), хранилище — Neo4j.
 
----
-
-## Пайплайн
-
-Четыре независимых этапа, каждый — отдельный процесс (`docker compose run`),
-без общей памяти между ними. Подробная логика каждого этапа — в
-[PIPELINE.md](PIPELINE.md); архитектура кода (слои, конвенции) — в
-[ARCHITECTURE.md](ARCHITECTURE.md).
-
-1. **Cast** (`src/services/collection/cast`) — собирает ростер и
-   средние/большие группы (медиум/лардж/изоляты, 1 проход), разрешает
-   написания и алиасы имён.
-2. **Relations** (`src/services/collection/relations`) — попарные отношения
-   (`for`/`against`/`want`/`with`) на уровне средних групп и общего пула
-   (адаптивное число проходов по фактическому выходу новых пар), плюс
-   союзники/соперники/часть-целого между группами. Запускается **до** этапа
-   features — его результат (`low_info_characters`) решает, кого пропустить
-   на этапе 2.
-3. **Features** (`src/services/collection/features`) — ординальные ранги (6
-   параметров, 3 прохода) и бинарные флаги (51, 2 прохода), сведение через
-   maximin-Cohen's-kappa консенсус для ординалов и отдельный алгоритм с
-   удалением расходящихся персонажей для флагов (`src/services/consensus`).
-4. **Graph** (`src/services/graph`) — интерактивный граф отношений (pyvis),
-   запускается вручную, не входит в `run_pipeline.sh`.
-
-Персистентный источник истины — PostgreSQL (ростер/алиасы/группы/отношения
-пишутся туда этапами 1 и 3 через `src/repository`). Ординалы/флаги (этап 2)
-в БД пока не пишутся — известный, отдельно запланированный пробел, см.
-ARCHITECTURE.md. JSON/CSV/HTML-файлы одного прогона (`run/*`) — только
-передача данных между этапами внутри одного запуска, не источник истины.
+**Состояние (2026-11):** идёт выбор метода извлечения. Что пробовали, что сработало и что делать дальше —
+[research/REPORT.md](research/REPORT.md). Устройство репозитория — [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
+
+## Структура
+
+| Путь | Что |
+|---|---|
+| `src/wiki/` | дамп MediaWiki → страницы → секции/абзацы; клиенты Ollama и эмбеддингов |
+| `src/graph_store/` | интерфейс слоя Neo4j (заглушка — пишется руками) |
+| `research/` | отчёт, эталонная разметка, эксперименты (`research/exp`), образцы страниц и ростеры |
+| `legacy/` | всё брошенное: API-сбор (Grok/Gemini, Postgres, Redis, флаги), proto_wiki, extract_v3 — [legacy/README.md](legacy/README.md) |
+| `tests/` | тесты живого кода (`pytest -q tests`) |
 
 ## Запуск
 
 ```bash
-docker compose up -d db redis
-./run_pipeline.sh "Classroom of the Elite" "Year 1"
+pip install -r requirements.txt
+pytest -q tests
+python -m research.exp.check_ollama --model qwen3.5:9b
+python -m research.exp.run --methods all --model qwen3.5:9b
 ```
 
-БД инициализируется из `src/repository/schema/init.sql` при первом старте
-контейнера `db`. Граф — отдельно:
+Neo4j (пароль — `NEO4J_PASSWORD` в `.env`):
 
 ```bash
-docker compose run --rm analyse_service \
-    conda run --no-capture-output -n analyse_service python -m src.services.graph.main "Classroom of the Elite" "Year 1"
+docker compose up -d neo4j
 ```
-
----
-
-## Переменные окружения (`.env`)
-
-| Переменная | Описание |
-|------------|----------|
-| `API_KEY_GIMINI` | Ключ Gemini API (основной клиент) |
-| `API_KEY_X` | Ключ xAI API (`XClient`, запасной/неактивный) |
-| `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` | PostgreSQL |
-| `REDIS_URL_CELERY` | зарезервировано, не используется активно |
-| `REDIS_URL_CACHE` | Redis для кеша ответов модели (TTL 14 дней) |
-| `DEBUG` | режим отладки |
-
----
-
-## Инфраструктура
-
-- **PostgreSQL 14** — порт 5439 (хост) → 5432 (контейнер), БД `archangel`
-- **Redis** — кеш ответов модели (`redis://...6379/1`)
-- **Docker Compose** — сервисы `db`, `redis`, `analyse_service` (Python/conda,
-  запускается только через `docker compose run ... python -m ...`, не как
-  постоянный сервер), `r_analysis` (R, kappa-валидация)
 
 ---
 

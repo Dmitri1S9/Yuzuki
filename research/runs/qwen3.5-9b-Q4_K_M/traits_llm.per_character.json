@@ -1,0 +1,114 @@
+{
+ "Kyoka Jiro": {
+  "counts": {
+   "tp": 12,
+   "pred": 13,
+   "gold": 19,
+   "pole_ok": 11,
+   "bad": 0,
+   "not_in_text": 30
+  },
+  "trait_P": 0.9230769230769231,
+  "trait_R": 0.631578947368421,
+  "trait_F1": 0.7499999999999999,
+  "pole_acc": 0.9166666666666666,
+  "not_trait_hits": 0,
+  "predicted": 13
+ },
+ "Minoru Mineta": {
+  "counts": {
+   "tp": 36,
+   "pred": 124,
+   "gold": 43,
+   "pole_ok": 27,
+   "bad": 0,
+   "not_in_text": 53
+  },
+  "trait_P": 0.2903225806451613,
+  "trait_R": 0.8372093023255814,
+  "trait_F1": 0.4311377245508982,
+  "pole_acc": 0.75,
+  "not_trait_hits": 0,
+  "predicted": 124
+ },
+ "Tomura Shigaraki": {
+  "counts": {
+   "tp": 11,
+   "pred": 45,
+   "gold": 20,
+   "pole_ok": 5,
+   "bad": 0,
+   "not_in_text": 7
+  },
+  "trait_P": 0.24444444444444444,
+  "trait_R": 0.55,
+  "trait_F1": 0.3384615384615384,
+  "pole_acc": 0.45454545454545453,
+  "not_trait_hits": 0,
+  "predicted": 45
+ },
+ "Izuku Midoriya": {
+  "counts": {
+   "tp": 0,
+   "pred": 0,
+   "gold": 19,
+   "pole_ok": 0,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.0,
+  "trait_R": 0.0,
+  "trait_F1": 0.0,
+  "pole_acc": 0.0,
+  "not_trait_hits": 0,
+  "predicted": 0
+ },
+ "All For One": {
+  "counts": {
+   "tp": 0,
+   "pred": 0,
+   "gold": 13,
+   "pole_ok": 0,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.0,
+  "trait_R": 0.0,
+  "trait_F1": 0.0,
+  "pole_acc": 0.0,
+  "not_trait_hits": 0,
+  "predicted": 0
+ },
+ "Mai Sakurajima": {
+  "counts": {
+   "tp": 0,
+   "pred": 0,
+   "gold": 39,
+   "pole_ok": 0,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.0,
+  "trait_R": 0.0,
+  "trait_F1": 0.0,
+  "pole_acc": 0.0,
+  "not_trait_hits": 0,
+  "predicted": 0
+ },
+ "Sakuta Azusagawa": {
+  "counts": {
+   "tp": 0,
+   "pred": 0,
+   "gold": 23,
+   "pole_ok": 0,
+   "bad": 0,
+   "not_in_text": 0
+  },
+  "trait_P": 0.0,
+  "trait_R": 0.0,
+  "trait_F1": 0.0,
+  "pole_acc": 0.0,
+  "not_trait_hits": 0,
+  "predicted": 0
+ }
+}

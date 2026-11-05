@@ -1,0 +1,22 @@
+# Лексикон маркеров черт для traits_lexicon (T0) — полюс -> прилагательные.
+# Источники: Saucier 1994 "Mini-Markers" (40 прилагательных Big Five; восстановлено по вторичным
+# воспроизведениям, см. REPORT.md §Источники), дополнено униполярными маркерами Goldberg 1992 и
+# прилагательными Honesty-Humility из лексических исследований HEXACO (Ashton & Lee 2007/2008).
+# Слова, взятые из самих страниц эталона, сюда намеренно НЕ добавлены (иначе утечка эталона).
+# Это проверочная база "что даёт чистый словарь", не полный лексикон.
+poles:
+  E+: [bold, energetic, extraverted, talkative, sociable, outgoing, assertive, cheerful, lively]
+  E-: [bashful, quiet, shy, withdrawn, reserved, timid, introverted, aloof]
+  A+: [cooperative, kind, sympathetic, warm, friendly, nice, empathetic, helpful, compassionate, gentle,
+       caring, forgiving, selfless, polite]
+  A-: [cold, harsh, rude, unsympathetic, aggressive, cynical, demanding, cruel, hostile, condescending, callous, ruthless, malicious]
+  C+: [efficient, organized, practical, systematic, responsible, disciplined, careful, diligent,
+       patient, thorough, reliable]
+  C-: [careless, disorganized, inefficient, sloppy, impulsive, reckless, lazy, irresponsible]
+  N+: [envious, fretful, jealous, moody, temperamental, touchy, anxious, nervous, insecure, irritable,
+       sensitive, fearful, emotional, fragile, afraid]
+  N-: [relaxed, unenvious, calm, composed, brave, courageous, confident, fearless, stable]
+  O+: [complex, creative, deep, imaginative, intellectual, philosophical, intelligent, curious, smart, clever]
+  O-: [uncreative, unintellectual, simple, conventional, unimaginative]
+  H+: [sincere, honest, modest, humble, fair, loyal, unassuming, genuine]
+  H-: [arrogant, boastful, deceitful, greedy, hypocritical, pompous, pretentious, sly, selfish, manipulative, proud, narcissistic]

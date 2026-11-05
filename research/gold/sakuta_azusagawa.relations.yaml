@@ -1,0 +1,76 @@
+# Эталон связей Sakuta Azusagawa (aobuta.fandom.com) — все 19 абзацев раздела Relationships. Claude, вручную, 2026-11-04.
+page_owner: Sakuta Azusagawa
+page_file: Sakuta_Azusagawa
+roster: aobuta
+targets:
+  Mai Sakurajima:    {types: [romance],      also_ok: [],                      affinity: positive}
+  Kaede Azusagawa:   {types: [family],       also_ok: [],                      affinity: positive}
+  Shoko Makinohara:  {types: [romance],      also_ok: [acquaintance, friend],  affinity: positive}
+  Tomoe Koga:        {types: [friend],       also_ok: [teammate, acquaintance, romance], affinity: positive}
+  Rio Futaba:        {types: [friend],       also_ok: [],                      affinity: positive}
+  Nodoka Toyohama:   {types: [acquaintance], also_ok: [friend],                affinity: positive}
+  Yuuma Kunimi:      {types: [friend],       also_ok: [teammate],              affinity: positive}
+paragraphs:
+  - id: "Sakuta Azusagawa/Relationships|Mai Sakurajima|0"
+    links: {Mai Sakurajima: {affinity: [positive, neutral]}}
+  - id: "Sakuta Azusagawa/Relationships|Mai Sakurajima|1"
+    links: {Mai Sakurajima: {affinity: [positive, negative, neutral]}}
+  - id: "Sakuta Azusagawa/Relationships|Mai Sakurajima|2"
+    links: {Mai Sakurajima: {affinity: [positive]}}
+  - id: "Sakuta Azusagawa/Relationships|Mai Sakurajima|3"
+    links: {Mai Sakurajima: {affinity: [positive]}}
+  - id: "Sakuta Azusagawa/Relationships|Kaede Azusagawa|0"
+    links:
+      Kaede Azusagawa: {affinity: [positive, negative]}
+      Rio Futaba: {affinity: [positive, neutral]}
+      Shoko Makinohara: {affinity: [positive, neutral]}
+      Nodoka Toyohama: {affinity: [positive, neutral]}
+    optional: [Mai Sakurajima]
+  - id: "Sakuta Azusagawa/Relationships|Kaede Azusagawa|1"
+    links:
+      Kaede Azusagawa: {affinity: [positive]}
+      Mai Sakurajima: {affinity: [neutral, positive]}
+      Nodoka Toyohama: {affinity: [neutral, positive]}
+  - id: "Sakuta Azusagawa/Relationships|Shoko Makinohara|0"
+    links: {Shoko Makinohara: {affinity: [positive]}}
+    optional: [Minegahara High School]
+  - id: "Sakuta Azusagawa/Relationships|Shoko Makinohara|1"
+    links:
+      Shoko Makinohara: {affinity: [positive, neutral]}
+      Mai Sakurajima: {affinity: [positive]}
+  - id: "Sakuta Azusagawa/Relationships|Shoko Makinohara|2"
+    links: {Shoko Makinohara: {affinity: [positive]}}
+    optional: [Kaede Azusagawa]
+  - id: "Sakuta Azusagawa/Relationships|Shoko Makinohara|3"
+    links: {Shoko Makinohara: {affinity: [positive]}}
+    optional: [Mai Sakurajima]
+  - id: "Sakuta Azusagawa/Relationships|Tomoe Koga|0"
+    links: {Tomoe Koga: {affinity: [negative, positive, neutral]}}
+    optional: [Mai Sakurajima]
+  - id: "Sakuta Azusagawa/Relationships|Tomoe Koga|1"
+    links: {Tomoe Koga: {affinity: [neutral, positive, negative]}}
+    optional: [Mai Sakurajima]
+  - id: "Sakuta Azusagawa/Relationships|Tomoe Koga|2"
+    links:
+      Tomoe Koga: {affinity: [positive, neutral]}
+      Mai Sakurajima: {affinity: [positive]}
+  - id: "Sakuta Azusagawa/Relationships|Tomoe Koga|3"
+    links: {Tomoe Koga: {affinity: [positive, neutral]}}
+  - id: "Sakuta Azusagawa/Relationships|Rio Futaba|0"
+    links: {Rio Futaba: {affinity: [positive]}}
+    optional: [Minegahara High School, Mai Sakurajima, Tomoe Koga]
+  - id: "Sakuta Azusagawa/Relationships|Rio Futaba|1"
+    links:
+      Rio Futaba: {affinity: [positive]}
+      Yuuma Kunimi: {affinity: [positive, neutral]}
+    optional: [Minegahara High School]
+  - id: "Sakuta Azusagawa/Relationships|Nodoka Toyohama|0"
+    links: {Nodoka Toyohama: {affinity: [positive, neutral]}}
+    optional: [Mai Sakurajima]
+  - id: "Sakuta Azusagawa/Relationships|Nodoka Toyohama|1"
+    links:
+      Nodoka Toyohama: {affinity: [positive, neutral]}
+      Mai Sakurajima: {affinity: [positive]}
+  - id: "Sakuta Azusagawa/Relationships|Yuuma Kunimi|0"
+    links: {Yuuma Kunimi: {affinity: [positive]}}
+    optional: [Rio Futaba, Saki Kamisato]
